@@ -7,7 +7,7 @@ use App\Http\Controllers\KonselorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('landing_page.home');
+    return view('landing.index');
 });
 
 Route::get('/dashboard', function () {
