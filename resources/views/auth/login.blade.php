@@ -114,6 +114,21 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
+                        {{-- ALERT ERROR --}}
+                        @if ($errors->any())
+                            <div class="mb-7 flex items-center gap-3 px-5 py-4 rounded-2xl bg-red-50 border border-red-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-500 shrink-0"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M12 2a10 10 0 100 20A10 10 0 0012 2zm-.75 5.25a.75.75 0 011.5 0v5a.75.75 0 01-1.5 0v-5zm.75 9a1 1 0 100-2 1 1 0 000 2z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <p class="text-[14px] text-red-600 font-medium">
+                                    {{ $errors->first() }}
+                                </p>
+                            </div>
+                        @endif
+
                         {{-- EMAIL --}}
                         <div class="mb-7">
 
@@ -121,8 +136,10 @@
                                 Email
                             </label>
 
-                            <input type="email" name="email" placeholder="Masukkan email Anda"
-                                class="w-full h-[68px] rounded-2xl border border-gray-200 px-6 text-[16px] outline-none focus:border-[#5B67F1] focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+                            <input type="email" name="email" value="{{ old('email') }}"
+                                placeholder="Masukkan email Anda"
+                                class="w-full h-[68px] rounded-2xl border px-6 text-[16px] outline-none transition-all duration-300 focus:ring-4
+                                {{ $errors->has('email') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#5B67F1] focus:ring-indigo-100' }}">
                         </div>
 
                         {{-- PASSWORD --}}
@@ -133,7 +150,8 @@
                             </label>
 
                             <input type="password" name="password" placeholder="Masukkan password Anda"
-                                class="w-full h-[68px] rounded-2xl border border-gray-200 px-6 text-[16px] outline-none focus:border-[#5B67F1] focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+                                class="w-full h-[68px] rounded-2xl border px-6 text-[16px] outline-none transition-all duration-300 focus:ring-4
+                                {{ $errors->has('password') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#5B67F1] focus:ring-indigo-100' }}">
                         </div>
 
                         {{-- FORGOT --}}

@@ -7,6 +7,14 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 Ini halaman Konselor 👋
             </div>
+            <div class="mt-4">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </x-app-layout>
