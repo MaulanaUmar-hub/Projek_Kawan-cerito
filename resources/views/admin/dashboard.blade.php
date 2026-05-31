@@ -1,4 +1,5 @@
 <x-app-layout>
+
     <x-slot name="dashboardRole">admin</x-slot>
     <x-slot name="headerTitle">Dashboard Administrator</x-slot>
 
@@ -15,6 +16,7 @@
             <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-500">
                 Kelola seluruh aktivitas dan pengguna dalam sistem Kawan Cerito.
             </p>
+
         </div>
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">

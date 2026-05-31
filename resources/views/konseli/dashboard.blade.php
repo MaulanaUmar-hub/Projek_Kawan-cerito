@@ -28,6 +28,7 @@
             <div class="kc-card p-4 text-sm text-amber-700" style="background:#fff8e1;border-color:#ffe0a3;">
                 Data konseling belum tersedia di database. Dashboard menampilkan data contoh sementara agar struktur tampilan tetap dapat diuji.
             </div>
+
         @endif
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
@@ -58,6 +59,7 @@
                     </div>
                 </article>
             @endforeach
+
         </div>
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">

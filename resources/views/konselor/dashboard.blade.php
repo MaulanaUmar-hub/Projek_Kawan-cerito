@@ -26,6 +26,14 @@
                     <p class="mt-1 text-sm text-slate-500">sesi konseling perlu dipantau.</p>
                 </div>
             </div>
+            <div class="mt-4">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
