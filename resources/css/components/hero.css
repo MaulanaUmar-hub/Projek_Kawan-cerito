@@ -1,0 +1,36 @@
+/* Background blob / mesh */
+.hero-bg {
+    background: linear-gradient(135deg, #eef2ff 0%, #f0f9ff 40%, #f5f3ff 100%);
+}
+
+.hero-title {
+    font-size: clamp(3rem, 4.2vw, 4.8rem);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #0B132B;
+
+    max-width: 700px;
+
+    text-wrap: balance;
+}
+
+.hero-accent {
+    background: linear-gradient(135deg,
+            #5B67F1 0%,
+            #72D6C9 100%);
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    font-style: italic;
+    font-family: 'Lora', serif;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #6B7280;
+
+    max-width: 540px;
+}

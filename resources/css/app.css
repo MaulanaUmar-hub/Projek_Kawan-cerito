@@ -55,17 +55,9 @@ body {
 }
 
 .auth-hero-accent {
-    background: linear-gradient(
-        135deg,
-        #5B67F1 0%,
-        #72D6C9 100%
-    );
-
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    font-style: italic;
-    font-family: 'Lora', serif;
+    color: var(--mint);
+    font-style: normal;
+    font-family: inherit;
 }
 
 .auth-hero-subtitle {

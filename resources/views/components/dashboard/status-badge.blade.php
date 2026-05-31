@@ -1,0 +1,30 @@
+@props(['status' => 'pending'])
+
+@php
+    $normalized = strtolower((string) $status);
+    $classes = [
+        'pending' => 'bg-amber-100 text-amber-700',
+        'menunggu' => 'bg-amber-100 text-amber-700',
+        'baru' => 'bg-amber-100 text-amber-700',
+        'disetujui' => 'bg-emerald-100 text-emerald-700',
+        'aktif' => 'bg-indigo-100 text-indigo-700',
+        'selesai' => 'bg-sky-100 text-sky-700',
+        'ditolak' => 'bg-red-100 text-red-700',
+        'dibuat' => 'bg-slate-100 text-slate-600',
+    ];
+
+    $labels = [
+        'pending' => 'Pending',
+        'menunggu' => 'Menunggu',
+        'baru' => 'Baru',
+        'disetujui' => 'Disetujui',
+        'aktif' => 'Aktif',
+        'selesai' => 'Selesai',
+        'ditolak' => 'Ditolak',
+        'dibuat' => 'Dibuat',
+    ];
+@endphp
+
+<span {{ $attributes->merge(['class' => 'inline-flex rounded-md px-3 py-1 text-xs font-semibold ' . ($classes[$normalized] ?? 'bg-slate-100 text-slate-600')]) }}>
+    {{ $labels[$normalized] ?? ucfirst($normalized) }}
+</span>
