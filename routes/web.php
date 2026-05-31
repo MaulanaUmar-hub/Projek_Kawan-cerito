@@ -25,16 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-});
-
-Route::middleware(['auth', 'role:konseli'])->group(function () {
-    Route::get('/konseli/dashboard', [KonseliController::class, 'index'])->name('konseli.dashboard');
-});
-
-Route::middleware(['auth', 'role:konselor'])->group(function () {
-    Route::get('/konselor/dashboard', [KonselorController::class, 'index'])->name('konselor.dashboard');
-});
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::get('/konseli/dashboard', [KonseliController::class, 'index'])->name('konseli.dashboard');
+Route::get('/konselor/dashboard', [KonselorController::class, 'index'])->name('konselor.dashboard');
 
 require __DIR__ . '/auth.php';

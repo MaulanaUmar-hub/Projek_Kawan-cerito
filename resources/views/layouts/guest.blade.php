@@ -45,10 +45,10 @@
                 <div class="max-w-[650px]">
 
                     <h2 class="auth-hero-title mb-8">
-                        Kamu Tidak Harus
-                        Menanggungnya
+                        Tempat aman untuk
+                        bercerita dan
                         <span class="auth-hero-accent">
-                            Sendirian.
+                            didengar.
                         </span>
                     </h2>
 
