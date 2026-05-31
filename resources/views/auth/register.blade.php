@@ -14,7 +14,7 @@
                     Nama Lengkap
                 </label>
 
-                <input type="text" name="name"
+                <input type="text" name="nama"
                     class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
             </div>
 
@@ -25,7 +25,7 @@
                     Asal Instansi/Sekolah
                 </label>
 
-                <input type="text" name="instansi"
+                <input type="text" name="asal"
                     class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
             </div>
 
@@ -47,7 +47,7 @@
                     Nomor HP
                 </label>
 
-                <input type="text" name="phone"
+                <input type="text" name="no_hp"
                     class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
             </div>
 
@@ -70,21 +70,12 @@
                         <span>Perempuan</span>
                     </label>
 
+                    <label class="flex items-center gap-2">
+                        <input type="radio" name="gender" value="N">
+                        <span>Tidak Mau Memberi Tahu</span>
+                    </label>
+
                 </div>
-            </div>
-
-            {{-- ROLE --}}
-            <div>
-
-                <label class="block mb-3 font-semibold text-[#111827]">
-                    Daftar Sebagai
-                </label>
-
-                <select name="role"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
-                    <option value="konseli">Konseli</option>
-                    <option value="konselor">Konselor</option>
-                </select>
             </div>
 
             {{-- PASSWORD --}}
