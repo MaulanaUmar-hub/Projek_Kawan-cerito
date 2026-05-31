@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('no_hp')->nullable();
-            $table->enum('gender', ['L', 'P'])->nullable();
+            $table->enum('gender', ['L', 'P', 'N'])->nullable();
             $table->enum('role', ['admin', 'konseli', 'konselor'])->default('konseli');
             $table->timestamps();
         });
