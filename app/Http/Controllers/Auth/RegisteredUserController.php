@@ -24,20 +24,14 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'nama'     => ['required', 'string', 'max:255'],
-            'asal'     => ['nullable', 'string', 'max:255'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'no_hp'    => ['nullable', 'string'],
-            'gender'   => ['nullable', 'in:L,P,N'],
         ]);
 
         $user = User::create([
             'nama'     => $request->nama,
-            'asal'     => $request->asal,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'no_hp'    => $request->no_hp,
-            'gender'   => $request->gender,
             'role'     => 'konseli', // hardcoded, tidak dari request
         ]);
 
