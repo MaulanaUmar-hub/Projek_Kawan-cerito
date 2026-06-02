@@ -6,24 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('hasil_konseling', function (Blueprint $table) {
             $table->id('id_hasil');
-
-            // Manual foreign key karena primary key pengajuan_konselings bukan 'id'
-            $table->unsignedBigInteger('id_pengajuan');
-            $table->foreign('id_pengajuan')
-                ->references('id_pengajuan')
-                ->on('pengajuan_konselings')
-                ->onDelete('cascade');
-
+            $table->foreignId('id_pengajuan')->constrained('pengajuan_konselings', 'id_pengajuan')->cascadeOnDelete();
             $table->text('catatan_konseling');
-            $table->text('rekomendasi');
-            $table->timestamp('created_at')->useCurrent();
+            $table->text('rekomendasi')->nullable();
+            $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('hasil_konseling');
