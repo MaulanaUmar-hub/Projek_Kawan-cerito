@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('id_assessment')->constrained('assessments', 'id_assessment')->cascadeOnDelete();
             $table->foreignId('id_jadwal')->constrained('jadwal', 'id_jadwal')->cascadeOnDelete();
             $table->string('status_pengajuan')->default('menunggu');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
