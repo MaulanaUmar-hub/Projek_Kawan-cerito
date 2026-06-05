@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    protected $primaryKey = 'id_user';
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
