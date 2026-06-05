@@ -7,12 +7,12 @@
             class="w-full max-w-[1500px] bg-white rounded-[36px] overflow-hidden shadow-sm grid lg:grid-cols-[1.08fr_0.92fr] min-h-[850px]">
 
             {{-- LEFT PANEL --}}
-            <div class="hidden lg:flex flex-col justify-between bg-[#F7F8FF] px-16 py-14 relative overflow-hidden">
+            <div class="auth-left-panel hidden lg:flex flex-col bg-[#F7F8FF] px-16 py-14 relative overflow-hidden">
 
                 {{-- LOGO --}}
                 <div>
 
-                    <div class="flex items-center gap-4 mb-20">
+                    <div class="auth-brand flex items-center gap-4 mb-20">
 
                         <div class="w-16 h-16 rounded-[24px] bg-gradient-to-br from-[#5B67F1] to-[#72D6C9]"></div>
 
@@ -31,22 +31,21 @@
                     <div class="max-w-[650px]">
 
                         <h2 class="auth-hero-title mb-8">
-                            Tempat aman
-                            untuk bercerita
-                            dan
+                            Kembali ke ruang
+                            yang tenang dan
                             <span class="auth-hero-accent">
-                                didengar.
+                                aman.
                             </span>
                         </h2>
 
                         <p class="auth-hero-subtitle">
-                            Kawan Cerito hadir untuk menemani perjalananmu menuju kesehatan mental yang lebih baik.
+                            Lanjutkan proses konselingmu dengan nyaman, privat, dan tetap terarah.
                         </p>
                     </div>
                 </div>
 
                 {{-- FEATURE CARD --}}
-                <div class="grid grid-cols-3 gap-5 mt-10 max-w-[760px]">
+                <div class="auth-feature-grid grid grid-cols-3 gap-5 mt-10 max-w-[760px]">
 
                     {{-- CARD --}}
                     <div class="bg-white rounded-[28px] p-5 shadow-sm border border-[#F3F4F6]">
@@ -111,7 +110,7 @@
                     </div>
 
                     {{-- FORM --}}
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" novalidate>
                         @csrf
 
                         {{-- ALERT ERROR --}}
@@ -124,7 +123,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                                 <p class="text-[14px] text-red-600 font-medium">
-                                    {{ $errors->first() }}
+                                    Periksa kembali email dan password Anda.
                                 </p>
                             </div>
                         @endif
@@ -140,6 +139,10 @@
                                 placeholder="Masukkan email Anda"
                                 class="w-full h-[68px] rounded-2xl border px-6 text-[16px] outline-none transition-all duration-300 focus:ring-4
                                 {{ $errors->has('email') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#5B67F1] focus:ring-indigo-100' }}">
+
+                            @error('email')
+                                <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         {{-- PASSWORD --}}
@@ -152,6 +155,10 @@
                             <input type="password" name="password" placeholder="Masukkan password Anda"
                                 class="w-full h-[68px] rounded-2xl border px-6 text-[16px] outline-none transition-all duration-300 focus:ring-4
                                 {{ $errors->has('password') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-[#5B67F1] focus:ring-indigo-100' }}">
+
+                            @error('password')
+                                <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         {{-- FORGOT --}}

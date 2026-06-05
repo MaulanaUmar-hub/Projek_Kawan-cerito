@@ -6,10 +6,42 @@ class KonselorController extends Controller
 {
     public function index()
     {
-        $name = auth()->user()->nama ?? auth()->user()->name ?? 'Konselor';
+        return view('konselor.dashboard', $this->dashboardData());
+    }
 
-        return view('konselor.dashboard', [
+    public function pengajuan()
+    {
+        return view('konselor.pengajuan', $this->dashboardData());
+    }
+
+    public function jadwal()
+    {
+        return view('konselor.jadwal', $this->dashboardData());
+    }
+
+    public function riwayat()
+    {
+        return view('konselor.riwayat', $this->dashboardData());
+    }
+
+    public function profil()
+    {
+        return view('konselor.profil', $this->dashboardData());
+    }
+
+    private function dashboardData(): array
+    {
+        $user = auth()->user();
+        $name = $user->nama ?? $user->name ?? 'Konselor';
+
+        return [
             'name' => $name,
+            'profile' => [
+                'nama' => $name,
+                'email' => $user->email ?? 'konselor@kawancerito.test',
+                'spesialisasi' => 'Konseling remaja dan manajemen stres',
+                'status' => 'Aktif',
+            ],
             'stats' => [
                 ['label' => 'Total Konseli', 'value' => 28, 'icon' => 'K', 'color' => 'primary'],
                 ['label' => 'Pengajuan Baru', 'value' => 6, 'icon' => 'P', 'color' => 'warning'],
@@ -41,6 +73,6 @@ class KonselorController extends Controller
                 ['tanggal' => now()->subDays(3), 'nama' => 'Nadia Putri', 'status' => 'selesai', 'hasil' => 'Journaling emosi dan evaluasi pemicu stres.'],
                 ['tanggal' => now()->subDays(5), 'nama' => 'Rizky Maulana', 'status' => 'aktif', 'hasil' => 'Sesi lanjutan dijadwalkan pekan depan.'],
             ]),
-        ]);
+        ];
     }
 }

@@ -8,6 +8,10 @@
 
     <title>Kawan Cerito</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;1,500;1,600&display=swap" rel="stylesheet">
+
     @vite([
         'resources/css/app.css',
         'resources/js/app.js'
@@ -21,12 +25,12 @@
     <div class="w-full max-w-[1500px] bg-white rounded-[36px] overflow-hidden shadow-sm grid lg:grid-cols-[1.08fr_0.92fr] min-h-[920px]">
 
         {{-- LEFT PANEL --}}
-        <div class="hidden lg:flex flex-col justify-between bg-[#F7F8FF] px-16 py-14 relative overflow-hidden">
+        <div class="auth-left-panel hidden lg:flex flex-col bg-[#F7F8FF] px-16 py-14 relative overflow-hidden">
 
             {{-- LOGO --}}
             <div>
 
-                <div class="flex items-center gap-4 mb-20">
+                <div class="auth-brand flex items-center gap-4 mb-20">
 
                     <div class="w-16 h-16 rounded-[24px] bg-gradient-to-br from-[#5B67F1] to-[#72D6C9]"></div>
 
@@ -45,21 +49,21 @@
                 <div class="max-w-[650px]">
 
                     <h2 class="auth-hero-title mb-8">
-                        Tempat aman untuk
-                        bercerita dan
+                        Mulai langkah kecil
+                        untuk pulih dan
                         <span class="auth-hero-accent">
-                            didengar.
+                            bertumbuh.
                         </span>
                     </h2>
 
                     <p class="auth-hero-subtitle">
-                        Bergabung bersama ribuan pengguna yang mulai peduli terhadap kesehatan mentalnya.
+                        Daftar dengan sederhana, lalu lengkapi profilmu saat kamu sudah siap.
                     </p>
                 </div>
             </div>
 
             {{-- FEATURE CARD --}}
-            <div class="grid grid-cols-3 gap-5 mt-10 max-w-[760px]">
+            <div class="auth-feature-grid grid grid-cols-3 gap-5 mt-10 max-w-[760px]">
 
                 {{-- CARD --}}
                 <div class="bg-white rounded-[28px] p-5 shadow-sm border border-[#F3F4F6]">

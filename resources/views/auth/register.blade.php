@@ -1,119 +1,108 @@
 @extends('layouts.guest')
 
 @section('content')
-    <form method="POST" action="{{ route('register') }}">
-
+    <form method="POST" action="{{ route('register') }}" novalidate>
         @csrf
 
-        <div class="grid md:grid-cols-2 gap-6">
-
-            {{-- NAMA --}}
-            <div class="md:col-span-2">
-
-                <label class="block mb-3 font-semibold text-[#111827]">
-                    Nama Lengkap
-                </label>
-
-                <input type="text" name="nama"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+        @if ($errors->any())
+            <div class="mb-7 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-medium text-red-600">
+                Periksa kembali data pendaftaranmu.
             </div>
+        @endif
 
-            {{-- INSTANSI --}}
-            <div class="md:col-span-2">
-
-                <label class="block mb-3 font-semibold text-[#111827]">
-                    Asal Instansi/Sekolah
-                </label>
-
-                <input type="text" name="asal"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
-            </div>
-
-            {{-- EMAIL --}}
+        <div class="space-y-6">
             <div>
+                <label for="nama" class="mb-3 block font-semibold text-[#111827]">
+                    Nama
+                </label>
+                <input
+                    id="nama"
+                    type="text"
+                    name="nama"
+                    value="{{ old('nama') }}"
+                    placeholder="Masukkan nama Anda"
+                    class="w-full rounded-2xl border px-5 py-4 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('nama') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('nama')
+                    <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
 
-                <label class="block mb-3 font-semibold text-[#111827]">
+            <div>
+                <label for="email" class="mb-3 block font-semibold text-[#111827]">
                     Email
                 </label>
-
-                <input type="email" name="email"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="Masukkan email Anda"
+                    class="w-full rounded-2xl border px-5 py-4 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('email') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('email')
+                    <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
+                @enderror
             </div>
 
-            {{-- NOMOR HP --}}
             <div>
-
-                <label class="block mb-3 font-semibold text-[#111827]">
-                    Nomor HP
-                </label>
-
-                <input type="text" name="no_hp"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
-            </div>
-
-            {{-- JENIS KELAMIN --}}
-            <div>
-
-                <label class="block mb-3 font-semibold text-[#111827]">
-                    Jenis Kelamin
-                </label>
-
-                <div class="flex gap-6 mt-2">
-
-                    <label class="flex items-center gap-2">
-                        <input type="radio" name="gender" value="L">
-                        <span>Laki-laki</span>
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="radio" name="gender" value="P">
-                        <span>Perempuan</span>
-                    </label>
-
-                    <label class="flex items-center gap-2">
-                        <input type="radio" name="gender" value="N">
-                        <span>Tidak Mau Memberi Tahu</span>
-                    </label>
-
-                </div>
-            </div>
-
-            {{-- PASSWORD --}}
-            <div>
-
-                <label class="block mb-3 font-semibold text-[#111827]">
+                <label for="password" class="mb-3 block font-semibold text-[#111827]">
                     Password
                 </label>
-
-                <input type="password" name="password"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    placeholder="Minimal 8 karakter"
+                    class="w-full rounded-2xl border px-5 py-4 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('password')
+                    <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
+                @enderror
             </div>
 
-            {{-- CONFIRM --}}
             <div>
-
-                <label class="block mb-3 font-semibold text-[#111827]">
+                <label for="password_confirmation" class="mb-3 block font-semibold text-[#111827]">
                     Konfirmasi Password
                 </label>
-
-                <input type="password" name="password_confirmation"
-                    class="w-full rounded-2xl border border-gray-200 px-5 py-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all duration-300">
+                <input
+                    id="password_confirmation"
+                    type="password"
+                    name="password_confirmation"
+                    placeholder="Ulangi password Anda"
+                    class="w-full rounded-2xl border px-5 py-4 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password_confirmation') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('password_confirmation')
+                    <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
+                @enderror
             </div>
 
+            <label class="flex items-start gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/60 px-4 py-4 text-sm text-slate-600">
+                <input
+                    type="checkbox"
+                    name="hide_name"
+                    value="1"
+                    @checked(old('hide_name'))
+                    class="mt-1 rounded border-slate-300 text-indigo-500 focus:ring-indigo-200"
+                >
+                <span>
+                    <span class="block font-semibold text-[#111827]">Sembunyikan nama saya</span>
+                    <span class="mt-1 block leading-6">Nama asli tetap tersimpan, tetapi tampilan publik dapat memakai nama anonim.</span>
+                </span>
+            </label>
         </div>
 
-        {{-- FOOTER --}}
-        <div class="flex flex-col md:flex-row items-center justify-between gap-5 mt-10">
-
-            <a href="{{ route('login') }}" class="text-gray-500 hover:text-indigo-500 transition-all duration-300">
+        <div class="mt-10 flex flex-col items-center justify-between gap-5 md:flex-row">
+            <a href="{{ route('login') }}" class="text-gray-500 transition-all duration-300 hover:text-indigo-500">
                 Sudah punya akun?
             </a>
 
-            <button type="submit"
-                class="rounded-2xl px-10 py-4 text-white font-bold bg-[#1E293B] hover:bg-[#0F172A] transition-all duration-300">
-                DAFTAR
+            <button
+                type="submit"
+                class="w-full rounded-2xl bg-gradient-to-r from-[#5B67F1] to-[#7482FF] px-10 py-4 font-bold text-white shadow-lg shadow-indigo-100 transition-all duration-300 hover:scale-[1.01] md:w-auto"
+            >
+                Daftar
             </button>
         </div>
-
     </form>
 @endsection

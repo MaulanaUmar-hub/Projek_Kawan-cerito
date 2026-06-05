@@ -31,6 +31,26 @@
 
         @endif
 
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <a href="{{ route('konseli.assessment') }}" class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
+                <p class="text-sm text-slate-400">Quick Access</p>
+                <h2 class="mt-2 text-lg font-semibold text-kc-heading">Buat Assessment</h2>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Ceritakan kondisi awalmu sebelum mengajukan konseling.</p>
+            </a>
+
+            <a href="{{ route('konseli.pengajuan') }}" class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
+                <p class="text-sm text-slate-400">Quick Access</p>
+                <h2 class="mt-2 text-lg font-semibold text-kc-heading">Ajukan Konseling</h2>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Pilih konselor dan jadwal yang paling sesuai.</p>
+            </a>
+
+            <a href="{{ route('konseli.jadwal') }}" class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
+                <p class="text-sm text-slate-400">Quick Access</p>
+                <h2 class="mt-2 text-lg font-semibold text-kc-heading">Lihat Jadwal</h2>
+                <p class="mt-2 text-sm leading-6 text-slate-500">Cek sesi berikutnya dan status jadwalmu.</p>
+            </a>
+        </div>
+
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             @foreach ($stats as $stat)
                 @php
@@ -141,7 +161,7 @@
                 <p class="mt-5 text-sm leading-6">
                     {{ $assessmentTerakhir->ringkasan_hasil ?? $assessmentTerakhir->hasil ?? 'Belum ada assessment yang tercatat.' }}
                 </p>
-                <a href="#assessment-detail" class="mt-5 inline-flex rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
+                <a href="{{ route('konseli.assessment') }}" class="mt-5 inline-flex rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
                     Lihat Detail
                 </a>
             </article>
