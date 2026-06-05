@@ -11,6 +11,8 @@
         'selesai' => 'bg-sky-100 text-sky-700',
         'ditolak' => 'bg-red-100 text-red-700',
         'dibuat' => 'bg-slate-100 text-slate-600',
+        'tersedia' => 'bg-emerald-100 text-emerald-700',
+        'penuh' => 'bg-red-100 text-red-700',
     ];
 
     $labels = [
@@ -22,6 +24,8 @@
         'selesai' => 'Selesai',
         'ditolak' => 'Ditolak',
         'dibuat' => 'Dibuat',
+        'tersedia' => 'Tersedia',
+        'penuh' => 'Penuh',
     ];
 @endphp
 

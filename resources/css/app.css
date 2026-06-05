@@ -48,7 +48,7 @@ body {
 
 .auth-hero-title {
     font-size: clamp(3rem, 4.2vw, 4.8rem);
-    line-height: 1.08;
+    line-height: 1.12;
     font-weight: 800;
     letter-spacing: -0.04em;
     color: #0B132B;
@@ -57,9 +57,20 @@ body {
 }
 
 .auth-hero-accent {
-    color: var(--mint);
+    display: inline-block;
+    background: linear-gradient(120deg, #6c63ff 0%, #7b8cff 32%, #5bd6d0 68%, #9be7c9 100%);
+    background-size: 140% 140%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
     font-style: normal;
-    font-family: inherit;
+    font-family: 'Lora', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    padding-bottom: 0.08em;
 }
 
 .auth-hero-subtitle {
@@ -68,4 +79,17 @@ body {
     color: #6B7280;
 
     max-width: 540px;
+}
+
+.auth-left-panel {
+    justify-content: flex-start;
+    gap: clamp(2.25rem, 4vh, 3.75rem);
+}
+
+.auth-brand {
+    margin-bottom: clamp(3.5rem, 7vh, 5rem);
+}
+
+.auth-feature-grid {
+    margin-top: clamp(1.75rem, 3.5vh, 3rem);
 }

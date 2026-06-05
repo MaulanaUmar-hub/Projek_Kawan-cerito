@@ -17,6 +17,123 @@ class KonseliController extends Controller
         return view('konseli.dashboard', $dashboard);
     }
 
+    public function assessment()
+    {
+        return view('konseli.assessment', [
+            'lastAssessment' => (object) [
+                'tanggal' => now()->subDays(3),
+                'keluhan' => 'Merasa cemas dan sulit fokus dalam beberapa hari terakhir.',
+                'urgensi' => 'Sedang',
+                'jenis_konseling' => 'Chat',
+            ],
+        ]);
+    }
+
+    public function storeAssessment(Request $request)
+    {
+        return back()->with('success', 'Assessment berhasil disimpan. Kamu dapat melanjutkan ke pengajuan konseling.');
+    }
+
+    public function pengajuan()
+    {
+        return view('konseli.pengajuan', [
+            'assessments' => collect([
+                ['id' => 1, 'label' => 'Assessment 03 Juni 2026 - Kecemasan ringan'],
+                ['id' => 2, 'label' => 'Assessment 28 Mei 2026 - Stres akademik'],
+            ]),
+            'konselors' => collect([
+                ['id' => 1, 'nama' => 'Dr. Maya Putri, M.Psi', 'spesialisasi' => 'Kecemasan dan stres', 'status' => 'tersedia'],
+                ['id' => 2, 'nama' => 'Raka Pratama, M.Psi', 'spesialisasi' => 'Relasi dan emosi', 'status' => 'tersedia'],
+                ['id' => 3, 'nama' => 'Nadia Larasati, M.Psi', 'spesialisasi' => 'Pengembangan diri', 'status' => 'penuh'],
+            ]),
+            'jadwals' => collect([
+                ['id' => 1, 'label' => '04 Juni 2026, 09:00', 'status' => 'tersedia'],
+                ['id' => 2, 'label' => '04 Juni 2026, 13:30', 'status' => 'tersedia'],
+                ['id' => 3, 'label' => '05 Juni 2026, 10:00', 'status' => 'penuh'],
+            ]),
+        ]);
+    }
+
+    public function storePengajuan(Request $request)
+    {
+        return back()->with('success', 'Pengajuan konseling berhasil dikirim. Silakan pantau status pengajuanmu di riwayat konseling.');
+    }
+
+    public function riwayat()
+    {
+        return view('konseli.riwayat', [
+            'riwayat' => collect([
+                ['tanggal' => now()->subDays(2), 'konselor' => 'Dr. Maya Putri, M.Psi', 'jenis' => 'Chat Konseling', 'status' => 'selesai'],
+                ['tanggal' => now()->subDays(6), 'konselor' => 'Raka Pratama, M.Psi', 'jenis' => 'Video Konseling', 'status' => 'disetujui'],
+                ['tanggal' => now()->subDays(10), 'konselor' => 'Nadia Larasati, M.Psi', 'jenis' => 'WhatsApp Konseling', 'status' => 'menunggu'],
+            ]),
+        ]);
+    }
+
+    public function jadwal()
+    {
+        return view('konseli.jadwal', [
+            'jadwals' => collect([
+                ['tanggal' => now()->addDay(), 'jam' => '09:00', 'konselor' => 'Dr. Maya Putri, M.Psi', 'status' => 'disetujui'],
+                ['tanggal' => now()->addDays(3), 'jam' => '13:30', 'konselor' => 'Raka Pratama, M.Psi', 'status' => 'menunggu'],
+                ['tanggal' => now()->subDays(4), 'jam' => '10:00', 'konselor' => 'Nadia Larasati, M.Psi', 'status' => 'selesai'],
+            ]),
+        ]);
+    }
+
+    public function profil()
+    {
+        return view('konseli.profil', [
+            'profile' => (object) [
+                'nama' => auth()->user()->nama ?? auth()->user()->name ?? 'Preview Konseli',
+                'email' => auth()->user()->email ?? 'konseli@example.com',
+                'asal' => auth()->user()->asal ?? 'Kawan Cerito',
+                'no_hp' => auth()->user()->no_hp ?? '0812-0000-0000',
+                'gender' => auth()->user()->gender ?? 'N',
+            ],
+        ]);
+    }
+
+    public function setupProfile()
+    {
+        return view('konseli.profile.setup', [
+            'user' => auth()->user(),
+        ]);
+    }
+
+    public function storeProfileSetup(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'gender' => ['required', 'in:L,P,N'],
+            'asal' => ['required', 'string', 'max:255'],
+            'no_hp' => ['required', 'string', 'max:30'],
+            'foto' => ['nullable', 'image', 'max:2048'],
+        ], [
+            'nama.required' => 'Nama lengkap wajib diisi.',
+            'gender.required' => 'Pilih gender yang paling sesuai.',
+            'gender.in' => 'Pilihan gender tidak valid.',
+            'asal.required' => 'Asal wajib diisi.',
+            'no_hp.required' => 'Nomor HP wajib diisi.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        $user = auth()->user();
+        $user->update([
+            'nama' => $validated['nama'],
+            'gender' => $validated['gender'],
+            'asal' => $validated['asal'],
+            'no_hp' => $validated['no_hp'],
+        ]);
+
+        // TODO: Simpan path foto ke kolom profil ketika struktur database foto sudah tersedia.
+
+        return redirect()
+            ->route('konseli.dashboard')
+            ->with('success', 'Profil berhasil dilengkapi. Selamat datang di dashboard Kawan Cerito.');
+    }
+
     private function buildDashboardData($user): array
     {
         $pengajuan = collect();

@@ -86,8 +86,9 @@ body {
 }
 
 .menu-item.active {
-    background: rgba(105, 108, 255, 0.08);
+    background: rgba(105, 108, 255, 0.12);
     color: var(--kc-primary);
+    font-weight: 600;
 }
 
 .menu-icon {

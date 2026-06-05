@@ -24,16 +24,18 @@
         $menus = [
             'konseli' => [
                 ['label' => 'Dashboard', 'icon' => 'D', 'route' => 'konseli.dashboard'],
-                ['label' => 'Ajukan Konseling', 'icon' => '+', 'url' => '#ajukan-konseling'],
-                ['label' => 'Riwayat Konseling', 'icon' => 'R', 'url' => '#riwayat-konseling'],
-                ['label' => 'Profil Saya', 'icon' => 'P', 'route' => 'profile.edit'],
+                ['label' => 'Assessment Awal', 'icon' => 'A', 'route' => 'konseli.assessment'],
+                ['label' => 'Ajukan Konseling', 'icon' => '+', 'route' => 'konseli.pengajuan'],
+                ['label' => 'Riwayat Konseling', 'icon' => 'R', 'route' => 'konseli.riwayat'],
+                ['label' => 'Jadwal Konseling', 'icon' => 'J', 'route' => 'konseli.jadwal'],
+                ['label' => 'Profil Saya', 'icon' => 'P', 'route' => 'konseli.profil'],
             ],
             'konselor' => [
                 ['label' => 'Dashboard', 'icon' => 'D', 'route' => 'konselor.dashboard'],
-                ['label' => 'Pengajuan Konseling', 'icon' => 'P', 'url' => '#pengajuan-konseling'],
-                ['label' => 'Jadwal Konseling', 'icon' => 'J', 'url' => '#jadwal-konseling'],
-                ['label' => 'Riwayat Konseling', 'icon' => 'R', 'url' => '#riwayat-konseling'],
-                ['label' => 'Profil', 'icon' => 'P', 'route' => 'profile.edit'],
+                ['label' => 'Pengajuan Konseling', 'icon' => 'P', 'route' => 'konselor.pengajuan'],
+                ['label' => 'Jadwal Konseling', 'icon' => 'J', 'route' => 'konselor.jadwal'],
+                ['label' => 'Riwayat Konseling', 'icon' => 'R', 'route' => 'konselor.riwayat'],
+                ['label' => 'Profil', 'icon' => 'P', 'route' => 'konselor.profil'],
             ],
             'admin' => [
                 ['label' => 'Dashboard', 'icon' => 'D', 'route' => 'admin.dashboard'],
@@ -61,7 +63,7 @@
                     @php
                         $hasRoute = isset($menu['route']) && Route::has($menu['route']);
                         $href = $hasRoute ? route($menu['route']) : ($menu['url'] ?? '#');
-                        $active = $hasRoute && request()->routeIs($menu['route']);
+                        $active = $hasRoute && request()->routeIs($menu['route'], $menu['route'] . '.*');
                     @endphp
                     <a href="{{ $href }}" class="menu-item {{ $active ? 'active' : '' }}">
                         <span class="menu-icon">{{ $menu['icon'] }}</span>
