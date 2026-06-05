@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_assessment');
             $table->foreignId('id_konseli')->constrained('konseli', 'id_konseli')->cascadeOnDelete();
             $table->text('keluhan');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assessmeents');
+        Schema::dropIfExists('assessments');
     }
 };

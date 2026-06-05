@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_log');
             $table->foreignId('id_user')->constrained('users', 'id_user')->cascadeOnDelete();
             $table->text('aktivitas');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('activi_logs');
+        Schema::dropIfExists('activity_logs');
     }
 };

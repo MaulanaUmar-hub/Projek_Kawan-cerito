@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('id_pengajuan')->constrained('pengajuan_konselings', 'id_pengajuan')->cascadeOnDelete();
             $table->text('catatan_konseling');
             $table->text('rekomendasi')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 
