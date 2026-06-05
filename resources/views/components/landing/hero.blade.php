@@ -1,5 +1,6 @@
 {{-- ===================== HERO ===================== --}}
 <section
+    id="beranda"
     class="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32 bg-gradient-to-br from-[#F5F3FF] via-[#EEF2FF] to-[#ECFEFF]">
 
     {{-- Ambient Blur --}}

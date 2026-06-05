@@ -2,7 +2,7 @@
     <nav class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             {{-- Logo --}}
-            <a href="#" class="flex items-center gap-2.5">
+            <a href="#beranda" class="flex items-center gap-2.5">
                 <div
                     class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-teal-400 flex items-center justify-center shadow-md">
                     {{-- Heart icon --}}
@@ -21,6 +21,7 @@
 
             {{-- Nav links --}}
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#beranda" class="nav-link hover:text-brand-600 transition-colors">Beranda</a>
                 <a href="#layanan" class="nav-link hover:text-brand-600 transition-colors">Layanan</a>
                 <a href="#cara-kerja" class="nav-link hover:text-brand-600 transition-colors">Cara Kerja</a>
                 <a href="#konselor" class="nav-link hover:text-brand-600 transition-colors">Konselor</a>

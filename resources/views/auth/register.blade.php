@@ -13,16 +13,19 @@
         <div class="space-y-6">
             <div>
                 <label for="nama" class="mb-3 block font-semibold text-[#111827]">
-                    Nama
+                    Nama / Nama Samaran
                 </label>
                 <input
                     id="nama"
                     type="text"
                     name="nama"
                     value="{{ old('nama') }}"
-                    placeholder="Masukkan nama Anda"
+                    placeholder="Contoh: Maulana atau Cerito01"
                     class="w-full rounded-2xl border px-5 py-4 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('nama') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
                 >
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Boleh gunakan nama asli atau nama samaran yang membuatmu nyaman.
+                </p>
                 @error('nama')
                     <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
                 @enderror
@@ -77,19 +80,6 @@
                 @enderror
             </div>
 
-            <label class="flex items-start gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/60 px-4 py-4 text-sm text-slate-600">
-                <input
-                    type="checkbox"
-                    name="hide_name"
-                    value="1"
-                    @checked(old('hide_name'))
-                    class="mt-1 rounded border-slate-300 text-indigo-500 focus:ring-indigo-200"
-                >
-                <span>
-                    <span class="block font-semibold text-[#111827]">Sembunyikan nama saya</span>
-                    <span class="mt-1 block leading-6">Nama asli tetap tersimpan, tetapi tampilan publik dapat memakai nama anonim.</span>
-                </span>
-            </label>
         </div>
 
         <div class="mt-10 flex flex-col items-center justify-between gap-5 md:flex-row">

@@ -99,6 +99,10 @@
 
                     {{-- HEADER --}}
                     <div class="mb-12">
+                        <a href="{{ url('/') }}" class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-[#5B67F1] transition-all duration-300 hover:text-indigo-700">
+                            <span aria-hidden="true">←</span>
+                            Kembali ke halaman utama
+                        </a>
 
                         <h2 class="text-[58px] leading-[1.05] font-extrabold tracking-[-0.04em] text-[#0B132B] mb-4">
                             Selamat datang kembali 👋
