@@ -9,45 +9,52 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
+    /**
+     * Display the registration view.
+     */
     public function create(): View
     {
         return view('auth.register');
     }
 
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws ValidationException
+     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'nama' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'hide_name' => ['nullable', 'boolean'],
-        ], [
-            'nama.required' => 'Nama wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email ini sudah terdaftar.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal harus 8 karakter.',
-            'password.confirmed' => 'Konfirmasi password belum sesuai.',
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'no_hp' => ['nullable', 'string'],
+            'gender' => ['nullable', 'in:L,P'],
+            'role' => ['required', 'in:konseli,konselor'],
         ]);
 
         $user = User::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'konseli',
+            'no_hp' => $request->no_hp,
+            'gender' => $request->gender,
+            'role' => $request->role,
         ]);
-
-        // TODO: Simpan preferensi hide_name ke kolom profil ketika struktur database sudah tersedia.
-        $request->session()->put('konseli_hide_name', $request->boolean('hide_name'));
 
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect()->route('konseli.profile.setup');
+        return redirect()->intended(match ($user->role) {
+            'admin'    => route('admin.dashboard'),
+            'konselor' => route('konselor.dashboard'),
+            default    => route('konseli.dashboard'),
+        });
     }
 }
