@@ -172,7 +172,7 @@
 
 <body class="font-sans text-slate-800 antialiased hero-bg">
 
-    
+
     {{-- ===================== NAVBAR ===================== --}}
     <nav class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -212,19 +212,16 @@
                 <a href="{{ route('register') }}"
                     class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-md shadow-brand-200 transition-all hover:shadow-lg">
                     Daftar Sekarang
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
                 </a>
             </div>
         </div>
     </nav>
 
-    
+
     {{-- ===================== HERO ===================== --}}
     <section
         id="beranda"
-        class="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32 bg-gradient-to-br from-[#F5F3FF] via-[#EEF2FF] to-[#ECFEFF]">
+        class="relative overflow-hidden pt-28 pb-24 md:pt-36 md:pb-32 bg-gradient-to-br from-[#F5F3FF] via-[#EEF2FF] to-[#ECFEFF]">
 
         {{-- Ambient Blur --}}
         <div class="absolute top-[-120px] left-[-120px] w-[420px] h-[420px] bg-[#C4B5FD] opacity-30 blur-3xl rounded-full">
@@ -237,25 +234,25 @@
         <div class="absolute top-[30%] right-[20%] w-[260px] h-[260px] bg-[#DDD6FE] opacity-30 blur-3xl rounded-full">
         </div>
 
-        <div class="relative z-10 max-w-[1450px] mx-auto px-6 lg:px-10">
+        <div class="relative z-10 max-w-[1350px] mx-auto px-6 lg:px-10">
 
-            <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-16 items-start">
+            <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-14 items-start">
 
                 {{-- ================= LEFT CONTENT ================= --}}
                 <div>
 
                     {{-- Badge --}}
                     <div
-                        class="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm border border-white/60 text-[#5B67F1] text-sm font-semibold px-5 py-2 rounded-full shadow-sm mb-8">
+                        class="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm border border-white/60 text-[#5B67F1] text-sm font-semibold px-5 py-2 rounded-full shadow-sm mb-7">
 
                         <span class="w-2 h-2 bg-[#72D6C9] rounded-full animate-pulse"></span>
 
-                        Konselor profesional siap mendengarkanmu
+                        Kami siap mendengarkanmu
                     </div>
 
                     {{-- Heading --}}
                     <h1
-                        class="max-w-[760px] text-[clamp(3.5rem,5vw,6rem)] leading-[0.98] tracking-[-0.05em] font-extrabold text-[#0B132B] mb-8 text-balance">
+                        class="max-w-[760px] text-[clamp(2.8rem,4vw,5.5rem)] leading-[0.98] tracking-[-0.05em] font-extrabold text-[#0B132B] mb-7 text-balance">
 
                         Kamu Tidak
                         Harus Menanggung
@@ -267,7 +264,7 @@
                     </h1>
 
                     {{-- Description --}}
-                    <p class="max-w-[620px] text-[18px] md:text-[20px] leading-9 text-slate-600 mb-10">
+                    <p class="max-w-[620px] text-[18px] md:text-[20px] leading-9 text-slate-600 mb-8">
 
                         Kawan Cerito hadir sebagai ruang aman untukmu bercerita,
                         didengar tanpa dihakimi, dan mendapatkan bantuan dari
@@ -275,26 +272,18 @@
                     </p>
 
                     {{-- CTA --}}
-                    <div class="flex flex-col sm:flex-row items-start gap-5 mb-12">
+                    <div class="flex flex-col sm:flex-row items-start gap-5 mb-10">
 
                         {{-- Primary CTA --}}
                         <a href="{{ route('register') }}"
                             class="group inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#5B67F1] to-[#7482FF] px-8 py-4 text-white font-semibold shadow-xl shadow-indigo-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
 
                             Mulai Cerita Sekarang
-
-                            <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none"
-                                stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
                         </a>
 
                         {{-- Secondary CTA --}}
                         <a href="#cara-kerja"
                             class="inline-flex items-center justify-center gap-3 rounded-full bg-white/80 backdrop-blur-sm border border-white/70 px-8 py-4 text-slate-700 font-semibold shadow-sm transition-all duration-300 hover:bg-white hover:shadow-md">
-
-
 
                             Lihat Cara Kerja
                         </a>
@@ -323,22 +312,13 @@
                             Konselor profesional & terpercaya
                         </div>
 
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-[#72D6C9]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M10 1a9 9 0 100 18A9 9 0 0010 1zm4.207 6.293a1 1 0 00-1.414-1.414L9 10.172 7.207 8.379a1 1 0 00-1.414 1.414l2.5 2.5a1 1 0 001.414 0l4.5-4.5z"
-                                    clip-rule="evenodd" />
-                            </svg>
-
-                            Fleksibel & mudah diakses
-                        </div>
                     </div>
                 </div>
 
                 {{-- ================= RIGHT CONTENT ================= --}}
                 {{-- Right: Illustration card --}}
-                <div class="flex justify-center lg:justify-end lg:pt-16">
-                    <div class="relative w-full max-w-lg">
+                <div class="flex justify-center lg:justify-end lg:pt-8">
+                    <div class="relative w-full max-w-[450px]">
                         {{-- Main card --}}
                         <div
                             class="w-full bg-white rounded-3xl shadow-2xl shadow-brand-200/40 px-8 pt-10 pb-12 animate-float">
@@ -365,7 +345,7 @@
                                         N</div>
                                     <div
                                         class="bg-slate-100 rounded-2xl rounded-tl-none px-4 py-3.5 text-base text-slate-700 max-w-[80%]">
-                                        Hai! Cerita dulu yuk, kamu lagi ngerasa gimana hari ini? 😊
+                                        Hai! Cerita dulu yuk😊
                                     </div>
                                 </div>
                                 <div class="flex gap-3 justify-end">
@@ -380,13 +360,13 @@
                                         N</div>
                                     <div
                                         class="bg-slate-100 rounded-2xl rounded-tl-none px-4 py-3.5 text-base text-slate-700 max-w-[80%]">
-                                        Makasih udah mau cerita. Itu valid banget rasanya. Yuk kita bahas pelan-pelan 🌿
+                                        Makasih udah mau cerita. Itu valid banget rasanya
                                     </div>
                                 </div>
                                 <div class="flex gap-3 justify-end">
                                     <div
                                         class="bg-brand-600 rounded-2xl rounded-tr-none px-4 py-3.5 text-base text-white max-w-[75%]">
-                                        Iya, makasih Kak... 🙏
+                                        makasih Kak... 🙏
                                     </div>
                                 </div>
                                 {{-- Typing indicator --}}
@@ -450,67 +430,64 @@
         </div>
     </section>
 
-    
-    {{-- ===================== STATISTIK STRIP ===================== --}}
-    <div class="relative bg-white border-y border-slate-100 py-8">
-        <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            @foreach ([['400+', 'Konseli aktif'], ['50+', 'Konselor bersertifikat'], ['98%', 'Kepuasan sesi'], ['24/7', 'Layanan tersedia']] as [$num, $label])
-            <div class="reveal">
-                <p class="text-3xl font-bold gradient-text mb-1">{{ $num }}</p>
-                <p class="text-sm text-slate-500">{{ $label }}</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
 
 
     {{-- ===================== LAYANAN ===================== --}}
     <section id="layanan" class="py-24">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
-                <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-3 block">Apa yang Kami
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-2 block">Apa yang Kami
                     Tawarkan</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">
                     Dukungan yang Tepat<br>untuk Setiap Perasaan
                 </h2>
                 <p class="text-slate-500 text-lg">Apapun yang sedang kamu hadapi, kami punya ruang dan konselor yang
                     siap menemanimu.</p>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 @foreach ([
                 [
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round"d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><path stroke-linecap="round" stroke-linejoin="round"d="M12 9v4" /><path stroke-linecap="round" stroke-linejoin="round"d="M12 17h.01" />',
+                'icon' => '
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 17h.01" />',
                 'color' => 'bg-rose-50 text-rose-500',
                 'title' => 'Kecemasan & Stress',
                 'desc' => 'Belajar mengelola kecemasan, stres akademik, pekerjaan, atau kehidupan sehari-hari bersama konselor kami.',
                 ],
                 [
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round"d="M15 15s-1.5-2-3-2-3 2-3 2m-1-6h.01M16 9h.01M12 21a9 9 0 100-18 9 9 0 000 18z" />',
+                'icon' => '
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 15s-1.5-2-3-2-3 2-3 2m-1-6h.01M16 9h.01M12 21a9 9 0 100-18 9 9 0 000 18z" />',
                 'color' => 'bg-amber-50 text-amber-500',
                 'title' => 'Depresi & Mood Rendah',
                 'desc' => 'Dapatkan pendampingan emosional dan strategi berbasis bukti untuk melewati periode gelap dalam hidupmu.',
                 ],
                 [
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round"d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />',
+                'icon' => '
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />',
                 'color' => 'bg-brand-50 text-brand-500',
                 'title' => 'Masalah Relasi & Keluarga',
                 'desc' => 'Navigasi dinamika hubungan yang rumit dengan panduan konselor berpengalaman di bidangnya.',
                 ],
                 [
-               'icon' => '<path stroke-linecap="round" stroke-linejoin="round"d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /><path stroke-linecap="round" stroke-linejoin="round"d="M8 12h2l1.5-3 3 6 1.5-3H18" />',
+                'icon' => '
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h2l1.5-3 3 6 1.5-3H18" />',
                 'color' => 'bg-teal-50 text-teal-500',
                 'title' => 'Kesehatan Mental Mahasiswa',
                 'desc' => 'Khusus untuk kamu yang berjuang dengan tekanan akademik, identitas diri, dan transisi ke dunia kerja.',
                 ],
                 [
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round"d="M12 2l7 3v6c0 5-3.5 9-7 11-3.5-2-7-6-7-11V5l7-3z" />',
+                'icon' => '
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l7 3v6c0 5-3.5 9-7 11-3.5-2-7-6-7-11V5l7-3z" />',
                 'color' => 'bg-purple-50 text-purple-500',
                 'title' => 'Trauma & Pemulihan',
                 'desc' => 'Ruang aman untuk memproses pengalaman sulit dan memulai perjalanan pemulihan yang bermakna.',
                 ],
                 [
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round"d="M4 16l5-5 4 4 7-7M14 8h6v6" />',
+                'icon' => '
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l5-5 4 4 7-7M14 8h6v6" />',
                 'color' => 'bg-green-50 text-green-500',
                 'title' => 'Pengembangan Diri',
                 'desc' => 'Tingkatkan kepercayaan diri, bangun kebiasaan sehat, dan raih versi terbaik dirimu bersama konselor kami.',
@@ -536,7 +513,7 @@
     {{-- ===================== CARA KERJA ===================== --}}
     <section id="cara-kerja" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-xl mx-auto mb-16 reveal">
+            <div class="text-center max-w-xl mx-auto mb-10 reveal">
                 <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-3 block">Mudah &
                     Sederhana</span>
                 <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -620,28 +597,77 @@
     {{-- ===================== TESTIMONI ===================== --}}
     <section id="testimoni" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-xl mx-auto mb-16 reveal">
-                <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-3 block">Cerita
+            <div class="text-center max-w-xl mx-auto mb-8 reveal">
+                <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-2 block">Cerita
                     Mereka</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-                    Ribuan Orang Telah<br>Merasakan Manfaatnya
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-1">
+                    Banyak Orang Telah<br>Merasakan Manfaatnya
                 </h2>
             </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-            <div class="grid md:grid-cols-3 gap-6">
-                @foreach ([['Awalnya ragu mau cerita ke orang lain. Tapi konselor di sini beneran ngerti dan gak pernah judge. Sekarang aku jauh lebih bisa ngatur emosi.', 'Rizky A.', 'Mahasiswa, 21 thn'], ['Setelah putus sama pacar 3 tahun, aku ngerasa dunia runtuh. Kawan Cerito bantu aku bangkit lagi. Makasih banget.', 'Dewi S.', 'Karyawan swasta, 26 thn'], ['Sebagai cowok, aku selalu dibilang "harus kuat". Di sini aku baru ngerti, minta bantuan itu bukan kelemahan.', 'Fajar M.', 'Mahasiswa, 23 thn']] as [$quote, $name, $role])
+                @foreach ([
+
+                [
+                'quote' => 'Awalnya ragu, tapi konselor di sini beneran ngerti dan gak pernah judge. Sekarang aku jauh lebih bisa ngatur emosi.',
+                'name' => 'Putrinur',
+                'role' => 'Mahasiswa, 21 thn'
+                ],
+
+                [
+                'quote' => 'Setelah putus sama pacar 3 tahun, aku ngerasa dunia runtuh. Kawan Cerito bantu aku bangkit lagi. Makasih banget.',
+                'name' => 'Nabila',
+                'role' => 'Karyawan Swasta, 25 thn'
+                ],
+
+                [
+                'quote' => 'Sebagai cowok, aku selalu dibilang harus kuat. Di sini aku baru ngerti, minta bantuan itu bukan kelemahan.',
+                'name' => 'Umar',
+                'role' => 'Mahasiswa, 23 thn'
+                ],
+
+                [
+                'quote' => 'Aku sering overthinking sampai susah tidur. Setelah beberapa sesi, aku jadi lebih tenang menghadapi masalah sehari-hari.',
+                'name' => 'Maulana',
+                'role' => 'Mahasiswa, 22 thn'
+                ],
+
+                [
+                'quote' => 'Konselornya ramah dan profesional. Aku merasa didengar dan dibantu menemukan solusi yang realistis.',
+                'name' => 'Arron',
+                'role' => 'Fresh Graduate, 24 thn'
+                ],
+
+                [
+                'quote' => 'Kawan Cerito membantu aku memahami diri sendiri dan membangun kembali rasa percaya diri yang sempat hilang.',
+                'name' => 'Ranidwi',
+                'role' => 'Karyawan, 25 thn'
+                ]
+
+                ] as $item)
+
                 <div class="bg-soft rounded-2xl p-6 border border-brand-100 reveal card-lift">
                     <div class="quote-mark mb-2">"</div>
-                    <p class="text-slate-700 leading-relaxed mb-5 font-serif italic">{{ $quote }}</p>
+
+                    <p class="text-slate-700 leading-relaxed mb-2 font-serif italic">
+                        {{ $item['quote'] }}
+                    </p>
+
                     <div class="flex items-center gap-3">
                         <div
                             class="w-9 h-9 rounded-full bg-brand-200 flex items-center justify-center text-sm font-bold text-brand-700">
-                            {{ substr($name, 0, 1) }}
+                            {{ substr($item['name'], 0, 1) }}
                         </div>
+
                         <div>
-                            <p class="font-semibold text-slate-800 text-sm">{{ $name }}</p>
-                            <p class="text-xs text-slate-400">{{ $role }}</p>
+                            <p class="font-semibold text-slate-800 text-sm">
+                                {{ $item['name'] }}
+                            </p>
+                            <p class="text-xs text-slate-400">
+                                {{ $item['role'] }}
+                            </p>
                         </div>
+
                         <div class="ml-auto flex gap-0.5">
                             @for ($i = 0; $i < 5; $i++)
                                 <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -652,7 +678,9 @@
                         </div>
                     </div>
                 </div>
+
                 @endforeach
+
             </div>
         </div>
     </section>
@@ -726,10 +754,9 @@
     </section>
 
 
-
     {{-- ===================== FOOTER ===================== --}}
     <footer class="bg-slate-900 text-slate-400 py-16">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="w-full px-6 md:px-12 lg:px-20">
             <div class="grid md:grid-cols-4 gap-10 mb-12">
                 {{-- Brand --}}
                 <div class="md:col-span-2">
@@ -751,7 +778,6 @@
                     <p class="text-xs mt-4 text-slate-500">© {{ date('Y') }} Kawan Cerito. All rights reserved.
                     </p>
                 </div>
-
                 {{-- Links --}}
                 <div>
                     <p class="font-semibold text-white mb-4 text-sm">Layanan</p>
@@ -762,7 +788,6 @@
                         @endforeach
                     </ul>
                 </div>
-
                 <div>
                     <p class="font-semibold text-white mb-4 text-sm">Perusahaan</p>
                     <ul class="space-y-2.5 text-sm">
@@ -773,7 +798,6 @@
                     </ul>
                 </div>
             </div>
-
             <div
                 class="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
                 <p>Dibuat dengan cinta untuk kesehatan mental Indonesia</p>
