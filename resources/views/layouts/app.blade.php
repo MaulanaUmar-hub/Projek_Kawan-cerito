@@ -39,9 +39,11 @@
             ],
             'admin' => [
                 ['label' => 'Dashboard', 'icon' => 'D', 'route' => 'admin.dashboard'],
-                ['label' => 'Kelola Pengguna', 'icon' => 'U', 'url' => '#kelola-pengguna'],
-                ['label' => 'Kelola Konselor', 'icon' => 'K', 'url' => '#kelola-konselor'],
-                ['label' => 'Monitoring Sistem', 'icon' => 'M', 'url' => '#monitoring-sistem'],
+                ['label' => 'Approval Konselor', 'icon' => 'A', 'route' => 'admin.approval-konselor.index'],
+                ['label' => 'Kelola Pengguna', 'icon' => 'U', 'route' => 'admin.users.index'],
+                ['label' => 'Kelola Konselor', 'icon' => 'K', 'route' => 'admin.konselor.index'],
+                ['label' => 'Kelola Jadwal', 'icon' => 'J', 'route' => 'admin.jadwal.index'],
+                ['label' => 'Activity Log', 'icon' => 'L', 'route' => 'admin.activity-log.index'],
                 ['label' => 'Profil', 'icon' => 'P', 'route' => 'profile.edit'],
             ],
         ];

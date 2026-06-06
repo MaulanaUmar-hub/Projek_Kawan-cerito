@@ -9,44 +9,74 @@ class AdminController extends Controller
 {
     public function index()
     {
+        $konselor = $this->konselorFallback();
         $totalPengguna = Schema::hasTable('users') ? User::count() : 126;
-        $totalKonselor = Schema::hasTable('users') ? User::where('role', 'konselor')->count() : 14;
+
+        $pending = $konselor->where('status', 'pending')->values();
+        $aktif = $konselor->where('status', 'aktif')->values();
+        $ditolak = $konselor->where('status', 'ditolak')->values();
 
         return view('admin.dashboard', [
             'stats' => [
                 ['label' => 'Total Pengguna', 'value' => $totalPengguna ?: 126, 'icon' => 'U', 'color' => 'primary'],
-                ['label' => 'Total Konselor', 'value' => $totalKonselor ?: 14, 'icon' => 'K', 'color' => 'info'],
-                ['label' => 'Total Konseling', 'value' => 86, 'icon' => 'S', 'color' => 'success'],
-                ['label' => 'Pengajuan Aktif', 'value' => 18, 'icon' => 'P', 'color' => 'warning'],
+                ['label' => 'Konselor Pending', 'value' => $pending->count(), 'icon' => 'P', 'color' => 'warning'],
+                ['label' => 'Konselor Aktif', 'value' => $aktif->count(), 'icon' => 'K', 'color' => 'success'],
+                ['label' => 'Konselor Ditolak', 'value' => $ditolak->count(), 'icon' => 'T', 'color' => 'danger'],
             ],
-            'aktivitasSistem' => collect([
-                ['waktu' => now()->subMinutes(12), 'user' => 'Alya Prameswari', 'role' => 'Konseli', 'aktivitas' => 'Pengajuan konseling dibuat', 'status' => 'baru'],
-                ['waktu' => now()->subMinutes(45), 'user' => 'Dr. Maya Putri', 'role' => 'Konselor', 'aktivitas' => 'Approval jadwal konseling', 'status' => 'disetujui'],
-                ['waktu' => now()->subHours(2), 'user' => 'Admin', 'role' => 'Admin', 'aktivitas' => 'Registrasi konselor diverifikasi', 'status' => 'selesai'],
-                ['waktu' => now()->subHours(4), 'user' => 'Dimas Arianto', 'role' => 'Konseli', 'aktivitas' => 'Login pengguna', 'status' => 'aktif'],
-                ['waktu' => now()->subDay(), 'user' => 'Raka Pratama', 'role' => 'Konselor', 'aktivitas' => 'Hasil konseling dibuat', 'status' => 'dibuat'],
-            ]),
-            'penggunaTerbaru' => collect([
-                ['nama' => 'Alya Prameswari', 'role' => 'Konseli', 'tanggal' => now()->subDay()],
-                ['nama' => 'Bagas Saputra', 'role' => 'Konseli', 'tanggal' => now()->subDays(2)],
-                ['nama' => 'Dr. Nadine Sari', 'role' => 'Konselor', 'tanggal' => now()->subDays(4)],
-            ]),
-            'statistikPlatform' => [
-                ['label' => 'Konseli', 'value' => 112, 'color' => '#696cff'],
-                ['label' => 'Konselor', 'value' => 14, 'color' => '#03c3ec'],
-                ['label' => 'Pengajuan', 'value' => 38, 'color' => '#ffab00'],
-                ['label' => 'Konseling Selesai', 'value' => 86, 'color' => '#71dd37'],
+            'konselorPending' => $pending,
+            'konselorAktif' => $aktif,
+            'konselorDitolak' => $ditolak,
+        ]);
+    }
+
+    private function konselorFallback()
+    {
+        return collect([
+            [
+                'nama' => 'Dr. Maya Putri',
+                'email' => 'maya.putri@kawancerito.test',
+                'asal' => 'Universitas Sriwijaya',
+                'no_hp' => '0812-3456-7890',
+                'spesialisasi' => 'Kecemasan dan stres',
+                'tanggal' => now()->subHours(8),
+                'status' => 'pending',
             ],
-            'pengajuanMenunggu' => collect([
-                ['nama' => 'Citra Lestari', 'konselor' => 'Belum ditentukan', 'tanggal' => now()->subHours(6), 'status' => 'pending'],
-                ['nama' => 'Farah Nabila', 'konselor' => 'Dr. Maya Putri', 'tanggal' => now()->subDay(), 'status' => 'pending'],
-                ['nama' => 'Gilang Prakoso', 'konselor' => 'Raka Pratama', 'tanggal' => now()->subDays(2), 'status' => 'pending'],
-            ]),
-            'jadwalMendatang' => collect([
-                ['tanggal' => now()->addDay(), 'jam' => '09:00', 'konseli' => 'Alya Prameswari', 'konselor' => 'Dr. Maya Putri'],
-                ['tanggal' => now()->addDays(2), 'jam' => '13:30', 'konseli' => 'Bagas Saputra', 'konselor' => 'Raka Pratama'],
-                ['tanggal' => now()->addDays(3), 'jam' => '10:00', 'konseli' => 'Dimas Arianto', 'konselor' => 'Nadia Larasati'],
-            ]),
+            [
+                'nama' => 'Raka Pratama, M.Psi',
+                'email' => 'raka.pratama@kawancerito.test',
+                'asal' => 'Klinik Cerah',
+                'no_hp' => '0812-2233-4455',
+                'spesialisasi' => 'Relasi dan emosi',
+                'tanggal' => now()->subDay(),
+                'status' => 'pending',
+            ],
+            [
+                'nama' => 'Nadia Larasati, M.Psi',
+                'email' => 'nadia.larasati@kawancerito.test',
+                'asal' => 'Kawan Cerito',
+                'no_hp' => '0812-5555-9090',
+                'spesialisasi' => 'Pengembangan diri',
+                'tanggal' => now()->subDays(4),
+                'status' => 'aktif',
+            ],
+            [
+                'nama' => 'Dr. Aditya Nugraha',
+                'email' => 'aditya.nugraha@kawancerito.test',
+                'asal' => 'RS Harmoni',
+                'no_hp' => '0813-1111-2020',
+                'spesialisasi' => 'Konseling keluarga',
+                'tanggal' => now()->subDays(6),
+                'status' => 'aktif',
+            ],
+            [
+                'nama' => 'Sinta Maharani',
+                'email' => 'sinta.maharani@kawancerito.test',
+                'asal' => 'Mandiri',
+                'no_hp' => '0813-3333-8080',
+                'spesialisasi' => 'Belum diverifikasi',
+                'tanggal' => now()->subDays(9),
+                'status' => 'ditolak',
+            ],
         ]);
     }
 }
