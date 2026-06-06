@@ -172,7 +172,7 @@
 
 <body class="font-sans text-slate-800 antialiased hero-bg">
 
-    <!-- @include('components.landing.navbar') -->
+    
     {{-- ===================== NAVBAR ===================== --}}
     <nav class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -196,6 +196,7 @@
 
             {{-- Nav links --}}
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#beranda" class="nav-link hover:text-brand-600 transition-colors">Beranda</a>
                 <a href="#layanan" class="nav-link hover:text-brand-600 transition-colors">Layanan</a>
                 <a href="#cara-kerja" class="nav-link hover:text-brand-600 transition-colors">Cara Kerja</a>
                 <a href="#konselor" class="nav-link hover:text-brand-600 transition-colors">Konselor</a>
@@ -219,7 +220,7 @@
         </div>
     </nav>
 
-    <!-- @include('components.landing.hero') -->
+    
     {{-- ===================== HERO ===================== --}}
     <section
         id="beranda"
@@ -453,7 +454,7 @@
         </div>
     </section>
 
-    <!-- @include('components.landing.features') -->
+    
     {{-- ===================== STATISTIK STRIP ===================== --}}
     <div class="relative bg-white border-y border-slate-100 py-8">
         <div class="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -735,7 +736,7 @@
     </section>
 
 
-    <!-- @include('components.landing.footer') -->
+
     {{-- ===================== FOOTER ===================== --}}
     <footer class="bg-slate-900 text-slate-400 py-16">
         <div class="max-w-7xl mx-auto px-6">
