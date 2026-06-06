@@ -50,14 +50,14 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-        Route::get('/approval-konselor', [AdminController::class, 'index'])->name('approval-konselor.index');
-        Route::get('/users', [AdminController::class, 'index'])->name('users.index');
-        Route::get('/konselor', [AdminController::class, 'index'])->name('konselor.index');
-        Route::get('/konselor/detail', [AdminController::class, 'index'])->name('konselor.show');
+        Route::get('/approval-konselor', [AdminController::class, 'approvalKonselor'])->name('approval-konselor.index');
+        Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+        Route::get('/konselor', [AdminController::class, 'konselor'])->name('konselor.index');
+        Route::get('/konselor/detail', [AdminController::class, 'konselorDetail'])->name('konselor.show');
         Route::post('/konselor/approve', fn () => back()->with('success', 'Pengajuan konselor disetujui.'))->name('konselor.approve');
         Route::post('/konselor/reject', fn () => back()->with('success', 'Pengajuan konselor ditolak.'))->name('konselor.reject');
-        Route::get('/jadwal', [AdminController::class, 'index'])->name('jadwal.index');
-        Route::get('/activity-log', [AdminController::class, 'index'])->name('activity-log.index');
+        Route::get('/jadwal', [AdminController::class, 'jadwal'])->name('jadwal.index');
+        Route::get('/activity-log', [AdminController::class, 'activityLog'])->name('activity-log.index');
     });
 
     Route::prefix('konseli')->group(function () {
