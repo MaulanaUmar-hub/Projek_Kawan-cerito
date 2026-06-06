@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('no_hp')->nullable();
             $table->enum('gender', ['L', 'P', 'N'])->nullable();
             $table->string('link_whatsapp')->nullable();
+            $table->enum('status', ['pending', 'aktif', 'ditolak'])->default('pending');
             $table->timestamps();
         });
     }

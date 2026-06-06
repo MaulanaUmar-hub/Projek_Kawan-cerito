@@ -2,30 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Konselor;
+
 class KonselorController extends Controller
 {
+    private function cekStatusKonselor()
+    {
+        $konselor = Konselor::where('id_user', auth()->user()->id_user)->first();
+
+        if (!$konselor || $konselor->status === 'pending') {
+            return redirect()->route('konselor.pending');
+        }
+
+        if ($konselor->status === 'ditolak') {
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Pendaftaran Anda telah ditolak oleh admin.']);
+        }
+
+        return null;
+    }
+
+    public function pending()
+    {
+        return view('konselor.pending');
+    }
+
     public function index()
     {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
         return view('konselor.dashboard', $this->dashboardData());
     }
 
     public function pengajuan()
     {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
         return view('konselor.pengajuan', $this->dashboardData());
     }
 
     public function jadwal()
     {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
         return view('konselor.jadwal', $this->dashboardData());
     }
 
     public function riwayat()
     {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
         return view('konselor.riwayat', $this->dashboardData());
     }
 
     public function profil()
     {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
         return view('konselor.profil', $this->dashboardData());
     }
 
