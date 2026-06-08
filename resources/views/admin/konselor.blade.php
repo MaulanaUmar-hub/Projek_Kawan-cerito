@@ -3,10 +3,8 @@
     <x-slot name="headerTitle">Kelola Konselor</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header
-            title="Kelola Konselor"
-            subtitle="Pantau konselor aktif, pending, dan ditolak dalam satu halaman rinci."
-        />
+        <x-dashboard.page-header title="Kelola Konselor"
+            subtitle="Pantau konselor aktif, pending, dan ditolak dalam satu halaman rinci." />
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             <x-dashboard.stat-card label="Pending" :value="$konselorPending->count()" icon="P" color="warning" />
@@ -39,7 +37,9 @@
                                 <td class="px-6 py-4 text-slate-500">{{ $item['no_hp'] }}</td>
                                 <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
                                 <td class="px-6 py-4">
-                                    <a href="{{ route('admin.konselor.show') }}" class="inline-flex whitespace-nowrap rounded-md border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50">Lihat Detail</a>
+                                    <a href="{{ route('admin.konselor.show', $item['id']) }}"
+                                        class="inline-flex whitespace-nowrap rounded-md border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50">Lihat
+                                        Detail</a>
                                 </td>
                             </tr>
                         @endforeach
