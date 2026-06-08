@@ -82,6 +82,25 @@
 
         </div>
 
+        <div class="mt-8 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-[#111827]">
+                        Tertarik menjadi bagian dari konselor Kawan Cerito?
+                    </p>
+                    <p class="mt-1 text-sm leading-6 text-slate-500">
+                        Ajukan pendaftaran sebagai konselor melalui formulir khusus yang lebih lengkap.
+                    </p>
+                </div>
+                <a
+                    href="{{ route('register.konselor') }}"
+                    class="inline-flex shrink-0 items-center justify-center rounded-xl border border-indigo-200 bg-white px-5 py-3 text-sm font-bold text-indigo-600 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 hover:shadow-[0_8px_24px_rgba(105,108,255,0.16)]"
+                >
+                    Daftar Konselor
+                </a>
+            </div>
+        </div>
+
         <div class="mt-10 flex flex-col items-center justify-between gap-5 md:flex-row">
             <a href="{{ route('login') }}" class="text-gray-500 transition-all duration-300 hover:text-indigo-500">
                 Sudah punya akun?

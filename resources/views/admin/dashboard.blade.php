@@ -17,11 +17,6 @@
                 'href' => route('admin.konselor.index'),
             ],
             [
-                'label' => 'Kelola Jadwal',
-                'description' => 'Cek jadwal konseling mendatang.',
-                'href' => route('admin.jadwal.index'),
-            ],
-            [
                 'label' => 'Lihat Activity Log',
                 'description' => 'Pantau aktivitas penting sistem.',
                 'href' => route('admin.activity-log.index'),
@@ -163,7 +158,7 @@
 
         <article class="kc-card p-6">
             <h2 class="text-lg font-semibold text-kc-heading">Quick Actions Admin</h2>
-            <div class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <div class="mt-5 grid gap-3 md:grid-cols-3">
                 @foreach ($quickActions as $action)
                     <a href="{{ $action['href'] }}"
                         class="rounded-lg border border-slate-100 p-4 transition hover:border-indigo-100 hover:bg-indigo-50 hover:shadow-[0_6px_18px_rgba(105,108,255,0.16)]">
@@ -174,47 +169,29 @@
             </div>
         </article>
 
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-            <article class="kc-card">
-                <div class="flex items-center justify-between gap-4 border-b border-slate-100 px-6 py-5">
+        <article class="kc-card">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-6 py-5">
+                <div>
                     <h2 class="text-lg font-semibold text-kc-heading">Aktivitas Sistem Terbaru</h2>
-                    <a href="{{ route('admin.activity-log.index') }}"
-                        class="text-xs font-semibold text-indigo-600">Lihat Semua</a>
+                    <p class="mt-1 text-sm text-slate-500">Pantau perubahan penting dari pengguna dan konselor.</p>
                 </div>
-                <div class="divide-y divide-slate-100">
-                    @foreach ($activityLogs->take(4) as $log)
-                        <div class="flex gap-4 px-6 py-4">
-                            <span class="mt-2 h-2.5 w-2.5 flex-none rounded-full bg-indigo-500"></span>
-                            <div>
-                                <p class="text-sm font-semibold text-kc-heading">{{ $log['aktivitas'] }}</p>
-                                <p class="mt-1 text-xs text-slate-400">{{ $log['user'] }} -
-                                    {{ ucfirst($log['role']) }}</p>
-                            </div>
+                <a href="{{ route('admin.activity-log.index') }}"
+                    class="rounded-md bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-100">
+                    Lihat Semua
+                </a>
+            </div>
+            <div class="grid gap-px bg-slate-100 md:grid-cols-2">
+                @foreach ($activityLogs->take(4) as $log)
+                    <div class="flex gap-4 bg-white px-6 py-5">
+                        <span class="mt-2 h-2.5 w-2.5 flex-none rounded-full bg-indigo-500"></span>
+                        <div>
+                            <p class="text-sm font-semibold text-kc-heading">{{ $log['aktivitas'] }}</p>
+                            <p class="mt-1 text-xs text-slate-400">{{ $log['user'] }} - {{ ucfirst($log['role']) }}</p>
                         </div>
-                    @endforeach
-                </div>
-            </article>
-
-            <article class="kc-card">
-                <div class="flex items-center justify-between gap-4 border-b border-slate-100 px-6 py-5">
-                    <h2 class="text-lg font-semibold text-kc-heading">Jadwal Mendatang</h2>
-                    <a href="{{ route('admin.jadwal.index') }}" class="text-xs font-semibold text-indigo-600">Kelola
-                        Jadwal</a>
-                </div>
-                <div class="divide-y divide-slate-100">
-                    @foreach ($jadwal->take(3) as $item)
-                        <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
-                            <div>
-                                <p class="text-sm font-semibold text-kc-heading">{{ $item['konseli'] }}</p>
-                                <p class="mt-1 text-xs text-slate-400">{{ $formatDate($item['tanggal']) }} -
-                                    {{ $item['jam'] }} bersama {{ $item['konselor'] }}</p>
-                            </div>
-                            <x-dashboard.status-badge :status="$item['status']" />
-                        </div>
-                    @endforeach
-                </div>
-            </article>
-        </div>
+                    </div>
+                @endforeach
+            </div>
+        </article>
 
         <article class="kc-card">
             <div class="border-b border-slate-100 px-6 py-5">

@@ -56,6 +56,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/konselor/{id}/approve', [AdminController::class, 'approveKonselor'])->name('admin.konselor.approve');
         Route::post('/konselor/{id}/reject', [AdminController::class, 'rejectKonselor'])->name('admin.konselor.reject');
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
+        Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+        Route::patch('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
         Route::get('/konselor', [AdminController::class, 'konselorList'])->name('admin.konselor.index');
         Route::get('/jadwal', [AdminController::class, 'jadwal'])->name('admin.jadwal.index');
         Route::get('/activity-log', [AdminController::class, 'activityLog'])->name('admin.activity-log.index');
