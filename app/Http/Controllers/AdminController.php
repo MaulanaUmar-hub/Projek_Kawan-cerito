@@ -2,151 +2,145 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Konselor;
 use App\Models\User;
-use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard', $this->dashboardData());
+        $konselorPending = Konselor::with('user')
+            ->where('status', 'pending')
+            ->latest()
+            ->get()
+            ->map(fn($k) => [
+                'id'      => $k->id_konselor,
+                'nama'    => $k->user->nama,
+                'email'   => $k->user->email,
+                'asal'    => $k->spesialisasi ?? '-',
+                'no_hp'   => $k->no_hp ?? '-',
+                'tanggal' => $k->created_at,
+                'status'  => 'pending',
+            ]);
+
+        $konselorAktif = Konselor::with('user')
+            ->where('status', 'aktif')
+            ->latest()
+            ->get()
+            ->map(fn($k) => [
+                'id'           => $k->id_konselor,
+                'nama'         => $k->user->nama,
+                'email'        => $k->user->email,
+                'spesialisasi' => $k->spesialisasi ?? '-',
+                'status'       => 'aktif',
+            ]);
+
+        $konselorDitolak = Konselor::with('user')
+            ->where('status', 'ditolak')
+            ->latest()
+            ->get()
+            ->map(fn($k) => [
+                'id'      => $k->id_konselor,
+                'nama'    => $k->user->nama,
+                'email'   => $k->user->email,
+                'tanggal' => $k->created_at,
+                'status'  => 'ditolak',
+            ]);
+
+        return view('admin.dashboard', [
+            'stats' => [
+                ['label' => 'Total Pengguna',    'value' => User::count(),                                 'icon' => 'U', 'color' => 'primary'],
+                ['label' => 'Konselor Aktif',    'value' => Konselor::where('status', 'aktif')->count(),   'icon' => 'K', 'color' => 'success'],
+                ['label' => 'Pengajuan Pending', 'value' => Konselor::where('status', 'pending')->count(), 'icon' => 'P', 'color' => 'warning'],
+                ['label' => 'Konselor Ditolak',  'value' => Konselor::where('status', 'ditolak')->count(), 'icon' => 'D', 'color' => 'danger'],
+            ],
+            'konselorPending'  => $konselorPending,
+            'konselorAktif'    => $konselorAktif,
+            'konselorDitolak'  => $konselorDitolak,
+            'activityLogs'     => collect([
+                ['aktivitas' => 'Konselor baru mendaftar', 'user' => 'Sistem', 'role' => 'system'],
+            ]),
+            'jadwal' => collect([]),
+        ]);
     }
 
     public function approvalKonselor()
     {
-        return view('admin.approval-konselor', $this->dashboardData());
+        $konselorPending = Konselor::with('user')
+            ->where('status', 'pending')
+            ->latest()
+            ->get()
+            ->map(fn($k) => [
+                'id'      => $k->id_konselor,
+                'nama'    => $k->user->nama,
+                'email'   => $k->user->email,
+                'asal'    => $k->spesialisasi ?? '-',
+                'no_hp'   => $k->no_hp ?? '-',
+                'tanggal' => $k->created_at,
+                'status'  => 'pending',
+            ]);
+
+        return view('admin.approval-konselor', compact('konselorPending'));
+    }
+
+    public function approveKonselor($id)
+    {
+        $konselor = Konselor::findOrFail($id);
+        $konselor->update(['status' => 'aktif']);
+
+        return back()->with('success', "Konselor {$konselor->user->nama} berhasil disetujui.");
+    }
+
+    public function rejectKonselor($id)
+    {
+        $konselor = Konselor::findOrFail($id);
+        $konselor->update(['status' => 'ditolak']);
+
+        return back()->with('success', "Konselor {$konselor->user->nama} telah ditolak.");
+    }
+
+    public function showKonselor($id)
+    {
+        $konselor = Konselor::with('user')->findOrFail($id);
+        return view('admin.konselor-detail', compact('konselor'));
     }
 
     public function users()
     {
-        return view('admin.users', $this->dashboardData());
+        $users = User::latest()->get();
+        return view('admin.users', compact('users'));
     }
 
-    public function konselor()
+    public function konselorList()
     {
-        return view('admin.konselor', $this->dashboardData());
-    }
+        $semua = Konselor::with('user')->latest()->get()
+            ->map(fn($k) => [
+                'id'           => $k->id_konselor,
+                'nama'         => $k->user->nama,
+                'email'        => $k->user->email,
+                'spesialisasi' => $k->spesialisasi ?? '-',
+                'no_hp'        => $k->no_hp ?? '-',
+                'status'       => $k->status,
+            ]);
 
-    public function konselorDetail()
-    {
-        return view('admin.konselor-detail', $this->dashboardData());
+        $konselorPending  = $semua->where('status', 'pending')->values();
+        $konselorAktif    = $semua->where('status', 'aktif')->values();
+        $konselorDitolak  = $semua->where('status', 'ditolak')->values();
+
+        return view('admin.konselor', compact('konselorPending', 'konselorAktif', 'konselorDitolak'));
     }
 
     public function jadwal()
     {
-        return view('admin.jadwal', $this->dashboardData());
+        $jadwal = collect([]);
+        return view('admin.jadwal', compact('jadwal'));
     }
 
     public function activityLog()
     {
-        return view('admin.activity-log', $this->dashboardData());
-    }
-
-    private function dashboardData(): array
-    {
-        $konselor = $this->konselorFallback();
-        $users = $this->usersFallback();
-        $jadwal = $this->jadwalFallback();
-        $logs = $this->activityFallback();
-        $totalPengguna = Schema::hasTable('users') ? User::count() : 126;
-
-        $pending = $konselor->where('status', 'pending')->values();
-        $aktif = $konselor->where('status', 'aktif')->values();
-        $ditolak = $konselor->where('status', 'ditolak')->values();
-
-        return [
-            'stats' => [
-                ['label' => 'Total Pengguna', 'value' => $totalPengguna ?: 126, 'icon' => 'U', 'color' => 'primary'],
-                ['label' => 'Konselor Pending', 'value' => $pending->count(), 'icon' => 'P', 'color' => 'warning'],
-                ['label' => 'Konselor Aktif', 'value' => $aktif->count(), 'icon' => 'K', 'color' => 'success'],
-                ['label' => 'Konselor Ditolak', 'value' => $ditolak->count(), 'icon' => 'T', 'color' => 'danger'],
-            ],
-            'konselorPending' => $pending,
-            'konselorAktif' => $aktif,
-            'konselorDitolak' => $ditolak,
-            'users' => $users,
-            'jadwal' => $jadwal,
-            'activityLogs' => $logs,
-        ];
-    }
-
-    private function konselorFallback()
-    {
-        return collect([
-            [
-                'nama' => 'Dr. Maya Putri',
-                'email' => 'maya.putri@kawancerito.test',
-                'asal' => 'Universitas Sriwijaya',
-                'no_hp' => '0812-3456-7890',
-                'spesialisasi' => 'Kecemasan dan stres',
-                'tanggal' => now()->subHours(8),
-                'status' => 'pending',
-            ],
-            [
-                'nama' => 'Raka Pratama, M.Psi',
-                'email' => 'raka.pratama@kawancerito.test',
-                'asal' => 'Klinik Cerah',
-                'no_hp' => '0812-2233-4455',
-                'spesialisasi' => 'Relasi dan emosi',
-                'tanggal' => now()->subDay(),
-                'status' => 'pending',
-            ],
-            [
-                'nama' => 'Nadia Larasati, M.Psi',
-                'email' => 'nadia.larasati@kawancerito.test',
-                'asal' => 'Kawan Cerito',
-                'no_hp' => '0812-5555-9090',
-                'spesialisasi' => 'Pengembangan diri',
-                'tanggal' => now()->subDays(4),
-                'status' => 'aktif',
-            ],
-            [
-                'nama' => 'Dr. Aditya Nugraha',
-                'email' => 'aditya.nugraha@kawancerito.test',
-                'asal' => 'RS Harmoni',
-                'no_hp' => '0813-1111-2020',
-                'spesialisasi' => 'Konseling keluarga',
-                'tanggal' => now()->subDays(6),
-                'status' => 'aktif',
-            ],
-            [
-                'nama' => 'Sinta Maharani',
-                'email' => 'sinta.maharani@kawancerito.test',
-                'asal' => 'Mandiri',
-                'no_hp' => '0813-3333-8080',
-                'spesialisasi' => 'Belum diverifikasi',
-                'tanggal' => now()->subDays(9),
-                'status' => 'ditolak',
-            ],
+        $activityLogs = collect([
+            ['waktu' => now(), 'user' => 'Sistem', 'role' => 'system', 'aktivitas' => 'Tidak ada aktivitas terbaru.'],
         ]);
-    }
-
-    private function usersFallback()
-    {
-        return collect([
-            ['nama' => 'Alya Prameswari', 'email' => 'alya@kawancerito.test', 'role' => 'konseli', 'status' => 'aktif', 'tanggal' => now()->subDay()],
-            ['nama' => 'Bagas Saputra', 'email' => 'bagas@kawancerito.test', 'role' => 'konseli', 'status' => 'aktif', 'tanggal' => now()->subDays(2)],
-            ['nama' => 'Nadia Larasati', 'email' => 'nadia.larasati@kawancerito.test', 'role' => 'konselor', 'status' => 'aktif', 'tanggal' => now()->subDays(4)],
-            ['nama' => 'Sinta Maharani', 'email' => 'sinta.maharani@kawancerito.test', 'role' => 'konselor', 'status' => 'ditolak', 'tanggal' => now()->subDays(9)],
-        ]);
-    }
-
-    private function jadwalFallback()
-    {
-        return collect([
-            ['tanggal' => now()->addDay(), 'jam' => '09:00', 'konseli' => 'Alya Prameswari', 'konselor' => 'Nadia Larasati, M.Psi', 'tipe' => 'Chat Konseling', 'status' => 'tersedia'],
-            ['tanggal' => now()->addDays(2), 'jam' => '13:30', 'konseli' => 'Bagas Saputra', 'konselor' => 'Dr. Aditya Nugraha', 'tipe' => 'Video Konseling', 'status' => 'aktif'],
-            ['tanggal' => now()->addDays(4), 'jam' => '10:00', 'konseli' => 'Dimas Arianto', 'konselor' => 'Nadia Larasati, M.Psi', 'tipe' => 'WhatsApp', 'status' => 'pending'],
-        ]);
-    }
-
-    private function activityFallback()
-    {
-        return collect([
-            ['waktu' => now()->subMinutes(12), 'user' => 'Admin', 'role' => 'admin', 'aktivitas' => 'Membuka dashboard approval konselor'],
-            ['waktu' => now()->subHours(1), 'user' => 'Dr. Maya Putri', 'role' => 'konselor', 'aktivitas' => 'Mengirim pengajuan menjadi konselor'],
-            ['waktu' => now()->subHours(3), 'user' => 'Alya Prameswari', 'role' => 'konseli', 'aktivitas' => 'Mengirim pengajuan konseling'],
-            ['waktu' => now()->subDay(), 'user' => 'Nadia Larasati', 'role' => 'konselor', 'aktivitas' => 'Hasil konseling dibuat'],
-        ]);
+        return view('admin.activity-log', compact('activityLogs'));
     }
 }
