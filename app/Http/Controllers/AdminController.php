@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Konselor;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
@@ -109,6 +111,48 @@ class AdminController extends Controller
     {
         $users = User::latest()->get();
         return view('admin.users', compact('users'));
+    }
+
+    public function editUser(User $user)
+    {
+        return view('admin.users-edit', compact('user'));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id_user, 'id_user'),
+            ],
+            'role' => ['required', Rule::in(['admin', 'konseli', 'konselor'])],
+        ], [
+            'nama.required' => 'Nama pengguna wajib diisi.',
+            'email.required' => 'Email pengguna wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan pengguna lain.',
+            'role.required' => 'Role pengguna wajib dipilih.',
+        ]);
+
+        $user->update($validated);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'Data pengguna berhasil diperbarui.');
+    }
+
+    public function destroyUser(User $user)
+    {
+        if (auth()->id() === $user->id_user) {
+            return back()->with('warning', 'Akun yang sedang digunakan tidak dapat dihapus dari halaman ini.');
+        }
+
+        $user->delete();
+
+        return back()->with('success', 'Data pengguna berhasil dihapus.');
     }
 
     public function konselorList()
