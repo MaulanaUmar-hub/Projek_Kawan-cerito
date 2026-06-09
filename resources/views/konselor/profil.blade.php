@@ -6,6 +6,10 @@
         $initial = strtoupper(mb_substr($profile['nama'], 0, 1));
         $note = $profile['catatan_profil'] ?: 'Tulis status singkat agar konseli lebih mudah mengenal pendekatan konseling Anda.';
         $peminatan = $profile['peminatan'] ?: 'Belum ditambahkan';
+        $peminatanTags = collect(explode(',', $profile['peminatan'] ?? ''))
+            ->map(fn ($item) => trim($item))
+            ->filter()
+            ->values();
         $profileItems = [
             ['label' => 'Foto Profil', 'done' => (bool) $profile['foto_url']],
             ['label' => 'Note Status', 'done' => filled($profile['catatan_profil'])],
@@ -48,22 +52,22 @@
             </div>
         @endif
 
-        <div class="grid gap-6 xl:grid-cols-[420px_1fr]">
+        <div class="grid gap-6 xl:grid-cols-[400px_1fr]">
             <div class="space-y-6">
                 <article class="kc-card overflow-hidden">
-                    <div class="h-32 bg-gradient-to-br from-indigo-500 via-[#7f86ff] to-cyan-300"></div>
+                    <div class="h-28 bg-gradient-to-br from-indigo-500 via-[#8b8eff] to-cyan-300"></div>
 
-                    <div class="px-6 pb-6">
+                    <div class="px-5 pb-5 sm:px-6 sm:pb-6">
                         <div class="-mt-16 flex flex-col items-center text-center">
                             <div class="relative">
                                 @if ($profile['foto_url'])
                                     <img
                                         src="{{ $profile['foto_url'] }}"
                                         alt="Foto profil {{ $profile['nama'] }}"
-                                        class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg shadow-indigo-100"
+                                        class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg shadow-indigo-100 sm:h-36 sm:w-36"
                                     >
                                 @else
-                                    <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-4xl font-bold text-white shadow-lg shadow-indigo-100">
+                                    <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-4xl font-bold text-white shadow-lg shadow-indigo-100 sm:h-36 sm:w-36">
                                         {{ $initial }}
                                     </div>
                                 @endif
@@ -78,15 +82,28 @@
                             </div>
                         </div>
 
-                        <div class="mt-6 rounded-2xl bg-slate-50 p-5">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Note Status</p>
-                            <p class="mt-2 text-sm leading-6 text-kc-heading">{{ $note }}</p>
+                        <div class="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50/70 p-5">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-indigo-500">Note Status</p>
+                                <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                            </div>
+                            <p class="mt-3 text-sm leading-6 text-kc-heading">"{{ $note }}"</p>
                         </div>
 
-                        <div class="mt-4 grid gap-3">
-                            <div class="rounded-2xl border border-slate-100 p-4">
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+                            <div class="rounded-2xl border border-slate-100 p-4 sm:col-span-2 xl:col-span-1">
                                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Peminatan</p>
-                                <p class="mt-2 text-sm font-semibold leading-6 text-kc-heading">{{ $peminatan }}</p>
+                                @if ($peminatanTags->isNotEmpty())
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        @foreach ($peminatanTags as $tag)
+                                            <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600">
+                                                {{ $tag }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="mt-2 text-sm font-semibold leading-6 text-kc-heading">{{ $peminatan }}</p>
+                                @endif
                             </div>
                             <div class="rounded-2xl border border-slate-100 p-4">
                                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Spesialisasi</p>
@@ -115,55 +132,74 @@
                 </article>
             </div>
 
-            <article class="kc-card p-6">
-                <div class="mb-6">
-                    <h2 class="text-lg font-semibold text-kc-heading">Edit Profil Publik</h2>
-                    <p class="mt-1 text-sm leading-6 text-slate-500">
-                        Gunakan foto yang jelas dan note yang hangat agar konseli merasa lebih percaya sebelum memulai konseling.
-                    </p>
+            <article class="kc-card p-5 sm:p-6">
+                <div class="mb-5 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                        <h2 class="text-lg font-semibold text-kc-heading">Edit Profil Publik</h2>
+                        <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
+                            Lengkapi informasi paling penting agar profil terasa profesional, hangat, dan mudah dipahami konseli.
+                        </p>
+                    </div>
+                    <span class="inline-flex w-fit rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-600">
+                        Preview tersimpan otomatis setelah klik simpan
+                    </span>
                 </div>
 
-                <form method="POST" action="{{ route('konselor.profil.update') }}" enctype="multipart/form-data" class="space-y-5">
+                <form method="POST" action="{{ route('konselor.profil.update') }}" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     @method('PATCH')
 
-                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5">
-                        <label for="foto" class="block text-sm font-semibold text-kc-heading">Foto Profil</label>
-                        <p class="mt-1 text-sm leading-6 text-slate-500">
-                            Pilih foto square atau portrait. Maksimal 2 MB.
-                        </p>
-                        <input
-                            id="foto"
-                            name="foto"
-                            type="file"
-                            accept="image/*"
-                            class="mt-4 block w-full rounded-xl border border-indigo-100 bg-white px-4 py-3 text-sm text-slate-500 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
-                        >
+                    <div class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4">
+                        <div class="grid gap-4 md:grid-cols-[96px_1fr] md:items-center">
+                            <div class="mx-auto md:mx-0">
+                                @if ($profile['foto_url'])
+                                    <img src="{{ $profile['foto_url'] }}" alt="Preview foto {{ $profile['nama'] }}"
+                                        class="h-24 w-24 rounded-2xl object-cover shadow-sm shadow-indigo-100">
+                                @else
+                                    <div class="flex h-24 w-24 items-center justify-center rounded-2xl bg-indigo-500 text-3xl font-bold text-white shadow-sm shadow-indigo-100">
+                                        {{ $initial }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div>
+                                <label for="foto" class="block text-sm font-semibold text-kc-heading">Foto Profil</label>
+                                <p class="mt-1 text-sm leading-6 text-slate-500">
+                                    Pilih foto square atau portrait agar preview tetap rapi. Maksimal 2 MB.
+                                </p>
+                                <input
+                                    id="foto"
+                                    name="foto"
+                                    type="file"
+                                    accept="image/*"
+                                    class="mt-3 block w-full rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-sm text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-500 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+                                >
+                            </div>
+                        </div>
                         @error('foto')
                             <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div>
-                        <label for="catatan_profil" class="mb-2 block text-sm font-semibold text-kc-heading">Note Status</label>
+                    <div class="rounded-2xl border border-slate-100 p-4">
+                        <div class="mb-2 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                            <label for="catatan_profil" class="block text-sm font-semibold text-kc-heading">Note Status</label>
+                            <span class="text-xs text-slate-400">Maks. 500 karakter</span>
+                        </div>
                         <textarea
                             id="catatan_profil"
                             name="catatan_profil"
-                            rows="4"
+                            rows="3"
                             maxlength="500"
                             placeholder="Contoh: Saya mendampingi konseli dengan pendekatan yang tenang, suportif, dan fokus pada langkah kecil yang realistis."
                             class="w-full rounded-xl border px-4 py-3 text-sm leading-6 outline-none transition focus:ring-4 {{ $errors->has('catatan_profil') ? 'border-red-300 focus:border-red-400 focus:ring-red-100' : 'border-slate-200 focus:border-indigo-400 focus:ring-indigo-100' }}"
                         >{{ old('catatan_profil', $profile['catatan_profil']) }}</textarea>
-                        <div class="mt-2 flex items-center justify-between gap-3 text-xs text-slate-400">
-                            <span>Dipakai sebagai deskripsi singkat di profil konselor.</span>
-                            <span>Maks. 500 karakter</span>
-                        </div>
+                        <p class="mt-2 text-xs text-slate-400">Dipakai sebagai deskripsi singkat di profil konselor.</p>
                         @error('catatan_profil')
                             <p class="mt-2 text-sm font-medium text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <div class="grid gap-5 lg:grid-cols-2">
+                    <div class="grid gap-4 lg:grid-cols-2">
                         <div>
                             <label for="peminatan" class="mb-2 block text-sm font-semibold text-kc-heading">Peminatan</label>
                             <input
@@ -195,9 +231,12 @@
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-100 p-5">
-                        <h3 class="text-sm font-semibold text-kc-heading">Informasi Akun</h3>
-                        <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                    <div class="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
+                        <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                            <h3 class="text-sm font-semibold text-kc-heading">Informasi Akun</h3>
+                            <p class="text-xs text-slate-400">Data ini mengikuti akun dan profil konselor.</p>
+                        </div>
+                        <dl class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                             <div>
                                 <dt class="text-slate-400">Nama</dt>
                                 <dd class="mt-1 font-semibold text-kc-heading">{{ $profile['nama'] }}</dd>
@@ -217,7 +256,7 @@
                         </dl>
                     </div>
 
-                    <div class="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
+                    <div class="flex flex-col gap-3 pt-1 sm:flex-row sm:justify-end">
                         <a
                             href="{{ route('konselor.dashboard') }}"
                             class="inline-flex justify-center rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-50"
