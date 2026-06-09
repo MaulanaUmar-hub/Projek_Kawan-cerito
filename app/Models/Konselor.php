@@ -12,8 +12,11 @@ class Konselor extends Model
     protected $fillable = [
         'id_user',
         'spesialisasi',
+        'peminatan',
+        'catatan_profil',
         'no_hp',
         'gender',
+        'foto',
         'link_whatsapp',
         'status',
     ];

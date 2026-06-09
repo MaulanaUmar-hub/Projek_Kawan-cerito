@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/jadwal', [KonselorController::class, 'jadwal'])->name('konselor.jadwal');
         Route::get('/riwayat', [KonselorController::class, 'riwayat'])->name('konselor.riwayat');
         Route::get('/profil', [KonselorController::class, 'profil'])->name('konselor.profil');
+        Route::patch('/profil', [KonselorController::class, 'updateProfil'])->name('konselor.profil.update');
     });
 });
 
