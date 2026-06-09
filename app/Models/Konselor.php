@@ -22,4 +22,14 @@ class Konselor extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
+
+    public function jadwals()
+    {
+        return $this->hasMany(Jadwal::class, 'id_konselor', 'id_konselor');
+    }
+
+    public function pengajuanKonselings()
+    {
+        return $this->hasMany(PengajuanKonseling::class, 'id_konselor', 'id_konselor');
+    }
 }
