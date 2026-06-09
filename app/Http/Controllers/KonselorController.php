@@ -164,50 +164,87 @@ class KonselorController extends Controller
     public function pengajuan()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.pengajuan', $this->stubbedData());
+
+        $konselor = $this->getKonselor();
+
+        $pengajuanTerbaru = PengajuanKonseling::with(['konseli.user', 'assessment', 'jadwal'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->latest('created_at')
+            ->get()
+            ->map(fn($p) => [
+                'id'      => $p->id_pengajuan,
+                'nama'    => $p->konseli?->user?->nama ?? '-',
+                'tanggal' => $p->created_at,
+                'keluhan' => $p->assessment?->keluhan ?? '-',
+                'status'  => $p->status_pengajuan,
+            ]);
+
+        return view('konselor.pengajuan', [
+            'pengajuanTerbaru' => $pengajuanTerbaru,
+        ]);
     }
 
     public function jadwal()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.jadwal', $this->stubbedData());
+
+        $konselor = $this->getKonselor();
+
+        $jadwalHariIni = Jadwal::with(['pengajuan.konseli.user'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->whereDate('tanggal', Carbon::today())
+            ->orderBy('jam')
+            ->get()
+            ->map(fn($j) => [
+                'nama'   => $j->pengajuan?->konseli?->user?->nama ?? '(Belum ada konseli)',
+                'jam'    => Carbon::parse($j->jam)->format('H:i'),
+                'status' => $j->pengajuan?->status_pengajuan ?? $j->status_jadwal,
+            ]);
+
+        return view('konselor.jadwal', [
+            'jadwalHariIni' => $jadwalHariIni,
+        ]);
     }
 
     public function riwayat()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.riwayat', $this->stubbedData());
+
+        $konselor = $this->getKonselor();
+
+        $riwayatKonseling = PengajuanKonseling::with(['konseli.user', 'hasil'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->latest('created_at')
+            ->get()
+            ->map(fn($p) => [
+                'tanggal' => $p->created_at,
+                'nama'    => $p->konseli?->user?->nama ?? '-',
+                'status'  => $p->status_pengajuan,
+                'hasil'   => $p->hasil?->catatan_konseling ?? '-',
+            ]);
+
+        return view('konselor.riwayat', [
+            'riwayatKonseling' => $riwayatKonseling,
+        ]);
     }
 
     public function profil()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.profil', $this->stubbedData());
-    }
 
-    /**
-     * Data minimal agar view non-dashboard tidak error
-     * (halaman-halaman itu belum dikoneksikan ke DB).
-     */
-    private function stubbedData(): array
-    {
         $konselor = $this->getKonselor();
-        $name = auth()->user()->nama ?? auth()->user()->name ?? 'Konselor';
+        $user = auth()->user();
 
-        return [
-            'name'    => $name,
+        return view('konselor.profil', [
             'profile' => [
-                'nama'         => $name,
-                'email'        => auth()->user()->email,
-                'spesialisasi' => $konselor?->spesialisasi ?? '-',
-                'status'       => ucfirst($konselor?->status ?? 'aktif'),
+                'nama'         => $user->nama,
+                'email'        => $user->email,
+                'spesialisasi' => $konselor->spesialisasi ?? '-',
+                'status'       => ucfirst($konselor->status),
+                'no_hp'        => $konselor->no_hp ?? '-',
+                'gender'       => $konselor->gender ?? '-',
+                'link_whatsapp' => $konselor->link_whatsapp ?? '-',
             ],
-            'stats'             => [],
-            'pengajuanTerbaru'  => collect([]),
-            'jadwalHariIni'     => collect([]),
-            'aktivitas'         => collect([]),
-            'produktifitas'     => [],
-            'riwayatKonseling'  => collect([]),
-        ];
+        ]);
     }
 }

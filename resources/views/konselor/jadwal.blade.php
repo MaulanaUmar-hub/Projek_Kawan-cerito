@@ -3,13 +3,11 @@
     <x-slot name="headerTitle">Jadwal Konseling</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header
-            title="Jadwal Konseling"
-            subtitle="Pantau sesi hari ini dan persiapkan konseling yang akan berlangsung."
-        />
+        <x-dashboard.page-header title="Jadwal Konseling"
+            subtitle="Pantau sesi hari ini dan persiapkan konseling yang akan berlangsung." />
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            @foreach ($jadwalHariIni as $jadwal)
+            @forelse ($jadwalHariIni as $jadwal)
                 <article class="kc-card p-6">
                     <div class="flex items-start justify-between gap-4">
                         <div>
@@ -19,17 +17,16 @@
                         </div>
                         <x-dashboard.status-badge :status="$jadwal['status']" />
                     </div>
-                    <button type="button" class="mt-6 w-full rounded-md bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
+                    <button type="button"
+                        class="mt-6 w-full rounded-md bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
                         Lihat Detail
                     </button>
                 </article>
-            @endforeach
+            @empty
+                <div class="col-span-3 rounded-lg border border-slate-100 px-6 py-10 text-center text-slate-400">
+                    Tidak ada jadwal konseling hari ini.
+                </div>
+            @endforelse
         </div>
-
-        <x-dashboard.form-card title="Catatan Jadwal" description="Gunakan halaman ini sebagai ringkasan jadwal konseling konselor. Data backend dapat dihubungkan bertahap tanpa mengubah layout.">
-            <div class="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700">
-                Jadwal yang sedang ditampilkan masih menggunakan data sementara agar frontend dapat diuji dengan nyaman.
-            </div>
-        </x-dashboard.form-card>
     </section>
 </x-app-layout>

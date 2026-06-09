@@ -3,14 +3,12 @@
     <x-slot name="headerTitle">Pengajuan Konseling</x-slot>
 
     @php
-        $formatDate = fn ($value) => \Illuminate\Support\Carbon::parse($value)->translatedFormat('d M Y');
+        $formatDate = fn($value) => \Illuminate\Support\Carbon::parse($value)->translatedFormat('d M Y');
     @endphp
 
     <section class="space-y-6">
-        <x-dashboard.page-header
-            title="Pengajuan Konseling"
-            subtitle="Tinjau pengajuan terbaru dari konseli dan pilih tindakan yang sesuai."
-        />
+        <x-dashboard.page-header title="Pengajuan Konseling"
+            subtitle="Tinjau pengajuan terbaru dari konseli dan pilih tindakan yang sesuai." />
 
         <article class="kc-card">
             <div class="border-b border-slate-100 px-6 py-5">
@@ -29,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach ($pengajuanTerbaru as $item)
+                        @forelse ($pengajuanTerbaru as $item)
                             <tr>
                                 <td class="px-6 py-4 font-semibold text-kc-heading">{{ $item['nama'] }}</td>
                                 <td class="px-6 py-4 text-slate-500">{{ $formatDate($item['tanggal']) }}</td>
@@ -37,13 +35,22 @@
                                 <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
                                 <td class="px-6 py-4">
                                     <div class="flex flex-wrap gap-2">
-                                        <button type="button" class="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600">Detail</button>
-                                        <button type="button" class="rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white">Setujui</button>
-                                        <button type="button" class="rounded-md bg-red-500 px-3 py-1.5 text-xs font-semibold text-white">Tolak</button>
+                                        <button type="button"
+                                            class="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600">Detail</button>
+                                        <button type="button"
+                                            class="rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white">Setujui</button>
+                                        <button type="button"
+                                            class="rounded-md bg-red-500 px-3 py-1.5 text-xs font-semibold text-white">Tolak</button>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-10 text-center text-slate-400">
+                                    Belum ada pengajuan masuk.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
