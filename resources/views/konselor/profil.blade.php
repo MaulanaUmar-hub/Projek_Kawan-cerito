@@ -6,13 +6,35 @@
         $initial = strtoupper(mb_substr($profile['nama'], 0, 1));
         $note = $profile['catatan_profil'] ?: 'Tulis status singkat agar konseli lebih mudah mengenal pendekatan konseling Anda.';
         $peminatan = $profile['peminatan'] ?: 'Belum ditambahkan';
+        $profileItems = [
+            ['label' => 'Foto Profil', 'done' => (bool) $profile['foto_url']],
+            ['label' => 'Note Status', 'done' => filled($profile['catatan_profil'])],
+            ['label' => 'Peminatan', 'done' => filled($profile['peminatan'])],
+            ['label' => 'Spesialisasi', 'done' => filled($profile['spesialisasi']) && $profile['spesialisasi'] !== '-'],
+        ];
+        $completedProfileItems = collect($profileItems)->where('done', true)->count();
+        $profileProgress = round(($completedProfileItems / count($profileItems)) * 100);
     @endphp
 
     <section class="space-y-6">
-        <x-dashboard.page-header
-            title="Profil Konselor"
-            subtitle="Atur tampilan profil yang membantu konseli mengenal Anda dengan nyaman."
-        />
+        <div class="kc-card overflow-hidden">
+            <div class="grid gap-6 p-6 lg:grid-cols-[1fr_280px] lg:p-8">
+                <div>
+                    <p class="text-sm font-semibold text-indigo-500">Profil Publik Konselor</p>
+                    <h2 class="mt-3 text-2xl font-bold text-kc-heading md:text-3xl">Profil Konselor</h2>
+                    <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
+                        Kelola foto, note status, peminatan, dan spesialisasi agar konseli lebih mudah memahami pendekatan Anda.
+                    </p>
+                </div>
+                <div class="rounded-xl border border-emerald-100 bg-emerald-50 p-5">
+                    <p class="text-sm font-semibold text-emerald-600">Kelengkapan Profil</p>
+                    <p class="mt-2 text-3xl font-bold text-kc-heading">{{ $profileProgress }}%</p>
+                    <div class="mt-4 h-2 rounded-full bg-white">
+                        <div class="h-2 rounded-full bg-emerald-400" style="width: {{ $profileProgress }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         @if (session('success'))
             <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-medium text-emerald-600">
@@ -27,55 +49,71 @@
         @endif
 
         <div class="grid gap-6 xl:grid-cols-[420px_1fr]">
-            <article class="kc-card overflow-hidden">
-                <div class="h-32 bg-gradient-to-br from-indigo-500 via-[#7f86ff] to-cyan-300"></div>
+            <div class="space-y-6">
+                <article class="kc-card overflow-hidden">
+                    <div class="h-32 bg-gradient-to-br from-indigo-500 via-[#7f86ff] to-cyan-300"></div>
 
-                <div class="px-6 pb-6">
-                    <div class="-mt-16 flex flex-col items-center text-center">
-                        <div class="relative">
-                            @if ($profile['foto_url'])
-                                <img
-                                    src="{{ $profile['foto_url'] }}"
-                                    alt="Foto profil {{ $profile['nama'] }}"
-                                    class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg shadow-indigo-100"
-                                >
-                            @else
-                                <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-4xl font-bold text-white shadow-lg shadow-indigo-100">
-                                    {{ $initial }}
-                                </div>
-                            @endif
-                            <span class="absolute bottom-2 right-2 rounded-full bg-emerald-400 p-2 ring-4 ring-white"></span>
+                    <div class="px-6 pb-6">
+                        <div class="-mt-16 flex flex-col items-center text-center">
+                            <div class="relative">
+                                @if ($profile['foto_url'])
+                                    <img
+                                        src="{{ $profile['foto_url'] }}"
+                                        alt="Foto profil {{ $profile['nama'] }}"
+                                        class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg shadow-indigo-100"
+                                    >
+                                @else
+                                    <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-4xl font-bold text-white shadow-lg shadow-indigo-100">
+                                        {{ $initial }}
+                                    </div>
+                                @endif
+                                <span class="absolute bottom-2 right-2 rounded-full bg-emerald-400 p-2 ring-4 ring-white"></span>
+                            </div>
+
+                            <h2 class="mt-4 text-xl font-bold text-kc-heading">{{ $profile['nama'] }}</h2>
+                            <p class="mt-1 text-sm text-slate-400">{{ $profile['email'] }}</p>
+
+                            <div class="mt-4">
+                                <x-dashboard.status-badge :status="$profile['status']" />
+                            </div>
                         </div>
 
-                        <h2 class="mt-4 text-xl font-bold text-kc-heading">{{ $profile['nama'] }}</h2>
-                        <p class="mt-1 text-sm text-slate-400">{{ $profile['email'] }}</p>
+                        <div class="mt-6 rounded-2xl bg-slate-50 p-5">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Note Status</p>
+                            <p class="mt-2 text-sm leading-6 text-kc-heading">{{ $note }}</p>
+                        </div>
 
-                        <div class="mt-4">
-                            <x-dashboard.status-badge :status="$profile['status']" />
+                        <div class="mt-4 grid gap-3">
+                            <div class="rounded-2xl border border-slate-100 p-4">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Peminatan</p>
+                                <p class="mt-2 text-sm font-semibold leading-6 text-kc-heading">{{ $peminatan }}</p>
+                            </div>
+                            <div class="rounded-2xl border border-slate-100 p-4">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Spesialisasi</p>
+                                <p class="mt-2 text-sm font-semibold leading-6 text-kc-heading">{{ $profile['spesialisasi'] }}</p>
+                            </div>
+                            <div class="rounded-2xl border border-slate-100 p-4">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">WhatsApp</p>
+                                <p class="mt-2 break-all text-sm font-semibold leading-6 text-kc-heading">{{ $profile['link_whatsapp'] }}</p>
+                            </div>
                         </div>
                     </div>
+                </article>
 
-                    <div class="mt-6 rounded-2xl bg-slate-50 p-5">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Note Status</p>
-                        <p class="mt-2 text-sm leading-6 text-kc-heading">{{ $note }}</p>
+                <article class="kc-card p-6">
+                    <h2 class="text-lg font-semibold text-kc-heading">Checklist Profil</h2>
+                    <div class="mt-5 space-y-3">
+                        @foreach ($profileItems as $item)
+                            <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-100 px-4 py-3">
+                                <span class="text-sm font-semibold text-kc-heading">{{ $item['label'] }}</span>
+                                <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $item['done'] ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }}">
+                                    {{ $item['done'] ? 'Lengkap' : 'Perlu diisi' }}
+                                </span>
+                            </div>
+                        @endforeach
                     </div>
-
-                    <div class="mt-4 grid gap-3">
-                        <div class="rounded-2xl border border-slate-100 p-4">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Peminatan</p>
-                            <p class="mt-2 text-sm font-semibold leading-6 text-kc-heading">{{ $peminatan }}</p>
-                        </div>
-                        <div class="rounded-2xl border border-slate-100 p-4">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Spesialisasi</p>
-                            <p class="mt-2 text-sm font-semibold leading-6 text-kc-heading">{{ $profile['spesialisasi'] }}</p>
-                        </div>
-                        <div class="rounded-2xl border border-slate-100 p-4">
-                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">WhatsApp</p>
-                            <p class="mt-2 break-all text-sm font-semibold leading-6 text-kc-heading">{{ $profile['link_whatsapp'] }}</p>
-                        </div>
-                    </div>
-                </div>
-            </article>
+                </article>
+            </div>
 
             <article class="kc-card p-6">
                 <div class="mb-6">
