@@ -60,7 +60,6 @@ Route::middleware('auth')->group(function () {
         Route::patch('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
         Route::get('/konselor', [AdminController::class, 'konselorList'])->name('admin.konselor.index');
-        Route::get('/jadwal', [AdminController::class, 'jadwal'])->name('admin.jadwal.index');
         Route::get('/activity-log', [AdminController::class, 'activityLog'])->name('admin.activity-log.index');
     });
 

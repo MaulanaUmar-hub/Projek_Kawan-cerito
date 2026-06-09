@@ -44,7 +44,7 @@
                                     <td class="px-6 py-4">{{ $item['jenis'] }}</td>
                                     <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
                                     <td class="px-6 py-4">
-                                        <a href="#detail-riwayat" class="rounded-md border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-600">Lihat Detail</a>
+                                        <button type="button" class="rounded-md border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50">Lihat Detail</button>
                                     </td>
                                 </tr>
                             @endforeach

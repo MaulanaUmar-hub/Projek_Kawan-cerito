@@ -45,12 +45,12 @@
         <article id="approval-konselor" class="kc-card">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-6 py-5">
                 <div>
-                    <h2 class="text-lg font-semibold text-kc-heading">Pengajuan Konselor Pending</h2>
+                    <h2 class="text-lg font-semibold text-kc-heading">Pengajuan Konselor Menunggu</h2>
                     <p class="mt-1 text-sm text-slate-500">Tinjau calon konselor sebelum memberi akses dashboard
                         konselor.</p>
                 </div>
                 <span class="rounded-md bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                    {{ $konselorPending->count() }} menunggu review
+                    {{ $konselorPending->count() }} menunggu tinjauan
                 </span>
             </div>
 
@@ -157,7 +157,7 @@
         </article>
 
         <article class="kc-card p-6">
-            <h2 class="text-lg font-semibold text-kc-heading">Quick Actions Admin</h2>
+            <h2 class="text-lg font-semibold text-kc-heading">Aksi Cepat Admin</h2>
             <div class="mt-5 grid gap-3 md:grid-cols-3">
                 @foreach ($quickActions as $action)
                     <a href="{{ $action['href'] }}"
