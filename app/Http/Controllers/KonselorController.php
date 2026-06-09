@@ -3,12 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Konselor;
+use App\Models\PengajuanKonseling;
+use App\Models\Jadwal;
+use App\Models\ActivityLog;
+use Illuminate\Support\Carbon;
 
 class KonselorController extends Controller
 {
-    private function cekStatusKonselor()
+    /**
+     * Ambil record Konselor milik user yang sedang login.
+     * Return null jika belum ada (seharusnya tidak terjadi setelah registrasi).
+     */
+    private function getKonselor(): ?Konselor
     {
-        $konselor = Konselor::where('id_user', auth()->user()->id_user)->first();
+        return Konselor::where('id_user', auth()->user()->id_user)->first();
+    }
+
+    /**
+     * Guard: redirect jika status bukan 'aktif'.
+     * Return redirect response atau null (berarti boleh lanjut).
+     */
+    private function cekStatusKonselor(): ?\Illuminate\Http\RedirectResponse
+    {
+        $konselor = $this->getKonselor();
 
         if (!$konselor || $konselor->status === 'pending') {
             return redirect()->route('konselor.pending');
@@ -30,77 +47,167 @@ class KonselorController extends Controller
     public function index()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.dashboard', $this->dashboardData());
+
+        $konselor = $this->getKonselor();
+
+        // --- Stats ---
+        $totalKonseli = PengajuanKonseling::where('id_konselor', $konselor->id_konselor)
+            ->distinct('id_konseli')
+            ->count('id_konseli');
+
+        $pengajuanBaru = PengajuanKonseling::where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'menunggu')
+            ->count();
+
+        $sesiHariIni = Jadwal::where('id_konselor', $konselor->id_konselor)
+            ->whereDate('tanggal', Carbon::today())
+            ->count();
+
+        $sesiSelesai = PengajuanKonseling::where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'selesai')
+            ->count();
+
+        // --- Pengajuan terbaru (5 terakhir) ---
+        $pengajuanTerbaru = PengajuanKonseling::with(['konseli.user', 'assessment', 'jadwal'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->latest('created_at')
+            ->take(5)
+            ->get()
+            ->map(fn($p) => [
+                'id'       => $p->id_pengajuan,
+                'nama'     => $p->konseli?->user?->nama ?? '-',
+                'tanggal'  => $p->created_at,
+                'keluhan'  => $p->assessment?->keluhan ?? '-',
+                'status'   => $p->status_pengajuan,
+            ]);
+
+        // --- Jadwal hari ini ---
+        $jadwalHariIni = Jadwal::with(['pengajuan.konseli.user'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->whereDate('tanggal', Carbon::today())
+            ->orderBy('jam')
+            ->get()
+            ->map(fn($j) => [
+                'nama'   => $j->pengajuan?->konseli?->user?->nama ?? '(Belum ada konseli)',
+                'jam'    => Carbon::parse($j->jam)->format('H:i'),
+                'status' => $j->pengajuan?->status_pengajuan ?? $j->status_jadwal,
+            ]);
+
+        // --- Aktivitas terbaru ---
+        $aktivitas = ActivityLog::where('id_user', auth()->user()->id_user)
+            ->latest('created_at')
+            ->take(5)
+            ->get()
+            ->map(fn($a) => [
+                'aktivitas' => $a->aktivitas,
+                'waktu'     => $a->created_at,
+            ]);
+
+        // --- Produktivitas bulan ini ---
+        $bulanIni = Carbon::now()->startOfMonth();
+
+        $selesaiBulanIni = PengajuanKonseling::where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'selesai')
+            ->where('created_at', '>=', $bulanIni)
+            ->count();
+
+        $konselingAktif = PengajuanKonseling::where('id_konselor', $konselor->id_konselor)
+            ->whereIn('status_pengajuan', ['disetujui', 'aktif'])
+            ->count();
+
+        $konselingTertunda = PengajuanKonseling::where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'menunggu')
+            ->count();
+
+        // --- Riwayat konseling (10 terakhir) ---
+        $riwayatKonseling = PengajuanKonseling::with(['konseli.user', 'hasil'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->whereIn('status_pengajuan', ['selesai', 'disetujui', 'aktif'])
+            ->latest('created_at')
+            ->take(10)
+            ->get()
+            ->map(fn($p) => [
+                'tanggal' => $p->created_at,
+                'nama'    => $p->konseli?->user?->nama ?? '-',
+                'status'  => $p->status_pengajuan,
+                'hasil'   => $p->hasil?->catatan_konseling ?? '-',
+            ]);
+
+        $name = auth()->user()->nama ?? auth()->user()->name ?? 'Konselor';
+
+        return view('konselor.dashboard', [
+            'name'    => $name,
+            'profile' => [
+                'nama'          => $name,
+                'email'         => auth()->user()->email,
+                'spesialisasi'  => $konselor->spesialisasi ?? '-',
+                'status'        => ucfirst($konselor->status),
+            ],
+            'stats' => [
+                ['label' => 'Total Konseli',    'value' => $totalKonseli,   'icon' => 'K', 'color' => 'primary'],
+                ['label' => 'Pengajuan Baru',   'value' => $pengajuanBaru,  'icon' => 'P', 'color' => 'warning'],
+                ['label' => 'Sesi Hari Ini',    'value' => $sesiHariIni,    'icon' => 'J', 'color' => 'info'],
+                ['label' => 'Sesi Selesai',     'value' => $sesiSelesai,    'icon' => 'S', 'color' => 'success'],
+            ],
+            'pengajuanTerbaru' => $pengajuanTerbaru,
+            'jadwalHariIni'    => $jadwalHariIni,
+            'aktivitas'        => $aktivitas,
+            'produktifitas'    => [
+                ['label' => 'Selesai bulan ini',  'value' => $selesaiBulanIni,   'color' => '#03c3ec'],
+                ['label' => 'Konseling aktif',    'value' => $konselingAktif,    'color' => '#696cff'],
+                ['label' => 'Konseling tertunda', 'value' => $konselingTertunda, 'color' => '#ffab00'],
+            ],
+            'riwayatKonseling' => $riwayatKonseling,
+        ]);
     }
 
     public function pengajuan()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.pengajuan', $this->dashboardData());
+        return view('konselor.pengajuan', $this->stubbedData());
     }
 
     public function jadwal()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.jadwal', $this->dashboardData());
+        return view('konselor.jadwal', $this->stubbedData());
     }
 
     public function riwayat()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.riwayat', $this->dashboardData());
+        return view('konselor.riwayat', $this->stubbedData());
     }
 
     public function profil()
     {
         if ($redirect = $this->cekStatusKonselor()) return $redirect;
-        return view('konselor.profil', $this->dashboardData());
+        return view('konselor.profil', $this->stubbedData());
     }
 
-    private function dashboardData(): array
+    /**
+     * Data minimal agar view non-dashboard tidak error
+     * (halaman-halaman itu belum dikoneksikan ke DB).
+     */
+    private function stubbedData(): array
     {
-        $user = auth()->user();
-        $name = $user->nama ?? $user->name ?? 'Konselor';
+        $konselor = $this->getKonselor();
+        $name = auth()->user()->nama ?? auth()->user()->name ?? 'Konselor';
 
         return [
-            'name' => $name,
+            'name'    => $name,
             'profile' => [
-                'nama' => $name,
-                'email' => $user->email ?? 'konselor@kawancerito.test',
-                'spesialisasi' => 'Konseling remaja dan manajemen stres',
-                'status' => 'Aktif',
+                'nama'         => $name,
+                'email'        => auth()->user()->email,
+                'spesialisasi' => $konselor?->spesialisasi ?? '-',
+                'status'       => ucfirst($konselor?->status ?? 'aktif'),
             ],
-            'stats' => [
-                ['label' => 'Total Konseli', 'value' => 28, 'icon' => 'K', 'color' => 'primary'],
-                ['label' => 'Pengajuan Baru', 'value' => 6, 'icon' => 'P', 'color' => 'warning'],
-                ['label' => 'Sesi Hari Ini', 'value' => 4, 'icon' => 'J', 'color' => 'info'],
-                ['label' => 'Sesi Selesai', 'value' => 19, 'icon' => 'S', 'color' => 'success'],
-            ],
-            'pengajuanTerbaru' => collect([
-                ['nama' => 'Alya Prameswari', 'tanggal' => now()->subHours(2), 'keluhan' => 'Cemas menjelang ujian dan sulit tidur.', 'status' => 'baru'],
-                ['nama' => 'Bagas Saputra', 'tanggal' => now()->subDay(), 'keluhan' => 'Stres pekerjaan dan konflik dengan rekan tim.', 'status' => 'pending'],
-                ['nama' => 'Citra Lestari', 'tanggal' => now()->subDays(2), 'keluhan' => 'Mudah panik saat berada di tempat ramai.', 'status' => 'disetujui'],
-            ]),
-            'jadwalHariIni' => collect([
-                ['nama' => 'Dimas Arianto', 'jam' => '09:00', 'status' => 'aktif'],
-                ['nama' => 'Eka Rahma', 'jam' => '11:30', 'status' => 'disetujui'],
-                ['nama' => 'Farah Nabila', 'jam' => '15:00', 'status' => 'pending'],
-            ]),
-            'aktivitas' => collect([
-                ['aktivitas' => 'Pengajuan Alya Prameswari disetujui', 'waktu' => now()->subMinutes(35)],
-                ['aktivitas' => 'Hasil konseling Dimas Arianto dibuat', 'waktu' => now()->subHours(3)],
-                ['aktivitas' => 'Jadwal Eka Rahma diperbarui', 'waktu' => now()->subDay()],
-            ]),
-            'produktifitas' => [
-                ['label' => 'Selesai bulan ini', 'value' => 19, 'color' => '#03c3ec'],
-                ['label' => 'Konseling aktif', 'value' => 7, 'color' => '#696cff'],
-                ['label' => 'Konseling tertunda', 'value' => 6, 'color' => '#ffab00'],
-            ],
-            'riwayatKonseling' => collect([
-                ['tanggal' => now()->subDays(1), 'nama' => 'Dimas Arianto', 'status' => 'selesai', 'hasil' => 'Latihan grounding dan rencana tidur terstruktur.'],
-                ['tanggal' => now()->subDays(3), 'nama' => 'Nadia Putri', 'status' => 'selesai', 'hasil' => 'Journaling emosi dan evaluasi pemicu stres.'],
-                ['tanggal' => now()->subDays(5), 'nama' => 'Rizky Maulana', 'status' => 'aktif', 'hasil' => 'Sesi lanjutan dijadwalkan pekan depan.'],
-            ]),
+            'stats'             => [],
+            'pengajuanTerbaru'  => collect([]),
+            'jadwalHariIni'     => collect([]),
+            'aktivitas'         => collect([]),
+            'produktifitas'     => [],
+            'riwayatKonseling'  => collect([]),
         ];
     }
 }
