@@ -6,6 +6,8 @@ use App\Models\Konselor;
 use App\Models\PengajuanKonseling;
 use App\Models\Jadwal;
 use App\Models\ActivityLog;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 
 class KonselorController extends Controller
@@ -240,11 +242,45 @@ class KonselorController extends Controller
                 'nama'         => $user->nama,
                 'email'        => $user->email,
                 'spesialisasi' => $konselor->spesialisasi ?? '-',
+                'peminatan'    => $konselor->peminatan ?? '',
+                'catatan_profil' => $konselor->catatan_profil ?? '',
+                'foto'         => $konselor->foto,
+                'foto_url'     => $konselor->foto ? Storage::disk('public')->url($konselor->foto) : null,
                 'status'       => ucfirst($konselor->status),
                 'no_hp'        => $konselor->no_hp ?? '-',
                 'gender'       => $konselor->gender ?? '-',
                 'link_whatsapp' => $konselor->link_whatsapp ?? '-',
             ],
         ]);
+    }
+
+    public function updateProfil(Request $request)
+    {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
+
+        $konselor = $this->getKonselor();
+
+        $validated = $request->validate([
+            'spesialisasi' => ['nullable', 'string', 'max:255'],
+            'peminatan' => ['nullable', 'string', 'max:255'],
+            'catatan_profil' => ['nullable', 'string', 'max:500'],
+            'foto' => ['nullable', 'image', 'max:2048'],
+        ], [
+            'catatan_profil.max' => 'Note status maksimal 500 karakter.',
+            'foto.image' => 'Foto profil harus berupa gambar.',
+            'foto.max' => 'Ukuran foto profil maksimal 2 MB.',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            if ($konselor->foto) {
+                Storage::disk('public')->delete($konselor->foto);
+            }
+
+            $validated['foto'] = $request->file('foto')->store('konselor/profil', 'public');
+        }
+
+        $konselor->update($validated);
+
+        return back()->with('success', 'Profil konselor berhasil diperbarui.');
     }
 }

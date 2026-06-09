@@ -162,7 +162,7 @@ class KonseliController extends Controller
 
         if (
             class_exists(\App\Models\Jadwal::class)
-            && Schema::hasTable('jadwals')
+            && Schema::hasTable('jadwal')
         ) {
             $jadwalBerikutnya = $user->pengajuanAsKonseli()
                 ->whereHas('jadwal', fn ($query) => $query->whereDate('tanggal', '>=', now()->toDateString()))
