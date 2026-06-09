@@ -17,13 +17,13 @@
                         Selamat Datang, {{ $name }}
                     </h2>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-                        Kelola jadwal, pengajuan, dan sesi konseling Anda melalui dashboard ini.
+                        Kelola jadwal, pengajuan, dan konseling Anda melalui dashboard ini.
                     </p>
                 </div>
                 <div class="rounded-lg border border-indigo-100 bg-indigo-50 p-5">
                     <p class="text-sm text-indigo-500">Prioritas hari ini</p>
                     <p class="mt-2 text-3xl font-bold text-kc-heading">{{ $stats[2]['value'] }}</p>
-                    <p class="mt-1 text-sm text-slate-500">sesi konseling perlu dipantau.</p>
+                    <p class="mt-1 text-sm text-slate-500">Konseling hari ini perlu dipantau.</p>
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                                 <th class="px-6 py-4 font-semibold">Tanggal Pengajuan</th>
                                 <th class="px-6 py-4 font-semibold">Keluhan Awal</th>
                                 <th class="px-6 py-4 font-semibold">Status</th>
-                                <th class="px-6 py-4 font-semibold">Action</th>
+                                <th class="px-6 py-4 font-semibold">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
@@ -60,9 +60,9 @@
                                     <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
                                     <td class="px-6 py-4">
                                         <div class="flex flex-wrap gap-2">
-                                            <a href="#detail-pengajuan" class="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600">Detail</a>
-                                            <a href="#setujui-pengajuan" class="rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white">Setujui</a>
-                                            <a href="#tolak-pengajuan" class="rounded-md bg-red-500 px-3 py-1.5 text-xs font-semibold text-white">Tolak</a>
+                                            <button type="button" class="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">Detail</button>
+                                            <button type="button" class="rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-600">Setujui</button>
+                                            <button type="button" class="rounded-md bg-red-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-600">Tolak</button>
                                         </div>
                                     </td>
                                 </tr>

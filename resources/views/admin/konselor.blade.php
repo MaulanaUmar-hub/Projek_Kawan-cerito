@@ -4,10 +4,10 @@
 
     <section class="space-y-6">
         <x-dashboard.page-header title="Kelola Konselor"
-            subtitle="Pantau konselor aktif, pending, dan ditolak dalam satu halaman rinci." />
+            subtitle="Pantau konselor aktif, menunggu persetujuan, dan ditolak dalam satu halaman rinci." />
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <x-dashboard.stat-card label="Pending" :value="$konselorPending->count()" icon="P" color="warning" />
+            <x-dashboard.stat-card label="Menunggu" :value="$konselorPending->count()" icon="M" color="warning" />
             <x-dashboard.stat-card label="Aktif" :value="$konselorAktif->count()" icon="A" color="success" />
             <x-dashboard.stat-card label="Ditolak" :value="$konselorDitolak->count()" icon="T" color="danger" />
         </div>

@@ -81,7 +81,7 @@
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold text-kc-heading">Edit Profil Publik</h2>
                     <p class="mt-1 text-sm leading-6 text-slate-500">
-                        Gunakan foto yang jelas dan note yang hangat agar konseli merasa lebih percaya sebelum memulai sesi.
+                        Gunakan foto yang jelas dan note yang hangat agar konseli merasa lebih percaya sebelum memulai konseling.
                     </p>
                 </div>
 

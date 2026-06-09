@@ -52,6 +52,12 @@
         $activeMenus = $menus[$role] ?? $menus['konseli'];
         $brandHref = collect($activeMenus)
             ->first(fn ($menu) => isset($menu['route']) && Route::has($menu['route']))['route'] ?? 'dashboard';
+        $dashboardMenu = collect($activeMenus)->first(fn ($menu) => ($menu['label'] ?? '') === 'Dashboard');
+        $currentMenu = collect($activeMenus)->first(function ($menu) {
+            return isset($menu['route'])
+                && Route::has($menu['route'])
+                && request()->routeIs($menu['route'], $menu['route'] . '.*');
+        }) ?? $dashboardMenu;
     @endphp
 
     <div class="dashboard-shell">
@@ -86,6 +92,16 @@
 
         <main class="dashboard-main">
             <div class="dashboard-content">
+                @if ($dashboardMenu)
+                    <nav class="dashboard-breadcrumb" aria-label="Breadcrumb">
+                        <a href="{{ route($dashboardMenu['route']) }}">Dashboard</a>
+                        @if (($currentMenu['label'] ?? 'Dashboard') !== 'Dashboard')
+                            <span>/</span>
+                            <span>{{ $currentMenu['label'] }}</span>
+                        @endif
+                    </nav>
+                @endif
+
                 <header class="dashboard-navbar">
                     <div>
                         <h1 class="navbar-title">

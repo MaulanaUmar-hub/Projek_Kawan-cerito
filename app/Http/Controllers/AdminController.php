@@ -53,7 +53,7 @@ class AdminController extends Controller
             'stats' => [
                 ['label' => 'Total Pengguna',    'value' => User::count(),                                 'icon' => 'U', 'color' => 'primary'],
                 ['label' => 'Konselor Aktif',    'value' => Konselor::where('status', 'aktif')->count(),   'icon' => 'K', 'color' => 'success'],
-                ['label' => 'Pengajuan Pending', 'value' => Konselor::where('status', 'pending')->count(), 'icon' => 'P', 'color' => 'warning'],
+                ['label' => 'Pengajuan Menunggu', 'value' => Konselor::where('status', 'pending')->count(), 'icon' => 'P', 'color' => 'warning'],
                 ['label' => 'Konselor Ditolak',  'value' => Konselor::where('status', 'ditolak')->count(), 'icon' => 'D', 'color' => 'danger'],
             ],
             'konselorPending'  => $konselorPending,
@@ -172,12 +172,6 @@ class AdminController extends Controller
         $konselorDitolak  = $semua->where('status', 'ditolak')->values();
 
         return view('admin.konselor', compact('konselorPending', 'konselorAktif', 'konselorDitolak'));
-    }
-
-    public function jadwal()
-    {
-        $jadwal = collect([]);
-        return view('admin.jadwal', compact('jadwal'));
     }
 
     public function activityLog()

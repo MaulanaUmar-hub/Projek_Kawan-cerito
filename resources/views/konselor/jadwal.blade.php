@@ -4,14 +4,14 @@
 
     <section class="space-y-6">
         <x-dashboard.page-header title="Jadwal Konseling"
-            subtitle="Pantau sesi hari ini dan persiapkan konseling yang akan berlangsung." />
+            subtitle="Pantau konseling hari ini dan persiapkan pertemuan yang akan berlangsung." />
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             @forelse ($jadwalHariIni as $jadwal)
                 <article class="kc-card p-6">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-sm text-slate-400">Sesi Konseling</p>
+                            <p class="text-sm text-slate-400">Konseling</p>
                             <h2 class="mt-2 text-lg font-semibold text-kc-heading">{{ $jadwal['nama'] }}</h2>
                             <p class="mt-3 text-2xl font-bold text-indigo-500">{{ $jadwal['jam'] }}</p>
                         </div>

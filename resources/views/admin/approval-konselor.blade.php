@@ -15,7 +15,7 @@
         <article class="kc-card">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-6 py-5">
                 <div>
-                    <h2 class="text-lg font-semibold text-kc-heading">Pengajuan Pending</h2>
+                    <h2 class="text-lg font-semibold text-kc-heading">Pengajuan Menunggu</h2>
                     <p class="mt-1 text-sm text-slate-500">Pengajuan yang belum diproses oleh admin.</p>
                 </div>
                 <x-dashboard.status-badge status="pending" />
@@ -45,12 +45,12 @@
                                 <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
                                 <td class="px-6 py-4">
                                     <div class="flex flex-wrap gap-2">
-                                        <a href="{{ route('admin.konselor.show') }}" class="inline-flex whitespace-nowrap rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">Detail</a>
-                                        <form method="POST" action="{{ route('admin.konselor.approve') }}">
+                                        <a href="{{ route('admin.konselor.show', $item['id']) }}" class="inline-flex whitespace-nowrap rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">Detail</a>
+                                        <form method="POST" action="{{ route('admin.konselor.approve', $item['id']) }}">
                                             @csrf
                                             <button class="rounded-md bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-600">Setujui</button>
                                         </form>
-                                        <form method="POST" action="{{ route('admin.konselor.reject') }}">
+                                        <form method="POST" action="{{ route('admin.konselor.reject', $item['id']) }}">
                                             @csrf
                                             <button class="rounded-md bg-red-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-600">Tolak</button>
                                         </form>

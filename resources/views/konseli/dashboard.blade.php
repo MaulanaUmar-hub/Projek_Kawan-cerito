@@ -11,7 +11,7 @@
         ];
 
         $statusLabel = [
-            'pending' => 'Pending',
+            'pending' => 'Menunggu',
             'disetujui' => 'Disetujui',
             'approved' => 'Disetujui',
             'selesai' => 'Selesai',
@@ -33,19 +33,19 @@
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <a href="{{ route('konseli.assessment') }}" class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <p class="text-sm text-slate-400">Quick Access</p>
+                <p class="text-sm text-slate-400">Akses Cepat</p>
                 <h2 class="mt-2 text-lg font-semibold text-kc-heading">Buat Assessment</h2>
                 <p class="mt-2 text-sm leading-6 text-slate-500">Ceritakan kondisi awalmu sebelum mengajukan konseling.</p>
             </a>
 
             <a href="{{ route('konseli.pengajuan') }}" class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <p class="text-sm text-slate-400">Quick Access</p>
+                <p class="text-sm text-slate-400">Akses Cepat</p>
                 <h2 class="mt-2 text-lg font-semibold text-kc-heading">Ajukan Konseling</h2>
                 <p class="mt-2 text-sm leading-6 text-slate-500">Pilih konselor dan jadwal yang paling sesuai.</p>
             </a>
 
             <a href="{{ route('konseli.jadwal') }}" class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <p class="text-sm text-slate-400">Quick Access</p>
+                <p class="text-sm text-slate-400">Akses Cepat</p>
                 <h2 class="mt-2 text-lg font-semibold text-kc-heading">Lihat Jadwal</h2>
                 <p class="mt-2 text-sm leading-6 text-slate-500">Cek sesi berikutnya dan status jadwalmu.</p>
             </a>
@@ -128,7 +128,7 @@
             <article class="kc-card p-6">
                 <h2 class="text-lg font-semibold text-kc-heading">Ringkasan Status</h2>
                 <div class="mt-6 space-y-5">
-                    @foreach ([['Pending', 'pending', '#ffab00'], ['Disetujui', 'disetujui', '#71dd37'], ['Selesai', 'selesai', '#03c3ec']] as [$label, $key, $color])
+                    @foreach ([['Menunggu', 'pending', '#ffab00'], ['Disetujui', 'disetujui', '#71dd37'], ['Selesai', 'selesai', '#03c3ec']] as [$label, $key, $color])
                         @php
                             $value = $statusCounts[$key] ?? 0;
                             $width = round(($value / $totalStatus) * 100);
@@ -169,7 +169,7 @@
             <article id="jadwal-konseling" class="kc-card p-6">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-sm text-slate-400">Sesi Berikutnya</p>
+                        <p class="text-sm text-slate-400">Konseling Berikutnya</p>
                         <h2 class="mt-1 text-lg font-semibold text-kc-heading">
                             {{ $formatDate($jadwalBerikutnya->jadwal->tanggal ?? $jadwalBerikutnya->tanggal ?? null) }}
                         </h2>
