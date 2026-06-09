@@ -1,44 +1,32 @@
 <x-app-layout>
     <x-slot name="dashboardRole">konselor</x-slot>
-    <x-slot name="headerTitle">Riwayat Konseling</x-slot>
-
-    @php
-        $formatDate = fn ($value) => \Illuminate\Support\Carbon::parse($value)->translatedFormat('d M Y');
-    @endphp
+    <x-slot name="headerTitle">Jadwal Konseling</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header
-            title="Riwayat Konseling"
-            subtitle="Lihat sesi yang sudah berjalan beserta ringkasan hasil konseling."
-        />
+        <x-dashboard.page-header title="Jadwal Konseling"
+            subtitle="Pantau sesi hari ini dan persiapkan konseling yang akan berlangsung." />
 
-        <article class="kc-card">
-            <div class="border-b border-slate-100 px-6 py-5">
-                <h2 class="text-lg font-semibold text-kc-heading">Riwayat Sesi</h2>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full min-w-[760px] text-left text-sm">
-                    <thead class="text-xs uppercase tracking-wide text-slate-400">
-                        <tr>
-                            <th class="px-6 py-4 font-semibold">Tanggal</th>
-                            <th class="px-6 py-4 font-semibold">Nama Konseli</th>
-                            <th class="px-6 py-4 font-semibold">Status</th>
-                            <th class="px-6 py-4 font-semibold">Hasil Konseling</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @foreach ($riwayatKonseling as $item)
-                            <tr>
-                                <td class="px-6 py-4 text-slate-500">{{ $formatDate($item['tanggal']) }}</td>
-                                <td class="px-6 py-4 font-semibold text-kc-heading">{{ $item['nama'] }}</td>
-                                <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
-                                <td class="px-6 py-4 text-slate-500">{{ $item['hasil'] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </article>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            @forelse ($jadwalHariIni as $jadwal)
+                <article class="kc-card p-6">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-sm text-slate-400">Sesi Konseling</p>
+                            <h2 class="mt-2 text-lg font-semibold text-kc-heading">{{ $jadwal['nama'] }}</h2>
+                            <p class="mt-3 text-2xl font-bold text-indigo-500">{{ $jadwal['jam'] }}</p>
+                        </div>
+                        <x-dashboard.status-badge :status="$jadwal['status']" />
+                    </div>
+                    <button type="button"
+                        class="mt-6 w-full rounded-md bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
+                        Lihat Detail
+                    </button>
+                </article>
+            @empty
+                <div class="col-span-3 rounded-lg border border-slate-100 px-6 py-10 text-center text-slate-400">
+                    Tidak ada jadwal konseling hari ini.
+                </div>
+            @endforelse
+        </div>
     </section>
 </x-app-layout>
