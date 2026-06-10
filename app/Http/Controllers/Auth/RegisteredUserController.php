@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Konseli;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -10,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -32,16 +32,17 @@ class RegisteredUserController extends Controller
             'nama'     => $request->nama,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => 'konseli', // hardcoded, tidak dari request
+            'role'     => 'konseli',
         ]);
+
+        // Buat record konseli kosong agar relasi tidak null
+        Konseli::create(['id_user' => $user->id_user]);
 
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect()->intended(match ($user->role) {
-            'admin'    => route('admin.dashboard'),
-            'konselor' => route('konselor.dashboard'),
-            default    => route('konseli.dashboard'),
-        });
+        // Langsung ke setup profil setelah register
+        return redirect()->route('konseli.profile.setup')
+            ->with('info', 'Akun berhasil dibuat! Lengkapi profil kamu untuk mulai menggunakan layanan konseling.');
     }
 }
