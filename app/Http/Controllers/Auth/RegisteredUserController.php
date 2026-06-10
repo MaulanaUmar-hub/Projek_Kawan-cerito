@@ -38,6 +38,10 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect()->route('konseli.profile.setup');
+        return redirect()->intended(match ($user->role) {
+            'admin'    => route('admin.dashboard'),
+            'konselor' => route('konselor.dashboard'),
+            default    => route('konseli.dashboard'),
+        });
     }
 }
