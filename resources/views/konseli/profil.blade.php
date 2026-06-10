@@ -45,11 +45,17 @@
                 <div class="px-5 pb-6">
                     <div class="-mt-16 flex flex-col items-center text-center">
                         @if ($profile->foto_url)
-                            <img
-                                src="{{ $profile->foto_url }}"
-                                alt="Foto profil {{ $profile->nama }}"
-                                class="h-32 w-32 rounded-full border-4 border-white object-cover shadow-lg shadow-indigo-100"
-                            >
+                            <div class="relative h-32 w-32 overflow-hidden rounded-full border-4 border-white bg-indigo-500 shadow-lg shadow-indigo-100">
+                                <div class="absolute inset-0 grid place-items-center text-4xl font-bold text-white">
+                                    {{ $initial }}
+                                </div>
+                                <img
+                                    src="{{ $profile->foto_url }}"
+                                    alt=""
+                                    class="relative h-full w-full object-cover"
+                                    onerror="this.style.display='none'"
+                                >
+                            </div>
                         @else
                             <div class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-4xl font-bold text-white shadow-lg shadow-indigo-100">
                                 {{ $initial }}

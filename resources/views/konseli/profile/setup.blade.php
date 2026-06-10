@@ -46,11 +46,17 @@
                 <div class="px-5 pb-6">
                     <div class="-mt-14 flex flex-col items-center text-center">
                         @if ($fotoUrl)
-                            <img
-                                src="{{ $fotoUrl }}"
-                                alt="Foto profil {{ $nama }}"
-                                class="h-28 w-28 rounded-full border-4 border-white object-cover shadow-lg shadow-indigo-100"
-                            >
+                            <div class="relative h-28 w-28 overflow-hidden rounded-full border-4 border-white bg-indigo-500 shadow-lg shadow-indigo-100">
+                                <div class="absolute inset-0 grid place-items-center text-4xl font-bold text-white">
+                                    {{ $initial }}
+                                </div>
+                                <img
+                                    src="{{ $fotoUrl }}"
+                                    alt=""
+                                    class="relative h-full w-full object-cover"
+                                    onerror="this.style.display='none'"
+                                >
+                            </div>
                         @else
                             <div class="flex h-28 w-28 items-center justify-center rounded-full border-4 border-white bg-indigo-500 text-4xl font-bold text-white shadow-lg shadow-indigo-100">
                                 {{ $initial }}
@@ -95,7 +101,17 @@
                         <div class="grid gap-4 md:grid-cols-[88px_1fr] md:items-center">
                             <div class="mx-auto md:mx-0">
                                 @if ($fotoUrl)
-                                    <img src="{{ $fotoUrl }}" alt="Preview foto {{ $nama }}" class="h-[88px] w-[88px] rounded-2xl object-cover shadow-sm shadow-indigo-100">
+                                    <div class="relative h-[88px] w-[88px] overflow-hidden rounded-2xl bg-indigo-500 shadow-sm shadow-indigo-100">
+                                        <div class="absolute inset-0 grid place-items-center text-3xl font-bold text-white">
+                                            {{ $initial }}
+                                        </div>
+                                        <img
+                                            src="{{ $fotoUrl }}"
+                                            alt=""
+                                            class="relative h-full w-full object-cover"
+                                            onerror="this.style.display='none'"
+                                        >
+                                    </div>
                                 @else
                                     <div class="flex h-[88px] w-[88px] items-center justify-center rounded-2xl bg-indigo-500 text-3xl font-bold text-white shadow-sm shadow-indigo-100">
                                         {{ $initial }}
