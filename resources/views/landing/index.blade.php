@@ -563,8 +563,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
                     Konselor yang Peduli<br>dan Berpengalaman
                 </h2>
-                <p class="text-slate-500">Semua konselor kami memiliki latar belakang psikologi klinis dan
-                    bersertifikat resmi.</p>
+                <p class="text-slate-500">Kami menyediakan ruang yang aman dan nyaman bagi Anda untuk bercerita tanpa rasa khawatir akan dihakimi.</p>
             </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -710,14 +709,13 @@
                 </p>
                 <a href="{{ route('register') }}"
                     class="relative inline-flex items-center gap-2 bg-white text-brand-700 font-bold px-8 py-4 rounded-full shadow-xl hover:bg-brand-50 transition-all hover:-translate-y-0.5">
-                    Coba Gratis Sekarang
+                    mulai cerita
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                     </svg>
                 </a>
-                <p class="relative text-brand-300 text-sm mt-4">Tidak perlu kartu kredit · Langsung bisa mulai</p>
             </div>
         </div>
     </section>
@@ -732,7 +730,7 @@
                 <h2 class="text-3xl font-bold text-slate-900">Ada yang Ingin Ditanyakan?</h2>
             </div>
             <div class="space-y-3" x-data="{ open: null }">
-                @foreach ([['Apakah konseling di sini benar-benar rahasia?', 'Ya, sepenuhnya. Seluruh sesi dan data pribadi kamu dilindungi dengan enkripsi dan tidak akan dibagikan ke pihak manapun tanpa izin kamu.'], ['Berapa biaya per sesi?', 'Sesi pertama gratis! Selanjutnya kami menawarkan paket yang fleksibel dan terjangkau mulai dari Rp 75.000 per sesi.'], ['Apakah saya harus menggunakan nama asli?', 'Kamu bisa menggunakan nama samaran jika merasa lebih nyaman. Yang penting adalah kenyamanan kamu dalam bercerita.'], ['Bagaimana jika saya tidak cocok dengan konselornya?', 'Kamu bisa mengajukan pergantian konselor kapan saja tanpa biaya tambahan.'], ['Apakah ini pengganti psikiater atau terapi klinis?', 'Kawan Cerito adalah layanan konseling suportif. Untuk kondisi klinis berat, konselor kami akan merekomendasikan profesional yang tepat.']] as $i => [$q, $a])
+                @foreach ([['Apakah konseling di sini benar-benar rahasia?', 'Ya, sepenuhnya. Seluruh sesi dan data pribadi kamu dilindungi dengan enkripsi dan tidak akan dibagikan ke pihak manapun tanpa izin kamu.'], ['Berapa biaya per sesi?', 'Tidak ada biaya sama sekali! kamu bisa cerita leluasa tanpa memikirkan biaya'], ['Apakah saya harus menggunakan nama asli?', 'Kamu bisa menggunakan nama samaran jika merasa lebih nyaman. Yang penting adalah kenyamanan kamu dalam bercerita.'], ['Bagaimana jika saya tidak cocok dengan konselornya?', 'Kamu bisa mengajukan pergantian konselor kapan saja tanpa biaya apapun'], ['Apakah ini pengganti psikiater atau terapi klinis?', 'Kawan Cerito adalah layanan konseling suportif. Untuk kondisi klinis berat, konselor kami akan merekomendasikan profesional yang tepat.']] as $i => [$q, $a])
                 <div class="border border-slate-100 rounded-2xl overflow-hidden reveal" x-data="{ open: false }">
                     <button @click="open = !open"
                         class="w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-slate-800 hover:bg-slate-50 transition-colors">
@@ -780,33 +778,39 @@
                 </div>
                 {{-- Links --}}
                 <div>
-                    <p class="font-semibold text-white mb-4 text-sm">Layanan</p>
-                    <ul class="space-y-2.5 text-sm">
-                        @foreach (['Konseling Individual', 'Konseling Keluarga', 'Asesmen Psikologi', 'Panduan Self-Help'] as $link)
-                        <li><a href="#" class="hover:text-white transition-colors">{{ $link }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
+                    <p class="font-semibold text-white mb-4 text-sm">Alamat</p>
+
+                    <div class="flex items-start gap-3 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-brand-400 mt-0.5 flex-shrink-0"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+
+                        <p class="leading-relaxed">
+                            Jl. Dara Petak No. 2 No. 49, Kel. Rajawali,
+                            Kec. Jambi Timur, Kota Jambi, Jambi 36123
+                        </p>
+                    </div>
                 </div>
+
                 <div>
-                    <p class="font-semibold text-white mb-4 text-sm">Perusahaan</p>
-                    <ul class="space-y-2.5 text-sm">
-                        @foreach (['Tentang Kami', 'Karir', 'Blog Kesehatan Mental', 'Kontak'] as $link)
-                        <li><a href="#" class="hover:text-white transition-colors">{{ $link }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
+                    <p class="font-semibold text-white mb-4 text-sm">Kontak</p>
+
+                    <a href="https://wa.me/6281313016956"
+                        target="_blank"
+                        class="flex items-center gap-3 text-sm hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500 flex-shrink-0"
+                            viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M20.52 3.48A11.86 11.86 0 0012.07 0C5.5 0 .15 5.35.15 11.93c0 2.1.55 4.15 1.6 5.95L0 24l6.28-1.65a11.9 11.9 0 005.79 1.48h.01c6.57 0 11.92-5.35 11.92-11.93 0-3.18-1.24-6.17-3.48-8.42zM12.08 21.8a9.86 9.86 0 01-5.03-1.38l-.36-.21-3.73.98 1-3.64-.24-.37a9.87 9.87 0 01-1.52-5.25c0-5.45 4.43-9.88 9.88-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 012.89 6.98c0 5.45-4.43 9.87-9.88 9.87zm5.42-7.4c-.3-.15-1.77-.87-2.05-.97-.27-.1-.47-.15-.67.15s-.77.97-.94 1.17c-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.49-.9-.8-1.5-1.79-1.68-2.09-.18-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.08-.8.37-.27.3-1.05 1.02-1.05 2.48s1.08 2.88 1.23 3.08c.15.2 2.13 3.25 5.16 4.56.72.31 1.28.5 1.72.64.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.69.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35z" />
+                        </svg>
+
+                        <span>0813-1301-6956</span>
+                    </a>
                 </div>
-            </div>
-            <div
-                class="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-                <p>Dibuat dengan cinta untuk kesehatan mental Indonesia</p>
-                <div class="flex gap-5">
-                    <a href="#" class="hover:text-white transition-colors">Kebijakan Privasi</a>
-                    <a href="#" class="hover:text-white transition-colors">Syarat & Ketentuan</a>
-                </div>
-            </div>
-        </div>
     </footer>
 
     {{-- Alpine.js for accordion --}}
