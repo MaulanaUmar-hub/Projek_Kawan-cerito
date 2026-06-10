@@ -2,22 +2,6 @@
     <x-slot name="headerTitle">Dashboard Konseli</x-slot>
 
     @php
-        $badgeClass = [
-            'pending' => 'bg-amber-100 text-amber-700',
-            'disetujui' => 'bg-emerald-100 text-emerald-700',
-            'approved' => 'bg-emerald-100 text-emerald-700',
-            'selesai' => 'bg-sky-100 text-sky-700',
-            'completed' => 'bg-sky-100 text-sky-700',
-        ];
-
-        $statusLabel = [
-            'pending' => 'Menunggu',
-            'disetujui' => 'Disetujui',
-            'approved' => 'Disetujui',
-            'selesai' => 'Selesai',
-            'completed' => 'Selesai',
-        ];
-
         $formatDate = fn ($value) => $value ? \Illuminate\Support\Carbon::parse($value)->translatedFormat('d M Y') : '-';
         $formatTime = fn ($value) => $value ? \Illuminate\Support\Carbon::parse($value)->format('H:i') : '-';
         $totalStatus = max(1, array_sum($statusCounts));
@@ -100,17 +84,18 @@
                         <tbody class="divide-y divide-slate-100">
                             @forelse ($riwayatTerbaru as $item)
                                 @php
-                                    $status = strtolower($item->status ?? 'pending');
+                                    $status = strtolower($item->status_pengajuan ?? $item->status ?? 'menunggu');
                                     $tanggal = $item->tanggal ?? $item->created_at ?? null;
-                                    $konselor = $item->konselor->nama ?? $item->nama_konselor ?? 'Belum ditentukan';
+                                    $konselor = $item->konselor?->user?->nama
+                                        ?? $item->konselor?->nama
+                                        ?? $item->nama_konselor
+                                        ?? 'Belum ditentukan';
                                 @endphp
                                 <tr>
                                     <td class="px-6 py-4 text-kc-heading">{{ $formatDate($tanggal) }}</td>
                                     <td class="px-6 py-4">{{ $konselor }}</td>
                                     <td class="px-6 py-4">
-                                        <span class="inline-flex rounded-md px-3 py-1 text-xs font-semibold {{ $badgeClass[$status] ?? 'bg-slate-100 text-slate-600' }}">
-                                            {{ $statusLabel[$status] ?? ucfirst($status) }}
-                                        </span>
+                                        <x-dashboard.status-badge :status="$status" />
                                     </td>
                                 </tr>
                             @empty
@@ -128,7 +113,7 @@
             <article class="kc-card p-6">
                 <h2 class="text-lg font-semibold text-kc-heading">Ringkasan Status</h2>
                 <div class="mt-6 space-y-5">
-                    @foreach ([['Menunggu', 'pending', '#ffab00'], ['Disetujui', 'disetujui', '#71dd37'], ['Selesai', 'selesai', '#03c3ec']] as [$label, $key, $color])
+                    @foreach ([['Menunggu', 'menunggu', '#ffab00'], ['Disetujui', 'disetujui', '#71dd37'], ['Berlangsung', 'berlangsung', '#696cff'], ['Selesai', 'selesai', '#03c3ec'], ['Ditolak', 'ditolak', '#ff5b5c']] as [$label, $key, $color])
                         @php
                             $value = $statusCounts[$key] ?? 0;
                             $width = round(($value / $totalStatus) * 100);
@@ -159,7 +144,7 @@
                     <span class="grid h-10 w-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600">A</span>
                 </div>
                 <p class="mt-5 text-sm leading-6">
-                    {{ $assessmentTerakhir->ringkasan_hasil ?? $assessmentTerakhir->hasil ?? 'Belum ada assessment yang tercatat.' }}
+                    {{ $assessmentTerakhir->ringkasan_hasil ?? $assessmentTerakhir->hasil ?? $assessmentTerakhir->keluhan ?? 'Belum ada assessment yang tercatat.' }}
                 </p>
                 <a href="{{ route('konseli.assessment') }}" class="mt-5 inline-flex rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
                     Lihat Detail
@@ -183,14 +168,16 @@
                     </div>
                     <div class="flex justify-between gap-4">
                         <span class="text-slate-400">Konselor</span>
-                        <span class="text-right font-semibold text-kc-heading">{{ $jadwalBerikutnya->konselor->nama ?? 'Belum ditentukan' }}</span>
+                        <span class="text-right font-semibold text-kc-heading">
+                            {{ $jadwalBerikutnya->konselor?->user?->nama ?? $jadwalBerikutnya->konselor?->nama ?? 'Belum ditentukan' }}
+                        </span>
                     </div>
                     <div class="flex justify-between gap-4">
                         <span class="text-slate-400">Status</span>
-                        @php $jadwalStatus = strtolower($jadwalBerikutnya->status ?? 'pending'); @endphp
-                        <span class="rounded-md px-3 py-1 text-xs font-semibold {{ $badgeClass[$jadwalStatus] ?? 'bg-slate-100 text-slate-600' }}">
-                            {{ $statusLabel[$jadwalStatus] ?? ucfirst($jadwalStatus) }}
-                        </span>
+                        @php
+                            $jadwalStatus = strtolower($jadwalBerikutnya->status_pengajuan ?? $jadwalBerikutnya->jadwal->status_jadwal ?? $jadwalBerikutnya->status ?? 'menunggu');
+                        @endphp
+                        <x-dashboard.status-badge :status="$jadwalStatus" />
                     </div>
                 </div>
             </article>

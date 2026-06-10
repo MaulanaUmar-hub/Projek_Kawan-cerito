@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Konseli;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class KonseliController extends Controller
 {
@@ -83,21 +85,29 @@ class KonseliController extends Controller
 
     public function profil()
     {
+        $user = auth()->user();
+        $profile = $user?->konseli;
+
         return view('konseli.profil', [
             'profile' => (object) [
-                'nama' => auth()->user()->nama ?? auth()->user()->name ?? 'Preview Konseli',
-                'email' => auth()->user()->email ?? 'konseli@example.com',
-                'asal' => auth()->user()->asal ?? 'Kawan Cerito',
-                'no_hp' => auth()->user()->no_hp ?? '0812-0000-0000',
-                'gender' => auth()->user()->gender ?? 'N',
+                'nama' => $user->nama ?? $user->name ?? 'Preview Konseli',
+                'email' => $user->email ?? 'konseli@example.com',
+                'asal' => $profile->asal ?? $user->asal ?? 'Kawan Cerito',
+                'no_hp' => $profile->no_hp ?? $user->no_hp ?? '0812-0000-0000',
+                'gender' => $profile->gender ?? $user->gender ?? 'N',
             ],
         ]);
     }
 
     public function setupProfile()
     {
+        $user = auth()->user();
+        $profile = $user?->konseli;
+
         return view('konseli.profile.setup', [
-            'user' => auth()->user(),
+            'user' => $user,
+            'profile' => $profile,
+            'fotoUrl' => $profile?->foto ? Storage::disk('public')->url($profile->foto) : null,
         ]);
     }
 
@@ -120,6 +130,22 @@ class KonseliController extends Controller
         ]);
 
         $user = auth()->user();
+        $profileData = [
+            'asal' => $validated['asal'],
+            'no_hp' => $validated['no_hp'],
+            'gender' => $validated['gender'],
+        ];
+
+        if ($request->hasFile('foto')) {
+            $existingProfile = $user->konseli;
+
+            if ($existingProfile?->foto) {
+                Storage::disk('public')->delete($existingProfile->foto);
+            }
+
+            $profileData['foto'] = $request->file('foto')->store('konseli/profil', 'public');
+        }
+
         $user->update([
             'nama' => $validated['nama'],
             'gender' => $validated['gender'],
@@ -127,7 +153,10 @@ class KonseliController extends Controller
             'no_hp' => $validated['no_hp'],
         ]);
 
-        // TODO: Simpan path foto ke kolom profil ketika struktur database foto sudah tersedia.
+        Konseli::updateOrCreate(
+            ['id_user' => $user->id_user],
+            $profileData
+        );
 
         return redirect()
             ->route('konseli.dashboard')
@@ -146,7 +175,7 @@ class KonseliController extends Controller
             && Schema::hasTable('pengajuan_konselings')
         ) {
             $pengajuan = $user->pengajuanAsKonseli()
-                ->with('konselor')
+                ->with('konselor.user')
                 ->latest()
                 ->get();
         }
@@ -166,7 +195,7 @@ class KonseliController extends Controller
         ) {
             $jadwalBerikutnya = $user->pengajuanAsKonseli()
                 ->whereHas('jadwal', fn ($query) => $query->whereDate('tanggal', '>=', now()->toDateString()))
-                ->with(['jadwal', 'konselor'])
+                ->with(['jadwal', 'konselor.user'])
                 ->latest()
                 ->first();
         }
@@ -186,15 +215,17 @@ class KonseliController extends Controller
         }
 
         $statusCounts = [
-            'pending' => $pengajuan->where('status', 'pending')->count(),
-            'disetujui' => $pengajuan->whereIn('status', ['disetujui', 'approved'])->count(),
-            'selesai' => $pengajuan->whereIn('status', ['selesai', 'completed'])->count(),
+            'menunggu' => $pengajuan->whereIn('status_pengajuan', ['menunggu', 'pending', 'baru'])->count(),
+            'disetujui' => $pengajuan->whereIn('status_pengajuan', ['disetujui', 'approved'])->count(),
+            'berlangsung' => $pengajuan->whereIn('status_pengajuan', ['berlangsung', 'aktif'])->count(),
+            'selesai' => $pengajuan->whereIn('status_pengajuan', ['selesai', 'completed'])->count(),
+            'ditolak' => $pengajuan->whereIn('status_pengajuan', ['ditolak', 'rejected'])->count(),
         ];
 
         return [
             'stats' => [
                 ['label' => 'Total Konseling', 'value' => $pengajuan->count(), 'icon' => 'bx-conversation', 'color' => 'primary'],
-                ['label' => 'Pengajuan Menunggu', 'value' => $statusCounts['pending'], 'icon' => 'bx-time-five', 'color' => 'warning'],
+                ['label' => 'Pengajuan Menunggu', 'value' => $statusCounts['menunggu'], 'icon' => 'bx-time-five', 'color' => 'warning'],
                 ['label' => 'Konseling Disetujui', 'value' => $statusCounts['disetujui'], 'icon' => 'bx-check-circle', 'color' => 'success'],
                 ['label' => 'Konseling Selesai', 'value' => $statusCounts['selesai'], 'icon' => 'bx-badge-check', 'color' => 'info'],
             ],
@@ -210,15 +241,17 @@ class KonseliController extends Controller
     private function fallbackDashboardData($user): array
     {
         $statusCounts = [
-            'pending' => 1,
+            'menunggu' => 1,
             'disetujui' => 2,
+            'berlangsung' => 0,
             'selesai' => 4,
+            'ditolak' => 0,
         ];
 
         return [
             'stats' => [
                 ['label' => 'Total Konseling', 'value' => 7, 'icon' => 'bx-conversation', 'color' => 'primary'],
-                ['label' => 'Pengajuan Menunggu', 'value' => 1, 'icon' => 'bx-time-five', 'color' => 'warning'],
+                ['label' => 'Pengajuan Menunggu', 'value' => $statusCounts['menunggu'], 'icon' => 'bx-time-five', 'color' => 'warning'],
                 ['label' => 'Konseling Disetujui', 'value' => 2, 'icon' => 'bx-check-circle', 'color' => 'success'],
                 ['label' => 'Konseling Selesai', 'value' => 4, 'icon' => 'bx-badge-check', 'color' => 'info'],
             ],
@@ -226,7 +259,7 @@ class KonseliController extends Controller
             'riwayatTerbaru' => collect([
                 (object) ['tanggal' => now()->subDays(2), 'konselor' => (object) ['nama' => 'Dr. Maya Putri, M.Psi'], 'status' => 'selesai'],
                 (object) ['tanggal' => now()->subDays(8), 'konselor' => (object) ['nama' => 'Raka Pratama, M.Psi'], 'status' => 'disetujui'],
-                (object) ['tanggal' => now()->subDays(14), 'konselor' => (object) ['nama' => 'Nadia Larasati, M.Psi'], 'status' => 'pending'],
+                (object) ['tanggal' => now()->subDays(14), 'konselor' => (object) ['nama' => 'Nadia Larasati, M.Psi'], 'status_pengajuan' => 'menunggu'],
             ]),
             'assessmentTerakhir' => (object) [
                 'created_at' => now()->subDays(3),

@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/activity-log', [AdminController::class, 'activityLog'])->name('admin.activity-log.index');
     });
 
-    Route::prefix('konseli')->group(function () {
+    Route::prefix('konseli')->middleware('konseli.profile.complete')->group(function () {
         Route::get('/dashboard', [KonseliController::class, 'index'])->name('konseli.dashboard');
         Route::get('/assessment', [KonseliController::class, 'assessment'])->name('konseli.assessment');
         Route::post('/assessment', [KonseliController::class, 'storeAssessment'])->name('konseli.assessment.store');
