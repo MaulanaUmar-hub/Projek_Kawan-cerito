@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id('id_konselor');
             $table->foreignId('id_user')->constrained('users', 'id_user')->cascadeOnDelete();
             $table->string('spesialisasi')->nullable();
+            $table->string('peminatan')->nullable();
+            $table->string('catatan_profil')->nullable();
             $table->string('no_hp')->nullable();
             $table->enum('gender', ['L', 'P', 'N'])->nullable();
             $table->string('link_whatsapp')->nullable();
