@@ -8,7 +8,8 @@ class PengajuanKonseling extends Model
 {
     protected $table = 'pengajuan_konselings';
     protected $primaryKey = 'id_pengajuan';
-    public $timestamps = false;
+    public $timestamps = true;
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'id_konseli',
