@@ -16,11 +16,29 @@ class PengajuanKonseling extends Model
         'id_assessment',
         'id_jadwal',
         'status_pengajuan',
+        'tanggal_usulan',
+        'jam_usulan',
+        'tipe_konseling_usulan',
+        'tanggal_reschedule',
+        'jam_reschedule',
+        'catatan_reschedule',
+        'alasan_penolakan',
     ];
 
     protected $casts = [
-        'created_at' => 'datetime',
+        'created_at'        => 'datetime',
+        'tanggal_usulan'    => 'date',
+        'tanggal_reschedule' => 'date',
     ];
+
+    /*
+     * Status yang mungkin:
+     *   menunggu   — baru diajukan konseli, belum direspons konselor
+     *   disetujui  — konselor setuju, id_jadwal diisi
+     *   reschedule — konselor ajukan ulang waktu, menunggu konfirmasi konseli
+     *   ditolak    — konselor menolak pengajuan
+     *   selesai    — sesi sudah dilaksanakan
+     */
 
     public function konseli()
     {
