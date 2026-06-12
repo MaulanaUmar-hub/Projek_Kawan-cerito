@@ -137,7 +137,7 @@
                 <article class="kc-card p-6">
                     <h2 class="text-base font-semibold text-kc-heading">Alur Pengajuan</h2>
                     <ol class="mt-5 space-y-4">
-                        @foreach ([['Kirim pengajuan', 'Pilih konselor & usulkan waktu.'], ['Konselor merespons', 'Disetujui, reschedule, atau ditolak.'], ['Jika reschedule', 'Kamu konfirmasi waktu baru dari konselor.'], ['Jadwal terkonfirmasi', 'Konseling berlangsung sesuai jadwal.']] as [$i, [$title, $desc]])
+                        @foreach ([['Kirim pengajuan', 'Pilih konselor & usulkan waktu.'], ['Konselor merespons', 'Disetujui, reschedule, atau ditolak.'], ['Jika reschedule', 'Kamu konfirmasi waktu baru dari konselor.'], ['Jadwal terkonfirmasi', 'Konseling berlangsung sesuai jadwal.']] as $i => [$title, $desc])
                             <li class="flex gap-3">
                                 <span
                                     class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">{{ $i + 1 }}</span>
