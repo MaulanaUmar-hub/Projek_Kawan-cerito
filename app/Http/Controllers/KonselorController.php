@@ -169,21 +169,115 @@ class KonselorController extends Controller
 
         $konselor = $this->getKonselor();
 
-        $pengajuanTerbaru = PengajuanKonseling::with(['konseli.user', 'assessment', 'jadwal'])
+        $pengajuanList = PengajuanKonseling::with(['konseli.user', 'assessment', 'jadwal'])
             ->where('id_konselor', $konselor->id_konselor)
             ->latest('created_at')
-            ->get()
-            ->map(fn($p) => [
-                'id'      => $p->id_pengajuan,
-                'nama'    => $p->konseli?->user?->nama ?? '-',
-                'tanggal' => $p->created_at,
-                'keluhan' => $p->assessment?->keluhan ?? '-',
-                'status'  => $p->status_pengajuan,
-            ]);
+            ->get();
 
-        return view('konselor.pengajuan', [
-            'pengajuanTerbaru' => $pengajuanTerbaru,
+        $counts = [
+            'total'      => $pengajuanList->count(),
+            'menunggu'   => $pengajuanList->where('status_pengajuan', 'menunggu')->count(),
+            'reschedule' => $pengajuanList->where('status_pengajuan', 'reschedule')->count(),
+            'disetujui'  => $pengajuanList->where('status_pengajuan', 'disetujui')->count(),
+        ];
+
+        return view('konselor.pengajuan', compact('pengajuanList', 'counts'));
+    }
+
+    public function setujuiPengajuan(Request $request, $id)
+    {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
+
+        $konselor  = $this->getKonselor();
+        $pengajuan = PengajuanKonseling::where('id_pengajuan', $id)
+            ->where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'menunggu')
+            ->firstOrFail();
+
+        // Buat Jadwal berdasarkan usulan konseli
+        $jadwal = Jadwal::create([
+            'id_konselor'    => $konselor->id_konselor,
+            'tanggal'        => $pengajuan->tanggal_usulan,
+            'jam'            => $pengajuan->jam_usulan,
+            'status_jadwal'  => 'terpakai',
+            'tipe_konseling' => $pengajuan->tipe_konseling_usulan,
         ]);
+
+        $pengajuan->update([
+            'status_pengajuan' => 'disetujui',
+            'id_jadwal'        => $jadwal->id_jadwal,
+        ]);
+
+        ActivityLog::create([
+            'id_user'   => auth()->user()->id_user,
+            'aktivitas' => 'Menyetujui pengajuan konseling dari ' . ($pengajuan->konseli?->user?->nama ?? '-'),
+        ]);
+
+        return back()->with('success', 'Pengajuan berhasil disetujui. Jadwal konseling telah dibuat.');
+    }
+
+    public function tolakPengajuan(Request $request, $id)
+    {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
+
+        $request->validate([
+            'alasan_penolakan' => ['required', 'string', 'max:500'],
+        ], [
+            'alasan_penolakan.required' => 'Alasan penolakan wajib diisi.',
+        ]);
+
+        $konselor  = $this->getKonselor();
+        $pengajuan = PengajuanKonseling::where('id_pengajuan', $id)
+            ->where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'menunggu')
+            ->firstOrFail();
+
+        $pengajuan->update([
+            'status_pengajuan' => 'ditolak',
+            'alasan_penolakan' => $request->alasan_penolakan,
+        ]);
+
+        ActivityLog::create([
+            'id_user'   => auth()->user()->id_user,
+            'aktivitas' => 'Menolak pengajuan konseling dari ' . ($pengajuan->konseli?->user?->nama ?? '-'),
+        ]);
+
+        return back()->with('success', 'Pengajuan telah ditolak.');
+    }
+
+    public function reschedulePengajuan(Request $request, $id)
+    {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
+
+        $request->validate([
+            'tanggal_reschedule' => ['required', 'date', 'after_or_equal:today'],
+            'jam_reschedule'     => ['required', 'date_format:H:i'],
+            'catatan_reschedule' => ['nullable', 'string', 'max:500'],
+        ], [
+            'tanggal_reschedule.required'       => 'Tanggal reschedule wajib diisi.',
+            'tanggal_reschedule.after_or_equal' => 'Tanggal tidak boleh di masa lalu.',
+            'jam_reschedule.required'           => 'Jam reschedule wajib diisi.',
+        ]);
+
+        $konselor  = $this->getKonselor();
+        $pengajuan = PengajuanKonseling::where('id_pengajuan', $id)
+            ->where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'menunggu')
+            ->firstOrFail();
+
+        $pengajuan->update([
+            'status_pengajuan'  => 'reschedule',
+            'tanggal_reschedule' => $request->tanggal_reschedule,
+            'jam_reschedule'    => $request->jam_reschedule,
+            'catatan_reschedule' => $request->catatan_reschedule,
+        ]);
+
+        ActivityLog::create([
+            'id_user'   => auth()->user()->id_user,
+            'aktivitas' => 'Mengusulkan reschedule untuk pengajuan dari ' . ($pengajuan->konseli?->user?->nama ?? '-'),
+        ]);
+
+        return back()->with('success', 'Usulan reschedule berhasil dikirim. Menunggu konfirmasi konseli.');
     }
 
     public function jadwal()
@@ -192,20 +286,22 @@ class KonselorController extends Controller
 
         $konselor = $this->getKonselor();
 
-        $jadwalHariIni = Jadwal::with(['pengajuan.konseli.user'])
+        // Jadwal yang sudah dikonfirmasi dari hari ini ke depan
+        $jadwalMendatang = Jadwal::with(['pengajuan.konseli.user'])
             ->where('id_konselor', $konselor->id_konselor)
-            ->whereDate('tanggal', Carbon::today())
+            ->whereDate('tanggal', '>=', Carbon::today())
+            ->orderBy('tanggal')
             ->orderBy('jam')
-            ->get()
-            ->map(fn($j) => [
-                'nama'   => $j->pengajuan?->konseli?->user?->nama ?? '(Belum ada konseli)',
-                'jam'    => Carbon::parse($j->jam)->format('H:i'),
-                'status' => $j->pengajuan?->status_pengajuan ?? $j->status_jadwal,
-            ]);
+            ->get();
 
-        return view('konselor.jadwal', [
-            'jadwalHariIni' => $jadwalHariIni,
-        ]);
+        // Pengajuan yang masih menunggu respons atau sedang reschedule
+        $pengajuanMenunggu = PengajuanKonseling::with(['konseli.user'])
+            ->where('id_konselor', $konselor->id_konselor)
+            ->whereIn('status_pengajuan', ['menunggu', 'reschedule'])
+            ->latest('created_at')
+            ->get();
+
+        return view('konselor.jadwal', compact('jadwalMendatang', 'pengajuanMenunggu'));
     }
 
     public function riwayat()
