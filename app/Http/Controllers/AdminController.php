@@ -174,11 +174,47 @@ class AdminController extends Controller
         return view('admin.konselor', compact('konselorPending', 'konselorAktif', 'konselorDitolak'));
     }
 
-    public function activityLog()
+    public function activityLog(Request $request)
     {
-        $activityLogs = collect([
-            ['waktu' => now(), 'user' => 'Sistem', 'role' => 'system', 'aktivitas' => 'Tidak ada aktivitas terbaru.'],
-        ]);
+        $query = \App\Models\ActivityLog::with('user')
+            ->latest('created_at');
+
+        // Filter: nama user
+        if ($request->filled('user')) {
+            $query->whereHas(
+                'user',
+                fn($q) =>
+                $q->where('nama', 'like', '%' . $request->user . '%')
+            );
+        }
+
+        // Filter: role
+        if ($request->filled('role')) {
+            $query->whereHas(
+                'user',
+                fn($q) =>
+                $q->where('role', $request->role)
+            );
+        }
+
+        // Filter: kata kunci aktivitas
+        if ($request->filled('aktivitas')) {
+            $query->where('aktivitas', 'like', '%' . $request->aktivitas . '%');
+        }
+
+        // Filter: tanggal
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        $activityLogs = $query->paginate(25)->withQueryString()
+            ->through(fn($log) => [
+                'waktu'     => $log->created_at,
+                'user'      => $log->user?->nama ?? '(User dihapus)',
+                'role'      => $log->user?->role ?? '-',
+                'aktivitas' => $log->aktivitas,
+            ]);
+
         return view('admin.activity-log', compact('activityLogs'));
     }
 }
