@@ -8,7 +8,8 @@ class ActivityLog extends Model
 {
     protected $table = 'activity_logs';
     protected $primaryKey = 'id_log';
-    public $timestamps = false;
+    public $timestamps = true;
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'id_user',
