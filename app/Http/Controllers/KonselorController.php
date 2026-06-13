@@ -342,20 +342,12 @@ class KonselorController extends Controller
 
         $konselor = $this->getKonselor();
 
-        $riwayatKonseling = PengajuanKonseling::with(['konseli.user', 'hasil'])
+        $riwayatKonseling = PengajuanKonseling::with(['konseli.user', 'hasil', 'jadwal', 'assessment'])
             ->where('id_konselor', $konselor->id_konselor)
             ->latest('created_at')
-            ->get()
-            ->map(fn($p) => [
-                'tanggal' => $p->created_at,
-                'nama'    => $p->konseli?->user?->nama ?? '-',
-                'status'  => $p->status_pengajuan,
-                'hasil'   => $p->hasil?->catatan_konseling ?? '-',
-            ]);
+            ->get();
 
-        return view('konselor.riwayat', [
-            'riwayatKonseling' => $riwayatKonseling,
-        ]);
+        return view('konselor.riwayat', compact('riwayatKonseling'));
     }
 
     public function profil()
