@@ -3,6 +3,7 @@
 @php
     $normalized = strtolower((string) $status);
     $classes = [
+        'reschedule' => 'bg-orange-100 text-orange-700',
         'pending' => 'bg-amber-100 text-amber-700',
         'menunggu' => 'bg-amber-100 text-amber-700',
         'baru' => 'bg-amber-100 text-amber-700',
@@ -20,6 +21,7 @@
     ];
 
     $labels = [
+        'reschedule' => 'Reschedule',
         'pending' => 'Menunggu',
         'menunggu' => 'Menunggu',
         'baru' => 'Menunggu',
@@ -37,6 +39,7 @@
     ];
 @endphp
 
-<span {{ $attributes->merge(['class' => 'inline-flex rounded-md px-3 py-1 text-xs font-semibold ' . ($classes[$normalized] ?? 'bg-slate-100 text-slate-600')]) }}>
+<span
+    {{ $attributes->merge(['class' => 'inline-flex rounded-md px-3 py-1 text-xs font-semibold ' . ($classes[$normalized] ?? 'bg-slate-100 text-slate-600')]) }}>
     {{ $labels[$normalized] ?? ucfirst($normalized) }}
 </span>

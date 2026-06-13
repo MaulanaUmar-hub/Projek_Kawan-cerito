@@ -84,6 +84,7 @@
                             <th class="px-6 py-4 font-semibold">Jadwal Resmi</th>
                             <th class="px-6 py-4 font-semibold">Tipe</th>
                             <th class="px-6 py-4 font-semibold">Status</th>
+                            <th class="px-6 py-4 font-semibold">Hasil</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -117,10 +118,45 @@
                                         <p class="mt-1 text-xs text-slate-400">{{ $p->alasan_penolakan }}</p>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4">
+                                    @if ($p->status_pengajuan === 'selesai' && $p->hasil)
+                                        <button type="button"
+                                            onclick="document.getElementById('hasil-{{ $p->id_pengajuan }}').classList.toggle('hidden')"
+                                            class="rounded-lg bg-sky-100 px-3 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-200">
+                                            Lihat Hasil
+                                        </button>
+                                    @elseif ($p->status_pengajuan === 'selesai')
+                                        <span class="text-xs text-slate-300">-</span>
+                                    @else
+                                        <span class="text-xs text-slate-300">-</span>
+                                    @endif
+                                </td>
                             </tr>
+                            {{-- Expandable hasil konseling --}}
+                            @if ($p->status_pengajuan === 'selesai' && $p->hasil)
+                                <tr id="hasil-{{ $p->id_pengajuan }}" class="hidden bg-sky-50">
+                                    <td colspan="6" class="px-6 py-5">
+                                        <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-sky-600">
+                                            Catatan Konseling</p>
+                                        <p class="text-sm leading-6 text-slate-600">{{ $p->hasil->catatan_konseling }}
+                                        </p>
+                                        @if ($p->hasil->rekomendasi)
+                                            <p
+                                                class="mt-3 mb-1 text-xs font-semibold uppercase tracking-wide text-sky-600">
+                                                Rekomendasi Tindak Lanjut</p>
+                                            <p class="text-sm leading-6 text-slate-600">{{ $p->hasil->rekomendasi }}
+                                            </p>
+                                        @endif
+                                        <p class="mt-3 text-xs text-slate-400">
+                                            Dicatat pada
+                                            {{ \Illuminate\Support\Carbon::parse($p->hasil->created_at)->translatedFormat('d M Y, H:i') }}
+                                        </p>
+                                    </td>
+                                </tr>
+                            @endif
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                     Belum ada pengajuan.
                                     <a href="{{ route('konseli.pengajuan') }}"
                                         class="ml-1 font-semibold text-indigo-500 underline">Ajukan sekarang</a>
