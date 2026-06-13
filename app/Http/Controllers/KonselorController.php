@@ -6,6 +6,7 @@ use App\Models\Konselor;
 use App\Models\PengajuanKonseling;
 use App\Models\Jadwal;
 use App\Models\ActivityLog;
+use App\Models\HasilKonseling;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
@@ -169,7 +170,7 @@ class KonselorController extends Controller
 
         $konselor = $this->getKonselor();
 
-        $pengajuanList = PengajuanKonseling::with(['konseli.user', 'assessment', 'jadwal'])
+        $pengajuanList = PengajuanKonseling::with(['konseli.user', 'assessment', 'jadwal', 'hasil'])
             ->where('id_konselor', $konselor->id_konselor)
             ->latest('created_at')
             ->get();
@@ -179,6 +180,7 @@ class KonselorController extends Controller
             'menunggu'   => $pengajuanList->where('status_pengajuan', 'menunggu')->count(),
             'reschedule' => $pengajuanList->where('status_pengajuan', 'reschedule')->count(),
             'disetujui'  => $pengajuanList->where('status_pengajuan', 'disetujui')->count(),
+            'selesai'    => $pengajuanList->where('status_pengajuan', 'selesai')->count(),
         ];
 
         return view('konselor.pengajuan', compact('pengajuanList', 'counts'));
@@ -278,6 +280,44 @@ class KonselorController extends Controller
         ]);
 
         return back()->with('success', 'Usulan reschedule berhasil dikirim. Menunggu konfirmasi konseli.');
+    }
+
+    public function selesaiKonseling(Request $request, $id)
+    {
+        if ($redirect = $this->cekStatusKonselor()) return $redirect;
+
+        $request->validate([
+            'catatan_konseling' => ['required', 'string', 'max:3000'],
+            'rekomendasi'       => ['nullable', 'string', 'max:1000'],
+        ], [
+            'catatan_konseling.required' => 'Catatan hasil konseling wajib diisi.',
+            'catatan_konseling.max'      => 'Catatan maksimal 3000 karakter.',
+        ]);
+
+        $konselor  = $this->getKonselor();
+        $pengajuan = PengajuanKonseling::where('id_pengajuan', $id)
+            ->where('id_konselor', $konselor->id_konselor)
+            ->where('status_pengajuan', 'disetujui')
+            ->firstOrFail();
+
+        HasilKonseling::create([
+            'id_pengajuan'      => $pengajuan->id_pengajuan,
+            'catatan_konseling' => $request->catatan_konseling,
+            'rekomendasi'       => $request->rekomendasi,
+        ]);
+
+        $pengajuan->update(['status_pengajuan' => 'selesai']);
+
+        if ($pengajuan->jadwal) {
+            $pengajuan->jadwal->update(['status_jadwal' => 'selesai']);
+        }
+
+        ActivityLog::create([
+            'id_user'   => auth()->user()->id_user,
+            'aktivitas' => 'Menyelesaikan sesi konseling dengan ' . ($pengajuan->konseli?->user?->nama ?? '-'),
+        ]);
+
+        return back()->with('success', 'Sesi konseling selesai. Hasil konseling telah disimpan.');
     }
 
     public function jadwal()

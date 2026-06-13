@@ -242,7 +242,7 @@ class KonseliController extends Controller
         $konseli = $this->getKonseli();
 
         $riwayat = PengajuanKonseling::where('id_konseli', $konseli->id_konseli)
-            ->with(['konselor.user', 'jadwal'])
+            ->with(['konselor.user', 'jadwal', 'hasil'])
             ->latest('created_at')
             ->get();
 
@@ -257,6 +257,8 @@ class KonseliController extends Controller
 
         $jadwals = PengajuanKonseling::where('id_konseli', $konseli->id_konseli)
             ->with(['konselor.user', 'jadwal'])
+            ->whereIn('status_pengajuan', ['disetujui', 'selesai', 'menunggu', 'reschedule'])
+            ->latest('created_at')
             ->get();
 
         return view('konseli.jadwal', compact('jadwals'));

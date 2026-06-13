@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:konselor'])->prefix('konselor')->group(function
     Route::post('/pengajuan/{id}/setujui', [KonselorController::class, 'setujuiPengajuan'])->name('konselor.pengajuan.setujui');
     Route::post('/pengajuan/{id}/tolak', [KonselorController::class, 'tolakPengajuan'])->name('konselor.pengajuan.tolak');
     Route::post('/pengajuan/{id}/reschedule', [KonselorController::class, 'reschedulePengajuan'])->name('konselor.pengajuan.reschedule');
+    Route::post('/pengajuan/{id}/selesai', [KonselorController::class, 'selesaiKonseling'])->name('konselor.pengajuan.selesai');
     Route::get('/jadwal', [KonselorController::class, 'jadwal'])->name('konselor.jadwal');
     Route::get('/riwayat', [KonselorController::class, 'riwayat'])->name('konselor.riwayat');
     Route::get('/profil', [KonselorController::class, 'profil'])->name('konselor.profil');
