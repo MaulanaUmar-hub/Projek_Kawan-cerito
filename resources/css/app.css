@@ -1,3 +1,113 @@
+@import "./dashboard.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --blue-primary: #5B67F1;
+    --blue-dark: #4854E8;
+    --mint: #72D6C9;
+    --bg-soft: #F5F7FF;
+    --text-dark: #111827;
+    --text-light: #6B7280;
+    --border-soft: #E5E7EB;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+}
+
+.btn-primary {
+    @apply w-full rounded-2xl py-4 font-semibold text-white transition-all duration-300;
+    background: linear-gradient(135deg, var(--blue-primary), #7482FF);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.input-auth {
+    @apply w-full rounded-2xl border border-gray-200 px-4 py-4 outline-none transition-all duration-300;
+}
+
+.input-auth:focus {
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 4px rgba(91, 103, 241, 0.1);
+}
+
+.card-soft {
+    @apply rounded-[32px] bg-white shadow-sm;
+}
+
+.auth-hero-title {
+    font-size: clamp(3rem, 4.2vw, 4.8rem);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #0B132B;
+
+    max-width: 700px;
+}
+
+.auth-hero-accent {
+    display: inline-block;
+    background: linear-gradient(120deg, #6c63ff 0%, #7b8cff 32%, #5bd6d0 68%, #9be7c9 100%);
+    background-size: 140% 140%;
+    background-position: 50% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-style: normal;
+    font-family: 'Lora', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    padding-bottom: 0.08em;
+}
+
+.auth-hero-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #6B7280;
+
+    max-width: 540px;
+}
+
+.auth-left-panel {
+    justify-content: flex-start;
+    gap: clamp(2.25rem, 4vh, 3.75rem);
+}
+
+.auth-brand {
+    margin-bottom: clamp(3.5rem, 7vh, 5rem);
+}
+
+.auth-feature-grid {
+    margin-top: clamp(1.75rem, 3.5vh, 3rem);
+}
+
+@media (max-width: 1024px) {
+    .auth-hero-title {
+        font-size: clamp(2.5rem, 9vw, 4rem);
+    }
+}
+
+@media (max-width: 640px) {
+    .auth-hero-title {
+        font-size: 2.35rem;
+        line-height: 1.14;
+    }
+
+    .auth-hero-subtitle {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}

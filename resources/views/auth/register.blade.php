@@ -1,92 +1,99 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+@extends('layouts.guest')
+
+@section('content')
+    <form method="POST" action="{{ route('register') }}" novalidate>
         @csrf
 
-        <!-- Nama -->
-        <div>
-            <x-input-label for="nama" :value="__('Nama Lengkap')" />
-            <x-text-input id="nama" class="block mt-1 w-full" type="text" name="nama" :value="old('nama')" required
-                autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('nama')" class="mt-2" />
-        </div>
-
-        <!-- Asal -->
-        <div class="mt-4">
-            <x-input-label for="asal" :value="__('Asal Instansi/Sekolah')" />
-            <x-text-input id="asal" class="block mt-1 w-full" type="text" name="asal" :value="old('asal')"
-                autocomplete="off" />
-            <x-input-error :messages="$errors->get('asal')" class="mt-2" />
-        </div>
-
-        <!-- Email -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
-                required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- No HP -->
-        <div class="mt-4">
-            <x-input-label for="no_hp" :value="__('Nomor HP')" />
-            <x-text-input id="no_hp" class="block mt-1 w-full" type="text" name="no_hp" :value="old('no_hp')"
-                autocomplete="off" />
-            <x-input-error :messages="$errors->get('no_hp')" class="mt-2" />
-        </div>
-
-        <!-- Gender -->
-        <div class="mt-4">
-            <x-input-label :value="__('Jenis Kelamin')" />
-            <div class="flex gap-4 mt-1">
-                <label class="flex items-center gap-2 text-sm text-gray-700">
-                    <input type="radio" name="gender" value="L" {{ old('gender') == 'L' ? 'checked' : '' }}
-                        required />
-                    Laki-laki
-                </label>
-                <label class="flex items-center gap-2 text-sm text-gray-700">
-                    <input type="radio" name="gender" value="P" {{ old('gender') == 'P' ? 'checked' : '' }} />
-                    Perempuan
-                </label>
+        @if ($errors->any())
+            <div class="mb-3 rounded-2xl border border-red-100 bg-red-50 px-5 py-2.5 text-sm font-medium text-red-600">
+                Periksa kembali data pendaftaranmu.
             </div>
-            <x-input-error :messages="$errors->get('gender')" class="mt-2" />
+        @endif
+
+        <div class="space-y-3">
+            <div>
+                <label for="nama" class="mb-1 block font-semibold text-[#111827]">
+                    Nama / Nama Samaran
+                </label>
+                
+                <input
+                    id="nama"
+                    type="text"
+                    name="nama"
+                    value="{{ old('nama') }}"
+                    placeholder="Contoh: Maulana atau Cerito01"
+                    class="w-full rounded-2xl border px-5 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('nama') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                
+                <p class="mt-0.5 text-xs leading-normal text-slate-500">
+                    Boleh gunakan nama asli atau nama samaran yang membuatmu nyaman.
+                </p>
+                @error('nama')
+                    <p class="mt-0.5 text-xs font-medium text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="email" class="mb-1 block font-semibold text-[#111827]">
+                    Email
+                </label>
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="Masukkan email Anda"
+                    class="w-full rounded-2xl border px-5 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('email') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('email')
+                    <p class="mt-0.5 text-xs font-medium text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password" class="mb-1 block font-semibold text-[#111827]">
+                    Password
+                </label>
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    placeholder="Minimal 8 karakter"
+                    class="w-full rounded-2xl border px-5 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('password')
+                    <p class="mt-0.5 text-xs font-medium text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="mb-1 block font-semibold text-[#111827]">
+                    Konfirmasi Password
+                </label>
+                <input
+                    id="password_confirmation"
+                    type="password"
+                    name="password_confirmation"
+                    placeholder="Ulangi password Anda"
+                    class="w-full rounded-2xl border px-5 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password_confirmation') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                >
+                @error('password_confirmation')
+                    <p class="mt-0.5 text-xs font-medium text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
 
-        <!-- Role -->
-        <div class="mt-4">
-            <x-input-label for="role" :value="__('Daftar Sebagai')" />
-            <select id="role" name="role"
-                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                <option value="konseli" {{ old('role') == 'konseli' ? 'selected' : '' }}>Konseli</option>
-                <option value="konselor" {{ old('role') == 'konselor' ? 'selected' : '' }}>Konselor</option>
-            </select>
-            <x-input-error :messages="$errors->get('role')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Konfirmasi Password')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                name="password_confirmation" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                href="{{ route('login') }}">
-                {{ __('Sudah punya akun?') }}
+       
+        <div class="mt-10 flex flex-col items-center justify-between gap-4 md:flex-row">
+            <a href="{{ route('login') }}" class="text-sm text-blue-500 transition-all duration-300 hover:text-indigo-500">
+                Sudah punya akun?
             </a>
 
-            <x-primary-button class="ms-4">
-                {{ __('Daftar') }}
-            </x-primary-button>
+            <button
+                type="submit"
+                class="w-full rounded-2xl bg-gradient-to-r from-[#5B67F1] to-[#7482FF] px-10 py-2.5 font-bold text-white shadow-lg shadow-indigo-100 transition-all duration-300 hover:scale-[1.01] md:w-auto">
+                Daftar
+            </button>
         </div>
     </form>
-</x-guest-layout>
+@endsection

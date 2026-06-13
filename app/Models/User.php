@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,16 +9,15 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    protected $primaryKey = 'id_user';
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     protected $fillable = [
         'nama',
-        'asal',
         'email',
         'password',
-        'no_hp',
-        'gender',
         'role',
     ];
 
@@ -32,11 +30,12 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
-    // Helper cek role
+    // ─── Role helpers ────────────────────────────────────────────────────────
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -50,29 +49,20 @@ class User extends Authenticatable
         return $this->role === 'konselor';
     }
 
-    // Relasi
-    public function assessments()
+    // ─── Relations ───────────────────────────────────────────────────────────
+
+    public function konseli()
     {
-        return $this->hasMany(Assessment::class, 'id_user');
+        return $this->hasOne(Konseli::class, 'id_user', 'id_user');
     }
 
-    public function jadwals()
+    public function konselor()
     {
-        return $this->hasMany(Jadwal::class, 'id_konselor');
-    }
-
-    public function pengajuanAsKonseli()
-    {
-        return $this->hasMany(PengajuanKonseling::class, 'id_konseli');
-    }
-
-    public function pengajuanAsKonselor()
-    {
-        return $this->hasMany(PengajuanKonseling::class, 'id_konselor');
+        return $this->hasOne(Konselor::class, 'id_user', 'id_user');
     }
 
     public function activityLogs()
     {
-        return $this->hasMany(ActivityLog::class, 'id_user');
+        return $this->hasMany(ActivityLog::class, 'id_user', 'id_user');
     }
 }
