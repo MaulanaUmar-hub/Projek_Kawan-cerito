@@ -24,8 +24,8 @@
             <p class="mt-2 text-3xl font-bold text-kc-heading">{{ $value }}</p>
         </div>
 
-        <div class="grid h-11 w-11 place-items-center rounded-lg text-lg font-bold" style="background:{{ $selected['bg'] }};color:{{ $selected['text'] }};">
-            {{ $icon }}
+        <div class="grid h-11 w-11 place-items-center rounded-lg text-xl font-bold" style="background:{{ $selected['bg'] }};color:{{ $selected['text'] }};">
+            <i class="{{ $icon }}"></i>
         </div>
     </div>
 </article>
