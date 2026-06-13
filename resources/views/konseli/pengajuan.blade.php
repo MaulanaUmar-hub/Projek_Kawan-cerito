@@ -2,6 +2,33 @@
     <x-slot name="dashboardRole">konseli</x-slot>
     <x-slot name="headerTitle">Ajukan Konseling</x-slot>
 
+    <style>
+        .konselor-carousel {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: .75rem;
+            scroll-snap-type: x mandatory;
+        }
+
+        .konselor-card {
+            width: 280px;
+            min-height: 280px;
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+        }
+
+        .konselor-card.is-selected {
+            border-color: #696cff;
+            background: rgba(105, 108, 255, .08);
+            box-shadow: 0 10px 24px rgba(105, 108, 255, .16);
+        }
+
+        .konselor-card.is-selected .konselor-card-check {
+            display: block;
+        }
+    </style>
+
     <section class="space-y-6">
         <x-dashboard.page-header title="Ajukan Konseling"
             subtitle="Pilih konselor dan usulkan waktu yang sesuai. Konselor akan mengkonfirmasi atau menawarkan waktu lain." />
@@ -35,6 +62,9 @@
                         Belum ada konselor aktif saat ini. Coba kembali beberapa saat lagi.
                     </div>
                 @else
+                    @php
+                        $selectedKonselor = old('id_konselor');
+                    @endphp
                     <form method="POST" action="{{ route('konseli.pengajuan.store') }}" class="space-y-5">
                         @csrf
 
@@ -58,18 +88,84 @@
 
                         {{-- Konselor --}}
                         <div>
-                            <label for="id_konselor" class="mb-2 block text-sm font-semibold text-kc-heading">
-                                Konselor <span class="text-red-400">*</span>
-                            </label>
-                            <select id="id_konselor" name="id_konselor"
-                                class="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 {{ $errors->has('id_konselor') ? 'border-red-300' : 'border-slate-200' }}">
-                                <option value="">Pilih konselor</option>
+                            <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
+                                <div>
+                                    <p class="text-sm font-semibold text-kc-heading">
+                                        Pilih Konselor <span class="text-red-400">*</span>
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-400">
+                                        Geser kartu untuk melihat profil singkat sebelum memilih konselor.
+                                    </p>
+                                </div>
+                                <p id="selected-konselor-label" class="text-xs font-semibold text-indigo-600">
+                                    {{ $selectedKonselor ? 'Konselor sudah dipilih' : 'Belum memilih konselor' }}
+                                </p>
+                            </div>
+
+                            <input id="id_konselor" type="hidden" name="id_konselor" value="{{ $selectedKonselor }}">
+
+                            <div class="konselor-carousel" aria-label="Pilihan konselor">
                                 @foreach ($konselors as $k)
-                                    <option value="{{ $k['id'] }}" @selected(old('id_konselor') == $k['id'])>
-                                        {{ $k['nama'] }}{{ $k['spesialisasi'] !== '-' ? ' — ' . $k['spesialisasi'] : '' }}
-                                    </option>
+                                    @php
+                                        $isSelected = (string) $selectedKonselor === (string) $k['id'];
+                                        $initial = strtoupper(mb_substr($k['nama'], 0, 1));
+                                        $peminatanTags = collect(explode(',', $k['peminatan'] ?? ''))
+                                            ->map(fn($tag) => trim($tag))
+                                            ->filter()
+                                            ->take(3);
+                                    @endphp
+                                    <button type="button" data-konselor-card data-konselor-id="{{ $k['id'] }}"
+                                        data-konselor-name="{{ $k['nama'] }}"
+                                        aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
+                                        class="konselor-card group rounded-2xl border p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/40 {{ $isSelected ? 'is-selected' : 'border-slate-200 bg-white' }}">
+                                        <div class="flex items-start gap-4">
+                                            @if ($k['foto_url'])
+                                                <img src="{{ $k['foto_url'] }}" alt="Foto {{ $k['nama'] }}"
+                                                    class="h-16 w-16 rounded-2xl object-cover ring-4 ring-indigo-50">
+                                            @else
+                                                <span
+                                                    class="grid h-16 w-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-300 text-xl font-bold text-white place-items-center ring-4 ring-indigo-50">
+                                                    {{ $initial }}
+                                                </span>
+                                            @endif
+
+                                            <div class="min-w-0 flex-1">
+                                                <p class="truncate text-base font-bold text-kc-heading">{{ $k['nama'] }}</p>
+                                                <p class="mt-0.5 text-xs font-semibold text-indigo-500">{{ $k['spesialisasi'] }}</p>
+                                            </div>
+                                        </div>
+
+                                        <p class="mt-4 min-h-[60px] text-sm leading-6 text-slate-500">
+                                            {{ $k['catatan'] ?: 'Konselor ini siap mendampingi proses konselingmu dengan pendekatan yang nyaman dan suportif.' }}
+                                        </p>
+
+                                        <div class="mt-4 flex flex-wrap gap-2">
+                                            @forelse ($peminatanTags as $tag)
+                                                <span
+                                                    class="rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-semibold text-indigo-600">
+                                                    {{ $tag }}
+                                                </span>
+                                            @empty
+                                                <span class="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                                                    Peminatan belum diisi
+                                                </span>
+                                            @endforelse
+                                        </div>
+
+                                        <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                                            <span class="text-xs text-slate-400">Kontak</span>
+                                            <span class="max-w-[160px] truncate text-xs font-semibold text-kc-heading">
+                                                {{ $k['whatsapp'] ?: $k['no_hp'] }}
+                                            </span>
+                                        </div>
+
+                                        <span data-konselor-check
+                                            class="konselor-card-check mt-4 hidden rounded-lg bg-indigo-600 px-3 py-2 text-center text-xs font-semibold text-white">
+                                            Terpilih
+                                        </span>
+                                    </button>
                                 @endforeach
-                            </select>
+                            </div>
                             @error('id_konselor')
                                 <p class="mt-1 text-xs font-medium text-red-500">{{ $message }}</p>
                             @enderror
@@ -152,11 +248,27 @@
 
                 <article class="kc-card p-6">
                     <h2 class="text-base font-semibold text-kc-heading">Konselor Tersedia</h2>
+                    <p class="mt-1 text-xs leading-5 text-slate-400">
+                        Ringkasan cepat konselor aktif yang dapat kamu pilih pada form.
+                    </p>
                     <div class="mt-4 space-y-3">
                         @forelse ($konselors as $k)
-                            <div class="rounded-lg border border-slate-100 p-4">
-                                <p class="text-sm font-semibold text-kc-heading">{{ $k['nama'] }}</p>
-                                <p class="mt-0.5 text-xs text-slate-400">{{ $k['spesialisasi'] }}</p>
+                            <div class="rounded-xl border border-slate-100 p-4">
+                                <div class="flex items-center gap-3">
+                                    @if ($k['foto_url'])
+                                        <img src="{{ $k['foto_url'] }}" alt="Foto {{ $k['nama'] }}"
+                                            class="h-10 w-10 rounded-xl object-cover">
+                                    @else
+                                        <span
+                                            class="grid h-10 w-10 place-items-center rounded-xl bg-indigo-50 text-sm font-bold text-indigo-600">
+                                            {{ strtoupper(mb_substr($k['nama'], 0, 1)) }}
+                                        </span>
+                                    @endif
+                                    <div class="min-w-0">
+                                        <p class="truncate text-sm font-semibold text-kc-heading">{{ $k['nama'] }}</p>
+                                        <p class="mt-0.5 truncate text-xs text-slate-400">{{ $k['spesialisasi'] }}</p>
+                                    </div>
+                                </div>
                             </div>
                         @empty
                             <p class="text-sm text-slate-400">Belum ada konselor aktif.</p>
@@ -166,4 +278,34 @@
             </aside>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('id_konselor');
+            const label = document.getElementById('selected-konselor-label');
+            const cards = document.querySelectorAll('[data-konselor-card]');
+
+            const setSelected = (selectedCard) => {
+                cards.forEach((card) => {
+                    const isActive = card === selectedCard;
+                    card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                    card.classList.toggle('is-selected', isActive);
+                    card.classList.toggle('border-slate-200', !isActive);
+                    card.classList.toggle('bg-white', !isActive);
+                    card.querySelector('[data-konselor-check]')?.classList.toggle('hidden', !isActive);
+                });
+
+                input.value = selectedCard.dataset.konselorId;
+                label.textContent = `${selectedCard.dataset.konselorName} dipilih`;
+            };
+
+            cards.forEach((card) => {
+                if (input.value && card.dataset.konselorId === input.value) {
+                    setSelected(card);
+                }
+
+                card.addEventListener('click', () => setSelected(card));
+            });
+        });
+    </script>
 </x-app-layout>
