@@ -8,7 +8,8 @@ class HasilKonseling extends Model
 {
     protected $table = 'hasil_konseling';
     protected $primaryKey = 'id_hasil';
-    public $timestamps = false;
+    public $timestamps = true;
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'id_pengajuan',
