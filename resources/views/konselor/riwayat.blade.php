@@ -16,7 +16,7 @@
             <div class="grid gap-6 p-6 lg:grid-cols-[1fr_280px] lg:p-8">
                 <div>
                     <p class="text-sm font-semibold text-indigo-500">Dokumentasi Konseling</p>
-                    <h2 class="mt-3 text-2xl font-bold text-kc-heading md:text-3xl">Riwayat Konseling</h2>
+                    <h2 class="mt-3 text-2xl font-bold text-kc-heading md:text-3xl">Rekap Konseling</h2>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
                         Telusuri konseling yang pernah ditangani, cek statusnya, dan gunakan hasil konseling sebagai bahan tindak lanjut.
                     </p>
