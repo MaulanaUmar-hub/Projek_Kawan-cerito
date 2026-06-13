@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawan Cerito – Tempat Bercerita dan Didengar</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/brand/kawan-cerito-logo.png') }}">
 
     {{-- Tailwind CSS CDN (ganti dengan build Tailwind jika sudah setup Vite/Mix) --}}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -177,16 +179,12 @@
     <nav class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             {{-- Logo --}}
-            <a href="#" class="flex items-center gap-2.5">
-                <div
-                    class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-teal-400 flex items-center justify-center shadow-md">
-                    {{-- Heart icon --}}
-                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
+            <a href="#beranda" class="flex items-center gap-2.5">
+                <img
+                    src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
+                    alt="Logo Kawan Cerito"
+                    class="w-10 h-10 rounded-xl object-cover shadow-md"
+                >
                 <div>
                     <span class="font-bold text-slate-900 text-lg leading-tight">Kawan Cerito</span>
                     <p class="text-[10px] text-slate-400 font-medium leading-tight -mt-0.5">Telekonseling Kesehatan
@@ -759,15 +757,12 @@
             <div class="grid md:grid-cols-4 gap-10 mb-12">
                 {{-- Brand --}}
                 <div class="md:col-span-2">
-                    <a href="#" class="flex items-center gap-2.5 mb-4">
-                        <div
-                            class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-teal-400 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
+                    <a href="#beranda" class="flex items-center gap-2.5 mb-4">
+                        <img
+                            src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
+                            alt="Logo Kawan Cerito"
+                            class="w-10 h-10 rounded-xl object-cover shadow-md"
+                        >
                         <span class="font-bold text-white text-lg">Kawan Cerito</span>
                     </a>
                     <p class="text-sm leading-relaxed max-w-xs">

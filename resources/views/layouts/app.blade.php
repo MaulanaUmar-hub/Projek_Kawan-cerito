@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Kawan Cerito' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/brand/kawan-cerito-logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,7 +65,12 @@
     <div class="dashboard-shell">
         <aside class="dashboard-sidebar">
             <a href="{{ route($brandHref) }}" class="dashboard-brand">
-                <span class="brand-mark">KC</span>
+                <img
+                    src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
+                    alt="Logo Kawan Cerito"
+                    class="brand-logo"
+                    style="width: 38px; height: 38px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 14px rgba(105, 108, 255, 0.16);"
+                >
                 <span>Kawan Cerito</span>
             </a>
 

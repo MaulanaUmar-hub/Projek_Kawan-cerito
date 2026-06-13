@@ -7,6 +7,8 @@
         content="width=device-width, initial-scale=1.0">
 
     <title>Kawan Cerito</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/brand/kawan-cerito-logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +35,12 @@
 
                     <div class="auth-brand flex items-center gap-5 mb-0">
 
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#5B67F1] to-[#72D6C9]"></div>
+                        <img
+                            src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
+                            alt="Logo Kawan Cerito"
+                            class="h-14 w-14 rounded-2xl object-cover shadow-sm"
+                            style="width: 56px; height: 56px; border-radius: 18px; object-fit: cover;"
+                        >
 
                         <div>
                             <h1 class="text-3xl leading-none font-extrabold tracking-[-0.04em] text-[#0B132B]">
