@@ -17,6 +17,7 @@
         'resources/css/app.css',
         'resources/js/app.js'
     ])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     @php
@@ -105,9 +106,9 @@
                     </a>
                 @endforeach
 
-                <form method="POST" action="{{ route('logout') }}" data-confirm-logout>
+                <form id="logout-form" method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="menu-logout" title="Logout">
+                    <button type="button" class="menu-logout" onclick="confirmLogout()">
                         <span class="menu-icon"> <i class="bi bi-box-arrow-right"></i></span>
                         <span class="menu-label">Logout</span>
                     </button>
@@ -270,5 +271,24 @@
             });
         });
     </script>
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: 'Apakah Anda yakin ingin keluar dari akun?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#6366f1',
+        cancelButtonColor: '#ef4444'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logout-form').submit();
+        }
+    });
+}
+</script>
+
 </body>
 </html>
