@@ -72,50 +72,46 @@
         </div>
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <article id="jadwal-konseling" class="kc-card p-6">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <p class="text-sm text-slate-400">Konseling Berikutnya</p>
-                        <h2 class="mt-1 text-lg font-semibold text-kc-heading">
-                            {{ $formatDate($jadwalBerikutnya->jadwal->tanggal ?? ($jadwalBerikutnya->tanggal ?? null)) }}
-                        </h2>
-                    </div>
+            <article id="riwayat-konseling" class="kc-card xl:col-span-2">
+                <div class="border-b border-slate-100 px-6 py-5">
+                    <h2 class="text-lg font-semibold text-kc-heading">Riwayat Konseling Terbaru</h2>
+                </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full min-w-[640px] text-left text-sm">
-                            <thead class="text-xs uppercase tracking-wide text-slate-400">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[640px] text-left text-sm">
+                        <thead class="text-xs uppercase tracking-wide text-slate-400">
+                            <tr>
+                                <th class="px-6 py-4 font-semibold">Tanggal</th>
+                                <th class="px-6 py-4 font-semibold">Konselor</th>
+                                <th class="px-6 py-4 font-semibold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse ($riwayatTerbaru as $item)
+                                @php
+                                    $status = strtolower($item->status_pengajuan ?? ($item->status ?? 'menunggu'));
+                                    $tanggal = $item->tanggal ?? ($item->created_at ?? null);
+                                    $konselor =
+                                        $item->konselor?->user?->nama ??
+                                        ($item->konselor?->nama ?? ($item->nama_konselor ?? 'Belum ditentukan'));
+                                @endphp
                                 <tr>
-                                    <th class="px-6 py-4 font-semibold">Tanggal</th>
-                                    <th class="px-6 py-4 font-semibold">Konselor</th>
-                                    <th class="px-6 py-4 font-semibold">Status</th>
+                                    <td class="px-6 py-4 text-kc-heading">{{ $formatDate($tanggal) }}</td>
+                                    <td class="px-6 py-4">{{ $konselor }}</td>
+                                    <td class="px-6 py-4">
+                                        <x-dashboard.status-badge :status="$status" />
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                @forelse ($riwayatTerbaru as $item)
-                                    @php
-                                        $status = strtolower($item->status_pengajuan ?? ($item->status ?? 'menunggu'));
-                                        $tanggal = $item->tanggal ?? ($item->created_at ?? null);
-                                        $konselor =
-                                            $item->konselor?->user?->nama ??
-                                            ($item->konselor?->nama ?? ($item->nama_konselor ?? 'Belum ditentukan'));
-                                    @endphp
-                                    <tr>
-                                        <td class="px-6 py-4 text-kc-heading">{{ $formatDate($tanggal) }}</td>
-                                        <td class="px-6 py-4">{{ $konselor }}</td>
-                                        <td class="px-6 py-4">
-                                            <x-dashboard.status-badge :status="$status" />
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="px-6 py-8 text-center text-slate-400">
-                                            Belum ada riwayat konseling.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-6 py-8 text-center text-slate-400">
+                                        Belum ada riwayat konseling.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </article>
 
             <article class="kc-card p-6">
@@ -142,76 +138,81 @@
         </div>
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            <article id="riwayat-konseling" class="kc-card xl:col-span-2">
-                <div class="border-b border-slate-100 px-6 py-5">
-                    <h2 class="text-lg font-semibold text-kc-heading">Riwayat Konseling Terbaru</h2>
-                </div>
-                <span class="grid h-10 w-10 place-items-center rounded-lg bg-sky-50 text-sky-600">J</span>
-        </div>
-        <div class="mt-5 space-y-3 text-sm">
-            <div class="flex justify-between gap-4">
-                <span class="text-slate-400">Jam</span>
-                <span
-                    class="font-semibold text-kc-heading">{{ $jadwalBerikutnya->jadwal->jam ?? ($jadwalBerikutnya->jam ?? '-') }}</span>
-            </div>
-            <div class="flex justify-between gap-4">
-                <span class="text-slate-400">Konselor</span>
-                <span class="text-right font-semibold text-kc-heading">
-                    {{ $jadwalBerikutnya->konselor?->user?->nama ?? ($jadwalBerikutnya->konselor?->nama ?? 'Belum ditentukan') }}
-                </span>
-            </div>
-            <div class="flex justify-between gap-4">
-                <span class="text-slate-400">Status</span>
-                @php
-                    $jadwalStatus = strtolower(
-                        $jadwalBerikutnya->status_pengajuan ??
-                            ($jadwalBerikutnya->jadwal->status_jadwal ?? ($jadwalBerikutnya->status ?? 'menunggu')),
-                    );
-                @endphp
-                <x-dashboard.status-badge :status="$jadwalStatus" />
-            </div>
-        </div>
-        </article>
-
-        <article id="assessment-awal" class="kc-card p-6">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <p class="text-sm text-slate-400">Assessment Terakhir</p>
-                    <h2 class="mt-1 text-lg font-semibold text-kc-heading">
-                        {{ $formatDate($assessmentTerakhir->created_at ?? null) }}
-                    </h2>
-                </div>
-                <span class="grid h-10 w-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600">A</span>
-            </div>
-            <p class="mt-5 text-sm leading-6">
-                {{ $assessmentTerakhir->ringkasan_hasil ?? ($assessmentTerakhir->hasil ?? ($assessmentTerakhir->keluhan ?? 'Belum ada assessment yang tercatat.')) }}
-            </p>
-            <a href="{{ route('konseli.assessment') }}"
-                class="mt-5 inline-flex rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
-                Lihat Detail
-            </a>
-        </article>
-
-        <article class="kc-card p-6">
-            <h2 class="text-lg font-semibold text-kc-heading">Aktivitas Terbaru</h2>
-            <div class="mt-5 space-y-5">
-                @forelse ($aktivitas as $activity)
-                    <div class="flex gap-3">
-                        <span class="mt-1 h-2.5 w-2.5 flex-none rounded-full bg-indigo-500"></span>
-                        <div>
-                            <p class="text-sm font-semibold text-kc-heading">
-                                {{ $activity->aktivitas ?? ($activity->description ?? 'Aktivitas pengguna') }}
-                            </p>
-                            <p class="mt-1 text-xs text-slate-400">
-                                {{ $formatDate($activity->created_at ?? null) }}
-                            </p>
-                        </div>
+            <article id="jadwal-konseling" class="kc-card p-6">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm text-slate-400">Konseling Berikutnya</p>
+                        <h2 class="mt-1 text-lg font-semibold text-kc-heading">
+                            {{ $formatDate($jadwalBerikutnya->jadwal->tanggal ?? ($jadwalBerikutnya->tanggal ?? null)) }}
+                        </h2>
                     </div>
-                @empty
-                    <p class="text-sm text-slate-400">Belum ada aktivitas terbaru.</p>
-                @endforelse
-            </div>
-        </article>
+                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-sky-50 text-sky-600">J</span>
+                </div>
+
+                <div class="mt-5 space-y-3 text-sm">
+                    <div class="flex justify-between gap-4">
+                        <span class="text-slate-400">Jam</span>
+                        <span
+                            class="font-semibold text-kc-heading">{{ $jadwalBerikutnya->jadwal->jam ?? ($jadwalBerikutnya->jam ?? '-') }}</span>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <span class="text-slate-400">Konselor</span>
+                        <span class="text-right font-semibold text-kc-heading">
+                            {{ $jadwalBerikutnya->konselor?->user?->nama ?? ($jadwalBerikutnya->konselor?->nama ?? 'Belum ditentukan') }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between gap-4">
+                        <span class="text-slate-400">Status</span>
+                        @php
+                            $jadwalStatus = strtolower(
+                                $jadwalBerikutnya->status_pengajuan ??
+                                    ($jadwalBerikutnya->jadwal->status_jadwal ?? ($jadwalBerikutnya->status ?? 'menunggu')),
+                            );
+                        @endphp
+                        <x-dashboard.status-badge :status="$jadwalStatus" />
+                    </div>
+                </div>
+            </article>
+
+            <article id="assessment-awal" class="kc-card p-6">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-sm text-slate-400">Assessment Terakhir</p>
+                        <h2 class="mt-1 text-lg font-semibold text-kc-heading">
+                            {{ $formatDate($assessmentTerakhir->created_at ?? null) }}
+                        </h2>
+                    </div>
+                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600">A</span>
+                </div>
+                <p class="mt-5 text-sm leading-6">
+                    {{ $assessmentTerakhir->ringkasan_hasil ?? ($assessmentTerakhir->hasil ?? ($assessmentTerakhir->keluhan ?? 'Belum ada assessment yang tercatat.')) }}
+                </p>
+                <a href="{{ route('konseli.assessment') }}"
+                    class="mt-5 inline-flex rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">
+                    Lihat Detail
+                </a>
+            </article>
+
+            <article class="kc-card p-6">
+                <h2 class="text-lg font-semibold text-kc-heading">Aktivitas Terbaru</h2>
+                <div class="mt-5 space-y-5">
+                    @forelse ($aktivitas as $activity)
+                        <div class="flex gap-3">
+                            <span class="mt-1 h-2.5 w-2.5 flex-none rounded-full bg-indigo-500"></span>
+                            <div>
+                                <p class="text-sm font-semibold text-kc-heading">
+                                    {{ $activity->aktivitas ?? ($activity->description ?? 'Aktivitas pengguna') }}
+                                </p>
+                                <p class="mt-1 text-xs text-slate-400">
+                                    {{ $formatDate($activity->created_at ?? null) }}
+                                </p>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-sm text-slate-400">Belum ada aktivitas terbaru.</p>
+                    @endforelse
+                </div>
+            </article>
         </div>
     </section>
 </x-app-layout>
