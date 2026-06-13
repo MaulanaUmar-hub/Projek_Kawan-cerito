@@ -20,18 +20,32 @@
 </head>
 <body>
     @php
+        $user = auth()->user();
         $previewRole = trim((string) ($dashboardRole ?? ''));
-        $role = auth()->user()->role ?? ($previewRole ?: 'konseli');
-        $name = auth()->user()->nama ?? auth()->user()->name ?? 'Preview ' . ucfirst($role);
+        $role = $user->role ?? ($previewRole ?: 'konseli');
+        $name = $user->nama ?? $user->name ?? 'Preview ' . ucfirst($role);
         $initial = strtoupper(mb_substr($name, 0, 1));
+        $photoPath = null;
+
+        if ($user && $role === 'konseli') {
+            $photoPath = $user->konseli?->foto;
+        }
+
+        if ($user && $role === 'konselor') {
+            $photoPath = $user->konselor?->foto;
+        }
+
+        $photoUrl = $photoPath
+            ? \Illuminate\Support\Facades\Storage::disk('public')->url($photoPath)
+            : null;
 
         $menus = [
             'konseli' => [
                 ['label' => 'Dashboard', 'icon' => 'bi bi-bar-chart-line-fill', 'route' => 'konseli.dashboard'],
                 ['label' => 'Assessment Awal', 'icon' => 'bi bi-clipboard-check-fill', 'route' => 'konseli.assessment'],
                 ['label' => 'Ajukan Konseling', 'icon' => 'bi bi-chat-dots-fill', 'route' => 'konseli.pengajuan'],
-                ['label' => 'Riwayat Konseling', 'icon' => 'bi bi-clock-history', 'route' => 'konseli.riwayat'],
                 ['label' => 'Jadwal Konseling', 'icon' => 'bi bi-calendar-event-fill', 'route' => 'konseli.jadwal'],
+                ['label' => 'Riwayat Konseling', 'icon' => 'bi bi-clock-history', 'route' => 'konseli.riwayat'],
                 ['label' => 'Profil', 'icon' => 'bi bi-person-circle', 'route' => 'konseli.profil'],
             ],
             'konselor' => [
@@ -124,7 +138,18 @@
                             <div class="text-sm font-semibold text-kc-heading">{{ $name }}</div>
                             <div class="text-xs text-slate-400">{{ ucfirst($role) }}</div>
                         </div>
-                        <div class="user-avatar">{{ $initial }}</div>
+                        <div class="user-avatar" style="position: relative; overflow: hidden;">
+                            <span class="user-avatar-fallback" style="position: relative; z-index: 1;">{{ $initial }}</span>
+                            @if ($photoUrl)
+                                <img
+                                    src="{{ $photoUrl }}"
+                                    alt="Foto profil {{ $name }}"
+                                    class="user-avatar-image"
+                                    style="position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover;"
+                                    onerror="this.style.display='none'"
+                                >
+                            @endif
+                        </div>
                     </div>
                 </header>
 
