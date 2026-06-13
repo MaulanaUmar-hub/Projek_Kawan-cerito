@@ -201,6 +201,7 @@
                 <a href="#cara-kerja" class="nav-link hover:text-brand-600 transition-colors">Cara Kerja</a>
                 <a href="#konselor" class="nav-link hover:text-brand-600 transition-colors">Konselor</a>
                 <a href="#testimoni" class="nav-link hover:text-brand-600 transition-colors">Testimoni</a>
+                <a href="#faq" class="nav-link hover:text-brand-600 transition-colors">FAQ</a>
             </div>
 
             {{-- CTA --}}
@@ -722,7 +723,7 @@
 
 
     {{-- ===================== FAQ ===================== --}}
-    <section class="py-20 bg-white">
+    <section id="faq" class="py-20 bg-white">
         <div class="max-w-2xl mx-auto px-6">
             <div class="text-center mb-12 reveal">
                 <span class="text-xs font-bold uppercase tracking-widest text-brand-500 mb-3 block">Pertanyaan
