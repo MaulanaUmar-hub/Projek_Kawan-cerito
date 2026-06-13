@@ -75,14 +75,7 @@ class KonselorController extends Controller
             ->where('id_konselor', $konselor->id_konselor)
             ->latest('created_at')
             ->take(5)
-            ->get()
-            ->map(fn($p) => [
-                'id'       => $p->id_pengajuan,
-                'nama'     => $p->konseli?->user?->nama ?? '-',
-                'tanggal'  => $p->created_at,
-                'keluhan'  => $p->assessment?->keluhan ?? '-',
-                'status'   => $p->status_pengajuan,
-            ]);
+            ->get();
 
         // --- Jadwal hari ini ---
         $jadwalHariIni = Jadwal::with(['pengajuan.konseli.user'])
@@ -147,10 +140,10 @@ class KonselorController extends Controller
                 'status'        => ucfirst($konselor->status),
             ],
             'stats' => [
-                ['label' => 'Total Konseli',    'value' => $totalKonseli,   'icon' => 'bi bi-person-hearts', 'color' => 'primary'],
-                ['label' => 'Pengajuan Baru',   'value' => $pengajuanBaru,  'icon' => 'bi bi-chat-square-text-fill', 'color' => 'warning'],
-                ['label' => 'Sesi Hari Ini',    'value' => $sesiHariIni,    'icon' => 'bi bi-calendar2-check-fill', 'color' => 'info'],
-                ['label' => 'Sesi Selesai',     'value' => $sesiSelesai,    'icon' => 'bi bi-patch-check-fill', 'color' => 'success'],
+                ['label' => 'Total Konseli',    'value' => $totalKonseli,   'icon' => '♟', 'color' => 'primary'],
+                ['label' => 'Pengajuan Baru',   'value' => $pengajuanBaru,  'icon' => '✎', 'color' => 'warning'],
+                ['label' => 'Sesi Hari Ini',    'value' => $sesiHariIni,    'icon' => '◷', 'color' => 'info'],
+                ['label' => 'Sesi Selesai',     'value' => $sesiSelesai,    'icon' => '✓', 'color' => 'success'],
             ],
             'pengajuanTerbaru' => $pengajuanTerbaru,
             'jadwalHariIni'    => $jadwalHariIni,
@@ -291,7 +284,6 @@ class KonselorController extends Controller
             'rekomendasi'       => ['nullable', 'string', 'max:1000'],
         ], [
             'catatan_konseling.required' => 'Catatan hasil konseling wajib diisi.',
-            'catatan_konseling.max'      => 'Catatan maksimal 3000 karakter.',
         ]);
 
         $konselor  = $this->getKonselor();
