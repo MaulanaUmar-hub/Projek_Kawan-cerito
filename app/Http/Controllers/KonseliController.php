@@ -157,6 +157,11 @@ class KonseliController extends Controller
                 'id'           => $k->id_konselor,
                 'nama'         => $k->user->nama,
                 'spesialisasi' => $k->spesialisasi ?? '-',
+                'peminatan'    => $k->peminatan ?? '',
+                'catatan'      => $k->catatan_profil ?? '',
+                'no_hp'        => $k->no_hp ?? '-',
+                'whatsapp'     => $k->link_whatsapp ?? '',
+                'foto_url'     => $k->foto ? Storage::disk('public')->url($k->foto) : null,
             ]);
 
         return view('konseli.pengajuan', compact('assessments', 'konselors'));
