@@ -115,16 +115,24 @@ class KonseliController extends Controller
         $lastAssessment = Assessment::where('id_konseli', $konseli->id_konseli)
             ->latest('created_at')->first();
 
-        return view('konseli.assessment', compact('lastAssessment'));
+        return view('konseli.assessment', compact('lastAssessment', 'konseli'));
     }
 
     public function storeAssessment(Request $request)
     {
         $validated = $request->validate([
             'keluhan' => ['required', 'string', 'max:2000'],
+            'no_hp'   => ['required', 'string', 'max:20', 'regex:/^(\\+62|08)[0-9]{7,13}$/'],
+        ], [
+            'no_hp.required' => 'Nomor WhatsApp wajib diisi agar konselor dapat menghubungimu.',
+            'no_hp.regex'    => 'Format nomor tidak valid. Gunakan format 08xxx atau +62xxx.',
         ]);
 
         $konseli = $this->getKonseli();
+
+        // Simpan/update no_hp di profil konseli
+        $konseli->update(['no_hp' => $validated['no_hp']]);
+
         Assessment::create(['id_konseli' => $konseli->id_konseli, 'keluhan' => $validated['keluhan']]);
 
         return back()->with('success', 'Assessment berhasil disimpan. Kamu dapat melanjutkan ke pengajuan konseling.');
