@@ -3,7 +3,7 @@
     <x-slot name="headerTitle">Pengajuan Konseling</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header title="Pengajuan Konseling"
+        <x-dashboard.page-header title="Tinjauan Pengajuan"
             subtitle="Tinjau pengajuan dari konseli, lalu setujui, tolak, atau usulkan waktu lain." />
 
         @if (session('success'))

@@ -3,7 +3,7 @@
     <x-slot name="headerTitle">Jadwal Konseling</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header title="Jadwal Konseling"
+        <x-dashboard.page-header title="Agenda Konselor"
             subtitle="Jadwal resmi yang sudah dikonfirmasi, dan pengajuan yang masih perlu ditindaklanjuti." />
 
         @if (session('success'))
