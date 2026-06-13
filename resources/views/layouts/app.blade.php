@@ -69,6 +69,8 @@
         $activeMenus = $menus[$role] ?? $menus['konseli'];
         $brandHref = collect($activeMenus)
             ->first(fn ($menu) => isset($menu['route']) && Route::has($menu['route']))['route'] ?? 'dashboard';
+        $profileRoute = collect($activeMenus)
+            ->first(fn ($menu) => ($menu['label'] ?? '') === 'Profil' && isset($menu['route']) && Route::has($menu['route']))['route'] ?? null;
         $dashboardMenu = collect($activeMenus)->first(fn ($menu) => ($menu['label'] ?? '') === 'Dashboard');
         $currentMenu = collect($activeMenus)->first(function ($menu) {
             return isset($menu['route'])
@@ -77,17 +79,19 @@
         }) ?? $dashboardMenu;
     @endphp
 
-    <div class="dashboard-shell">
+    <div class="dashboard-shell sidebar-collapsed">
         <aside class="dashboard-sidebar">
-            <a href="{{ route($brandHref) }}" class="dashboard-brand">
-                <img
-                    src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
-                    alt="Logo Kawan Cerito"
-                    class="brand-logo"
-                    style="width: 38px; height: 38px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 14px rgba(105, 108, 255, 0.16);"
-                >
-                <span>Kawan Cerito</span>
-            </a>
+            <div class="dashboard-brand-row">
+                <a href="{{ route($brandHref) }}" class="dashboard-brand">
+                    <img
+                        src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
+                        alt="Logo Kawan Cerito"
+                        class="brand-logo"
+                        style="width: 38px; height: 38px; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 14px rgba(105, 108, 255, 0.16);"
+                    >
+                    <span class="brand-text">Kawan Cerito</span>
+                </a>
+            </div>
 
             <nav class="dashboard-menu" aria-label="Menu {{ ucfirst($role) }}">
                 @foreach ($activeMenus as $menu)
@@ -96,9 +100,9 @@
                         $href = $hasRoute ? route($menu['route']) : ($menu['url'] ?? '#');
                         $active = $hasRoute && request()->routeIs($menu['route'], $menu['route'] . '.*');
                     @endphp
-                    <a href="{{ $href }}" class="menu-item {{ $active ? 'active' : '' }}">
+                    <a href="{{ $href }}" class="menu-item {{ $active ? 'active' : '' }}" title="{{ $menu['label'] }}">
                         <span class="menu-icon"> <i class="{{ $menu['icon'] }}"></i> </span>
-                        <span>{{ $menu['label'] }}</span>
+                        <span class="menu-label">{{ $menu['label'] }}</span>
                     </a>
                 @endforeach
 
@@ -106,7 +110,7 @@
                     @csrf
                     <button type="button" class="menu-logout" onclick="confirmLogout()">
                         <span class="menu-icon"> <i class="bi bi-box-arrow-right"></i></span>
-                        <span>Logout</span>
+                        <span class="menu-label">Logout</span>
                     </button>
                 </form>
             </nav>
@@ -134,22 +138,60 @@
                         </p>
                     </div>
 
-                    <div class="user-chip">
-                        <div class="text-right">
-                            <div class="text-sm font-semibold text-kc-heading">{{ $name }}</div>
-                            <div class="text-xs text-slate-400">{{ ucfirst($role) }}</div>
-                        </div>
-                        <div class="user-avatar" style="position: relative; overflow: hidden;">
-                            <span class="user-avatar-fallback" style="position: relative; z-index: 1;">{{ $initial }}</span>
-                            @if ($photoUrl)
-                                <img
-                                    src="{{ $photoUrl }}"
-                                    alt="Foto profil {{ $name }}"
-                                    class="user-avatar-image"
-                                    style="position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover;"
-                                    onerror="this.style.display='none'"
-                                >
+                    <div class="user-menu" data-user-menu>
+                        <button type="button" class="user-chip" data-user-menu-toggle aria-expanded="false">
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-kc-heading">{{ $name }}</div>
+                                <div class="text-xs text-slate-400">{{ ucfirst($role) }}</div>
+                            </div>
+                            <div class="user-avatar" style="position: relative; overflow: hidden;">
+                                <span class="user-avatar-fallback" style="position: relative; z-index: 1;">{{ $initial }}</span>
+                                @if ($photoUrl)
+                                    <img
+                                        src="{{ $photoUrl }}"
+                                        alt="Foto profil {{ $name }}"
+                                        class="user-avatar-image"
+                                        style="position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover;"
+                                        onerror="this.style.display='none'"
+                                    >
+                                @endif
+                            </div>
+                        </button>
+
+                        <div class="user-dropdown" data-user-menu-dropdown>
+                            <div class="user-dropdown-header">
+                                <div class="user-avatar user-avatar-sm" style="position: relative; overflow: hidden;">
+                                    <span class="user-avatar-fallback" style="position: relative; z-index: 1;">{{ $initial }}</span>
+                                    @if ($photoUrl)
+                                        <img
+                                            src="{{ $photoUrl }}"
+                                            alt="Foto profil {{ $name }}"
+                                            class="user-avatar-image"
+                                            style="position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover;"
+                                            onerror="this.style.display='none'"
+                                        >
+                                    @endif
+                                </div>
+                                <div>
+                                    <p class="user-dropdown-name">{{ $name }}</p>
+                                    <p class="user-dropdown-role">{{ ucfirst($role) }}</p>
+                                </div>
+                            </div>
+
+                            @if ($profileRoute)
+                                <a href="{{ route($profileRoute) }}" class="user-dropdown-link">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span>Profil Saya</span>
+                                </a>
                             @endif
+
+                            <form method="POST" action="{{ route('logout') }}" data-confirm-logout>
+                                @csrf
+                                <button type="submit" class="user-dropdown-link user-dropdown-logout">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </header>
@@ -159,6 +201,76 @@
         </main>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const shell = document.querySelector('.dashboard-shell');
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const userMenu = document.querySelector('[data-user-menu]');
+            const userMenuToggle = document.querySelector('[data-user-menu-toggle]');
+
+            if (shell && sidebar) {
+                const isDesktopSidebar = () => window.matchMedia('(min-width: 992px)').matches;
+                const expandSidebar = () => shell.classList.remove('sidebar-collapsed');
+                const collapseSidebar = () => shell.classList.add('sidebar-collapsed');
+
+                sidebar.querySelectorAll('a, button').forEach((control) => {
+                    control.addEventListener('click', (event) => {
+                        if (!isDesktopSidebar() || !shell.classList.contains('sidebar-collapsed')) {
+                            return;
+                        }
+
+                        event.preventDefault();
+                        event.stopPropagation();
+                        expandSidebar();
+                    });
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (isDesktopSidebar() && !sidebar.contains(event.target)) {
+                        collapseSidebar();
+                    }
+                });
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape' && isDesktopSidebar()) {
+                        collapseSidebar();
+                    }
+                });
+            }
+
+            if (userMenu && userMenuToggle) {
+                userMenuToggle.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const isOpen = userMenu.classList.toggle('is-open');
+                    userMenuToggle.setAttribute('aria-expanded', String(isOpen));
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!userMenu.contains(event.target)) {
+                        userMenu.classList.remove('is-open');
+                        userMenuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        userMenu.classList.remove('is-open');
+                        userMenuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            document.querySelectorAll('[data-confirm-logout]').forEach((form) => {
+                form.addEventListener('submit', (event) => {
+                    const confirmed = window.confirm('Apakah Anda yakin ingin logout dari Kawan Cerito?');
+
+                    if (!confirmed) {
+                        event.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
 <script>
 function confirmLogout() {
     Swal.fire({
