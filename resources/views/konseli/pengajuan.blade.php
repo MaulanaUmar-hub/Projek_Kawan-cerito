@@ -136,7 +136,7 @@
                                         </div>
 
                                         <p class="mt-4 min-h-[60px] text-sm leading-6 text-slate-500">
-                                            {{ $k['catatan'] ?: 'Konselor ini siap mendampingi proses konselingmu dengan pendekatan yang nyaman dan suportif.' }}
+                                            {{ $k['catatan'] ?: 'Konselor ini belum menambahkan ringkasan kemampuan, namun sudah tersedia untuk menerima pengajuan konseling.' }}
                                         </p>
 
                                         <div class="mt-4 flex flex-wrap gap-2">

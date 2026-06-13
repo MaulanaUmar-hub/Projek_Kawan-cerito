@@ -4,7 +4,7 @@
 
     @php
     $initial = strtoupper(mb_substr($profile['nama'], 0, 1));
-    $note = $profile['catatan_profil'] ?: 'Tulis status singkat mengenai pendekatan konseling Anda.';
+    $summary = $profile['catatan_profil'] ?: 'Tuliskan ringkasan kemampuan, pendekatan, dan pengalaman konseling Anda.';
     $peminatan = $profile['peminatan'] ?: 'Belum ditambahkan';
     $peminatanTags = collect(explode(',', $profile['peminatan'] ?? ''))
     ->map(fn ($item) => trim($item))
@@ -57,12 +57,12 @@
         <div class="kc-card p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
                 <h2 class="text-xl font-bold text-kc-heading">Profil Konselor</h2>
-                <p class="text-xs text-slate-400">Kelola informasi publik dan pendekatan konseling Anda.</p>
+                <p class="text-xs text-slate-400">Kelola informasi publik yang akan dilihat konseli saat memilih konselor.</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
                 <div class="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-xs">
-                    <span class="font-semibold t <!-- Toast Notification (Melayang & Auto-dismiss) -->ext-slate-500">Status:</span>
+                    <span class="font-semibold text-slate-500">Status:</span>
                     <x-dashboard.status-badge :status="$profile['status']" />
                 </div>
 
@@ -97,10 +97,10 @@
                         <p class="text-xs text-slate-400">{{ $profile['email'] }}</p>
                     </div>
 
-                    <!-- Note Status Box -->
+                    <!-- Ringkasan Kemampuan Box -->
                     <div class="rounded-xl bg-slate-50 p-3.5 border border-slate-100">
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-500 mb-1">Note Status</p>
-                        <p class="text-xs leading-relaxed italic text-slate-600">"{{ $note }}"</p>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-500 mb-1">Ringkasan Kemampuan</p>
+                        <p class="text-xs leading-relaxed italic text-slate-600">"{{ $summary }}"</p>
                     </div>
                 </div>
 
@@ -161,10 +161,10 @@
                         </div>
                     </div>
 
-                    <!-- Input Note Status -->
+                    <!-- Input Ringkasan Kemampuan -->
                     <div class="space-y-1">
                         <div class="flex items-center justify-between">
-                            <label for="catatan_profil" class="text-xs font-bold text-kc-heading">Note Status</label>
+                            <label for="catatan_profil" class="text-xs font-bold text-kc-heading">Ringkasan Kemampuan</label>
                             <div class="flex items-center gap-2">
                                 <span class="text-[10px] text-slate-400">Maks. 500 karakter</span>
                                 <span class="rounded px-1.5 py-0.5 text-[10px] font-bold {{ $statusNote ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }}">
@@ -172,7 +172,10 @@
                                 </span>
                             </div>
                         </div>
-                        <textarea id="catatan_profil" name="catatan_profil" rows="2" maxlength="500" placeholder="Contoh: Saya mendampingi konseli dengan pendekatan yang tenang dan suportif." class="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs leading-relaxed outline-none transition focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">{{ old('catatan_profil', $profile['catatan_profil']) }}</textarea>
+                        <textarea id="catatan_profil" name="catatan_profil" rows="3" maxlength="500" placeholder="Contoh: Saya berfokus pada kecemasan akademik, manajemen stres, dan pendampingan remaja dengan pendekatan yang tenang dan suportif." class="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs leading-relaxed outline-none transition focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">{{ old('catatan_profil', $profile['catatan_profil']) }}</textarea>
+                        <p class="text-[11px] leading-5 text-slate-400">
+                            Teks ini akan tampil pada card profil konselor di halaman pengajuan konseling konseli.
+                        </p>
                     </div>
 
                     <!-- Row Grid: Peminatan & Spesialisasi -->

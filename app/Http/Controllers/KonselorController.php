@@ -394,7 +394,7 @@ class KonselorController extends Controller
             'catatan_profil' => ['nullable', 'string', 'max:500'],
             'foto' => ['nullable', 'image', 'max:2048'],
         ], [
-            'catatan_profil.max' => 'Note status maksimal 500 karakter.',
+            'catatan_profil.max' => 'Ringkasan kemampuan maksimal 500 karakter.',
             'foto.image' => 'Foto profil harus berupa gambar.',
             'foto.max' => 'Ukuran foto profil maksimal 2 MB.',
         ]);
