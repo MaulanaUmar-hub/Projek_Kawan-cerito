@@ -14,7 +14,10 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# Keep compiled Vite assets available for Railway production deploy.
+# Railway still runs npm run build, but tracking this folder prevents
+# unstyled pages when build artifacts are not copied into the runtime image.
+# /public/build
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage
