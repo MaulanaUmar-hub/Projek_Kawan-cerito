@@ -61,6 +61,59 @@
             @endforeach
         </div>
 
+        {{-- ── RINGKASAN KONSELING BERDASARKAN PERIODE ─────────────────────────── --}}
+        <article class="kc-card p-5">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-indigo-600">Monitoring Konseling</p>
+                    <h2 class="mt-1 text-xl font-bold text-kc-heading">Konseling dalam Periode Tertentu</h2>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Pantau berapa banyak konseli dan sesi konseling pada rentang tanggal yang dipilih.
+                    </p>
+                </div>
+
+                <form method="GET" action="{{ route('admin.dashboard') }}" class="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                    <div>
+                        <label for="mulai" class="mb-1 block text-xs font-semibold text-slate-500">Mulai</label>
+                        <input type="date" id="mulai" name="mulai"
+                            value="{{ request('mulai', $konselingPeriode['mulai']->toDateString()) }}"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                    </div>
+                    <div>
+                        <label for="selesai" class="mb-1 block text-xs font-semibold text-slate-500">Selesai</label>
+                        <input type="date" id="selesai" name="selesai"
+                            value="{{ request('selesai', $konselingPeriode['akhir']->toDateString()) }}"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                    </div>
+                    <button type="submit"
+                        class="self-end rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                        Terapkan
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                @foreach ([
+                    ['label' => 'Orang Konseling', 'value' => $konselingPeriode['konseli'], 'icon' => 'bi bi-person-hearts', 'color' => 'bg-indigo-50 text-indigo-600'],
+                    ['label' => 'Total Sesi', 'value' => $konselingPeriode['total'], 'icon' => 'bi bi-chat-dots-fill', 'color' => 'bg-sky-50 text-sky-600'],
+                    ['label' => 'Sedang Berjalan', 'value' => $konselingPeriode['berlangsung'], 'icon' => 'bi bi-play-circle-fill', 'color' => 'bg-emerald-50 text-emerald-600'],
+                    ['label' => 'Selesai', 'value' => $konselingPeriode['sesi_selesai'], 'icon' => 'bi bi-check-circle-fill', 'color' => 'bg-cyan-50 text-cyan-600'],
+                ] as $item)
+                    <div class="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500">{{ $item['label'] }}</p>
+                                <p class="mt-2 text-2xl font-bold text-kc-heading">{{ $item['value'] }}</p>
+                            </div>
+                            <span class="grid h-10 w-10 place-items-center rounded-lg {{ $item['color'] }}">
+                                <i class="{{ $item['icon'] }}"></i>
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </article>
+
         {{-- ── ALUR AKSI CEPAT (gaya 3-langkah konseli) ───────────────────────── --}}
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 
@@ -204,24 +257,31 @@
 
                 {{-- Konselor Aktif --}}
                 <article class="bg-white rounded-2xl border border-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.01)] overflow-hidden">
-                    <div class="px-5 py-4 border-b border-slate-100">
-                        <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                            <i class="bi bi-patch-check text-emerald-500"></i>
-                            Konselor Aktif
-                        </h2>
-                        <p class="mt-0.5 text-xs text-slate-500">Konselor yang sudah disetujui dan dapat menangani sesi.</p>
+                    <div class="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h2 class="flex items-center gap-2 text-sm font-bold text-slate-900">
+                                <span class="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 text-emerald-500">
+                                    <i class="bi bi-patch-check-fill"></i>
+                                </span>
+                                Konselor Aktif
+                            </h2>
+                            <p class="mt-1 text-xs text-slate-500">Konselor yang sudah disetujui dan dapat menangani sesi.</p>
+                        </div>
+                        <span class="inline-flex w-fit items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">
+                            {{ $konselorAktif->count() }} aktif
+                        </span>
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full min-w-[720px] table-fixed text-left text-xs">
+                        <table class="w-full min-w-[860px] text-left text-sm">
                             <colgroup>
-                                <col class="w-[22%]">
+                                <col class="w-[28%]">
                                 <col class="w-[30%]">
                                 <col class="w-[24%]">
-                                <col class="w-[12%]">
-                                <col class="w-[12%]">
+                                <col class="w-[10%]">
+                                <col class="w-[8%]">
                             </colgroup>
-                            <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider">
+                            <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
                                 <tr>
                                     <th class="px-5 py-3 font-semibold">Nama Konselor</th>
                                     <th class="px-5 py-3 font-semibold">Email</th>
@@ -231,20 +291,36 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
-                                @foreach ($konselorAktif as $item)
+                                @forelse ($konselorAktif as $item)
                                     <tr class="hover:bg-slate-50/40 transition-colors">
-                                        <td class="px-5 py-3 font-semibold leading-6 text-slate-900">{{ $item['nama'] }}</td>
-                                        <td class="px-5 py-3 leading-6 text-slate-600">{{ $item['email'] }}</td>
-                                        <td class="px-5 py-3 leading-6 text-slate-600">{{ $item['spesialisasi'] }}</td>
-                                        <td class="px-5 py-3"><x-dashboard.status-badge :status="$item['status']" /></td>
-                                        <td class="px-5 py-3">
+                                        <td class="px-5 py-4">
+                                            <div class="flex min-w-0 items-center gap-3">
+                                                <div class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-indigo-50 text-sm font-bold text-indigo-600">
+                                                    {{ strtoupper(mb_substr($item['nama'], 0, 1)) }}
+                                                </div>
+                                                <div class="min-w-0">
+                                                    <p class="truncate font-semibold text-slate-900">{{ $item['nama'] }}</p>
+                                                    <p class="mt-0.5 text-xs text-slate-400">Konselor terverifikasi</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4 text-slate-600">{{ $item['email'] }}</td>
+                                        <td class="px-5 py-4 text-slate-600">{{ $item['spesialisasi'] }}</td>
+                                        <td class="px-5 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
+                                        <td class="px-5 py-4 text-right">
                                             <a href="{{ route('admin.konselor.show', $item['id']) }}"
-                                                class="inline-flex items-center gap-1 whitespace-nowrap rounded-lg border border-indigo-200 px-2.5 py-1 text-[11px] font-semibold text-indigo-600 transition hover:bg-indigo-50">
+                                                class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-indigo-200 px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50">
                                                 <i class="bi bi-eye"></i> Lihat Detail
                                             </a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">
+                                            Belum ada konselor aktif.
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

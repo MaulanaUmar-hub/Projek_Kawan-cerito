@@ -43,14 +43,31 @@ body {
     flex-basis: 92px;
 }
 
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within {
+    width: 260px;
+    flex-basis: 260px;
+}
+
 .dashboard-shell.sidebar-collapsed .dashboard-brand-row {
     padding: 0 14px;
     justify-content: center;
 }
 
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .dashboard-brand-row,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .dashboard-brand-row {
+    padding: 0 24px;
+    justify-content: flex-start;
+}
+
 .dashboard-shell.sidebar-collapsed .dashboard-brand {
     padding: 0;
     flex: 0 0 auto;
+}
+
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .dashboard-brand,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .dashboard-brand {
+    flex: 1;
 }
 
 .dashboard-shell.sidebar-collapsed .brand-text,
@@ -61,7 +78,23 @@ body {
     pointer-events: none;
 }
 
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .brand-text,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .brand-text,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .menu-label,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .menu-label {
+    width: auto;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: auto;
+}
+
 .dashboard-shell.sidebar-collapsed .dashboard-menu {
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .dashboard-menu,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .dashboard-menu {
     padding-left: 14px;
     padding-right: 14px;
 }
@@ -70,6 +103,14 @@ body {
 .dashboard-shell.sidebar-collapsed .menu-logout {
     justify-content: center;
     gap: 0;
+}
+
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .menu-item,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .menu-item,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .menu-logout,
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .menu-logout {
+    justify-content: flex-start;
+    gap: 12px;
 }
 
 .dashboard-brand-row {
