@@ -12,34 +12,71 @@
 
         {{-- Filter --}}
         <article class="kc-card p-6">
-            <form method="GET" action="{{ route('admin.activity-log.index') }}">
-                <div class="grid gap-3 md:grid-cols-4">
-                    <input type="text" name="user" value="{{ request('user') }}"
-                        class="rounded-lg border border-slate-200 px-4 py-3 text-sm" placeholder="Cari nama user...">
-                    <select name="role" class="rounded-lg border border-slate-200 px-4 py-3 text-sm">
+            <form method="GET" action="{{ route('admin.activity-log.index') }}" class="grid gap-3 xl:grid-cols-[1fr_220px_1fr_220px_auto_auto]">
+                <input
+                    type="search"
+                    name="user"
+                    value="{{ request('user') }}"
+                    class="rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                    placeholder="Cari nama atau email user..."
+                >
+                <select
+                    name="role"
+                    onchange="this.form.submit()"
+                    class="rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                >
                         <option value="">Semua Role</option>
                         <option value="admin" @selected(request('role') === 'admin')>Admin</option>
                         <option value="konselor" @selected(request('role') === 'konselor')>Konselor</option>
                         <option value="konseli" @selected(request('role') === 'konseli')>Konseli</option>
-                    </select>
-                    <input type="text" name="aktivitas" value="{{ request('aktivitas') }}"
-                        class="rounded-lg border border-slate-200 px-4 py-3 text-sm" placeholder="Cari aktivitas...">
-                    <input type="date" name="tanggal" value="{{ request('tanggal') }}"
-                        class="rounded-lg border border-slate-200 px-4 py-3 text-sm">
-                </div>
-                <div class="mt-3 flex gap-2">
-                    <button type="submit"
-                        class="rounded-lg bg-kc-primary px-5 py-2 text-sm font-semibold text-white hover:opacity-90">
-                        Terapkan Filter
-                    </button>
-                    @if (request()->hasAny(['user', 'role', 'aktivitas', 'tanggal']))
-                        <a href="{{ route('admin.activity-log.index') }}"
-                            class="rounded-lg border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50">
-                            Reset
-                        </a>
-                    @endif
-                </div>
+                </select>
+                <input
+                    type="search"
+                    name="aktivitas"
+                    value="{{ request('aktivitas') }}"
+                    class="rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                    placeholder="Cari aktivitas..."
+                >
+                <input
+                    type="date"
+                    name="tanggal"
+                    value="{{ request('tanggal') }}"
+                    onchange="this.form.submit()"
+                    class="rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                >
+                <button
+                    type="submit"
+                    class="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                >
+                    Terapkan
+                </button>
+                @if (request()->hasAny(['user', 'role', 'aktivitas', 'tanggal']))
+                    <a
+                        href="{{ route('admin.activity-log.index') }}"
+                        class="rounded-lg border border-slate-200 px-5 py-3 text-center text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                    >
+                        Reset
+                    </a>
+                @endif
             </form>
+
+            @if (request()->hasAny(['user', 'role', 'aktivitas', 'tanggal']))
+                <p class="mt-4 text-xs text-slate-400">
+                    Filter aktif:
+                    @if (request('user'))
+                        user "{{ request('user') }}"
+                    @endif
+                    @if (request('role'))
+                        role {{ ucfirst(request('role')) }}
+                    @endif
+                    @if (request('aktivitas'))
+                        aktivitas "{{ request('aktivitas') }}"
+                    @endif
+                    @if (request('tanggal'))
+                        tanggal {{ \Illuminate\Support\Carbon::parse(request('tanggal'))->translatedFormat('d M Y') }}
+                    @endif
+                </p>
+            @endif
         </article>
 
         <article class="kc-card">

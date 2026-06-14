@@ -229,24 +229,29 @@ class AdminController extends Controller
 
     public function activityLog(Request $request)
     {
+        $role = strtolower((string) $request->input('role'));
+
         $query = \App\Models\ActivityLog::with('user')
             ->latest('created_at');
 
         // Filter: nama user
         if ($request->filled('user')) {
+            $userSearch = $request->user;
+
             $query->whereHas(
                 'user',
-                fn($q) =>
-                $q->where('nama', 'like', '%' . $request->user . '%')
+                fn($q) => $q->where(function ($userQuery) use ($userSearch) {
+                    $userQuery->where('nama', 'like', '%' . $userSearch . '%')
+                        ->orWhere('email', 'like', '%' . $userSearch . '%');
+                })
             );
         }
 
         // Filter: role
-        if ($request->filled('role')) {
+        if (in_array($role, ['admin', 'konseli', 'konselor'], true)) {
             $query->whereHas(
                 'user',
-                fn($q) =>
-                $q->where('role', $request->role)
+                fn($q) => $q->where('role', $role)
             );
         }
 
