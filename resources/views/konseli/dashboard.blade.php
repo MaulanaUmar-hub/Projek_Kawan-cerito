@@ -17,26 +17,51 @@
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <a href="{{ route('konseli.assessment') }}"
-                class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <p class="text-sm text-slate-400">Akses Cepat</p>
-                <h2 class="mt-2 text-lg font-semibold text-kc-heading">Buat Assessment</h2>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Ceritakan kondisi awalmu sebelum mengajukan konseling.
-                </p>
+                class="kc-card relative overflow-hidden p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
+                style="background:#DDE3FF;border:1px solid #acb7f8;">
+
+                <div class="relative z-10">
+                    <p class="text-sm text-indigo-400">Akses Cepat</p>
+                    <h2 class="mt-2 text-lg font-semibold text-kc-heading">
+                        Buat Assessment
+                    </h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Ceritakan kondisi awalmu sebelum mengajukan konseling.
+                    </p>
+                </div>
             </a>
 
+
             <a href="{{ route('konseli.pengajuan') }}"
-                class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <p class="text-sm text-slate-400">Akses Cepat</p>
-                <h2 class="mt-2 text-lg font-semibold text-kc-heading">Ajukan Konseling</h2>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Pilih konselor dan jadwal yang paling sesuai.</p>
+                class="kc-card relative overflow-hidden p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
+                style="background:#fdeabc;border:1px solid #FFD36A;">
+
+                <div class="relative z-10">
+                    <p class="text-sm text-amber-500">Akses Cepat</p>
+                    <h2 class="mt-2 text-lg font-semibold text-kc-heading">
+                        Ajukan Konseling
+                    </h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Pilih konselor dan jadwal yang paling sesuai.
+                    </p>
+                </div>
             </a>
 
             <a href="{{ route('konseli.jadwal') }}"
-                class="kc-card p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
-                <p class="text-sm text-slate-400">Akses Cepat</p>
-                <h2 class="mt-2 text-lg font-semibold text-kc-heading">Lihat Jadwal</h2>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Cek sesi berikutnya dan status jadwalmu.</p>
+                class="kc-card relative overflow-hidden p-5 transition hover:-translate-y-0.5 hover:shadow-lg"
+                style="background:#cae5eb;border:1px solid #97e8fa;">
+
+                <div class="relative z-10">
+                    <p class="text-sm text-sky-500">Akses Cepat</p>
+                    <h2 class="mt-2 text-lg font-semibold text-kc-heading">
+                        Lihat Jadwal
+                    </h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Cek sesi berikutnya dan status jadwalmu.
+                    </p>
+                </div>
             </a>
+
         </div>
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
@@ -58,12 +83,12 @@
                         </div>
                         <div class="grid h-11 w-11 place-items-center rounded-lg text-xl"
                             style="background:{{ $color['bg'] }};color:{{ $color['text'] }};">
-                            {{ match ($stat['label']) {
-                                'Total Konseling' => 'T',
-                                'Pengajuan Menunggu' => 'P',
-                                'Konseling Disetujui' => 'A',
-                                default => 'S',
-                            } }}
+                            <i class="{{ match ($stat['label']) {
+                                'Total Konseling' => 'bi bi-person-hearts',
+                                'Pengajuan Menunggu' => 'bi bi-hourglass-split',
+                                'Konseling Disetujui' => 'bi bi-calendar2-check-fill',
+                                default => 'bi bi-award-fill',
+                            } }}""></i>
                         </div>
                     </div>
                 </article>
@@ -146,7 +171,7 @@
                             {{ $formatDate($jadwalBerikutnya->jadwal->tanggal ?? ($jadwalBerikutnya->tanggal ?? null)) }}
                         </h2>
                     </div>
-                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-sky-50 text-sky-600">J</span>
+                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-sky-50 text-sky-600"><i class="bi bi-chat-heart-fill"></i></span>
                 </div>
 
                 <div class="mt-5 space-y-3 text-sm">
@@ -182,7 +207,7 @@
                             {{ $formatDate($assessmentTerakhir->created_at ?? null) }}
                         </h2>
                     </div>
-                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600">A</span>
+                    <span class="grid h-10 w-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600"><i class="bi bi-journal-check"></i></span>
                 </div>
                 <p class="mt-5 text-sm leading-6">
                     {{ $assessmentTerakhir->ringkasan_hasil ?? ($assessmentTerakhir->hasil ?? ($assessmentTerakhir->keluhan ?? 'Belum ada assessment yang tercatat.')) }}
