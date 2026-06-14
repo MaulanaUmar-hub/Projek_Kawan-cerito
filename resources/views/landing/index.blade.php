@@ -183,8 +183,7 @@
                 <img
                     src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
                     alt="Logo Kawan Cerito"
-                    class="w-10 h-10 rounded-xl object-cover shadow-md"
-                >
+                    class="w-10 h-10 rounded-xl object-cover shadow-md">
                 <div>
                     <span class="font-bold text-slate-900 text-lg leading-tight">Kawan Cerito</span>
                     <p class="text-[10px] text-slate-400 font-medium leading-tight -mt-0.5">Telekonseling Kesehatan
@@ -527,7 +526,11 @@
                 <div class="hidden md:block absolute top-10 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-brand-200 via-brand-400 to-teal-400"
                     style="left:20%;right:20%;"></div>
 
-                @foreach ([['01', 'Daftar Akun', 'Buat akun gratis dalam 2 menit. Tidak perlu data sensitif untuk memulai.', 'bg-brand-600 text-white'], ['02', 'Pilih Konselor', 'Lihat profil, keahlian, dan jadwal konselor kami. Pilih yang paling nyaman untukmu.', 'bg-teal-500 text-white'], ['03', 'Mulai Bercerita', 'Jalani sesi konseling via chat atau video. Fleksibel sesuai waktumu.', 'bg-purple-500 text-white']] as $step)
+                @foreach ([
+                ['01', 'Buat Assessment', 'Isi kuesioner singkat kondisi psikologismu sebagai langkah awal sebelum memulai sesi konseling.', 'bg-brand-600 text-white'],
+                ['02', 'Ajukan Konseling', 'Kirim permohonan sesi dengan memilih preferensi konselor yang paling cocok untukmu.', 'bg-teal-500 text-white'],
+                ['03', 'Pilih & Mulai Sesi', 'Tentukan jadwal temu setelah disetujui, lalu jalani sesi konselingmu dengan nyaman.', 'bg-purple-500 text-white'],
+                ] as $step)
                 <div class="relative text-center reveal">
                     <div
                         class="w-16 h-16 rounded-2xl {{ $step[3] }} font-bold text-xl mx-auto mb-6 flex items-center justify-center shadow-lg z-10 relative">
@@ -761,8 +764,7 @@
                         <img
                             src="{{ asset('assets/brand/kawan-cerito-logo.png') }}"
                             alt="Logo Kawan Cerito"
-                            class="w-10 h-10 rounded-xl object-cover shadow-md"
-                        >
+                            class="w-10 h-10 rounded-xl object-cover shadow-md">
                         <span class="font-bold text-white text-lg">Kawan Cerito</span>
                     </a>
                     <p class="text-sm leading-relaxed max-w-xs">
