@@ -17,14 +17,16 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            // Kolom di tabel users adalah 'nama', bukan 'name'
+            'nama' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
+                // Primary key custom: id_user, bukan id
+                Rule::unique(User::class, 'email')->ignore($this->user()->id_user, 'id_user'),
             ],
         ];
     }

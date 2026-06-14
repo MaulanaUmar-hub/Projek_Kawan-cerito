@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Konselor;
+use App\Models\Konseli;
 use App\Models\PengajuanKonseling;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -85,9 +86,15 @@ class AdminController extends Controller
             'konselorPending'  => $konselorPending,
             'konselorAktif'    => $konselorAktif,
             'konselorDitolak'  => $konselorDitolak,
-            'activityLogs'     => collect([
-                ['aktivitas' => 'Konselor baru mendaftar', 'user' => 'Sistem', 'role' => 'system'],
-            ]),
+            'activityLogs'     => \App\Models\ActivityLog::with('user')
+                ->latest('created_at')
+                ->take(5)
+                ->get()
+                ->map(fn($log) => [
+                    'aktivitas' => $log->aktivitas,
+                    'user'      => $log->user?->nama ?? '(User dihapus)',
+                    'role'      => $log->user?->role ?? '-',
+                ]),
             'jadwal' => collect([]),
         ]);
     }
@@ -190,7 +197,22 @@ class AdminController extends Controller
             'role.required' => 'Role pengguna wajib dipilih.',
         ]);
 
+        $oldRole = $user->role;
         $user->update($validated);
+
+        // Jika role berubah, pastikan record profil yang sesuai sudah ada
+        if ($oldRole !== $validated['role']) {
+            if ($validated['role'] === 'konseli' && !$user->konseli()->exists()) {
+                Konseli::create(['id_user' => $user->id_user]);
+            }
+
+            if ($validated['role'] === 'konselor' && !$user->konselor()->exists()) {
+                Konselor::create([
+                    'id_user' => $user->id_user,
+                    'status'  => 'pending',
+                ]);
+            }
+        }
 
         return redirect()
             ->route('admin.users.index')

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Konselor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,9 +29,28 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $role = Auth::user()->role;
+        $user = Auth::user();
 
-        return redirect()->intended(match ($role) {
+        // Konselor: cek status sebelum redirect agar tidak terjadi loop
+        if ($user->role === 'konselor') {
+            $konselor = Konselor::where('id_user', $user->id_user)->first();
+
+            if ($konselor?->status === 'pending') {
+                return redirect()->route('konselor.pending');
+            }
+
+            if ($konselor?->status === 'ditolak') {
+                // Logout langsung — jangan biarkan sesi aktif untuk konselor ditolak
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Pendaftaran Anda telah ditolak oleh admin.']);
+            }
+        }
+
+        return redirect()->intended(match ($user->role) {
             'admin'    => route('admin.dashboard'),
             'konselor' => route('konselor.dashboard'),
             default    => route('konseli.dashboard'),

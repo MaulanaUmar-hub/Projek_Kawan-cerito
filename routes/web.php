@@ -34,7 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
+// Profile setup khusus konseli — pakai role:konseli tapi TANPA konseli.profile.complete
+// supaya konseli yang belum lengkap profilnya tetap bisa akses halaman ini
+Route::middleware(['auth', 'role:konseli'])->group(function () {
     Route::get('/konseli/profile/setup', [KonseliController::class, 'setupProfile'])->name('konseli.profile.setup');
     Route::post('/konseli/profile/setup', [KonseliController::class, 'storeProfileSetup'])->name('konseli.profile.setup.store');
 });
