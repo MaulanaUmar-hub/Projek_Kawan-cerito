@@ -1,6 +1,6 @@
 # Nixpacks config — Railway pakai ini untuk build Laravel
 [phases.setup]
-nixPkgs = ["php83", "php83Extensions.pdo", "php83Extensions.pdo_mysql", "php83Extensions.mbstring", "php83Extensions.tokenizer", "php83Extensions.xml", "php83Extensions.ctype", "php83Extensions.fileinfo", "php83Extensions.bcmath", "php83Extensions.curl", "php83Extensions.zip", "php83Extensions.gd", "nodejs_20", "npm-9_x"]
+nixPkgs = ["php83", "php83Packages.composer", "php83Extensions.pdo", "php83Extensions.pdo_mysql", "php83Extensions.mbstring", "php83Extensions.tokenizer", "php83Extensions.xml", "php83Extensions.ctype", "php83Extensions.fileinfo", "php83Extensions.bcmath", "php83Extensions.curl", "php83Extensions.zip", "php83Extensions.gd", "nodejs_22"]
 
 [phases.install]
 cmds = [
@@ -17,4 +17,4 @@ cmds = [
 ]
 
 [start]
-cmd = "php artisan storage:link --force && php artisan migrate --seed --force && php -S 0.0.0.0:$PORT -t public"
+cmd = "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
