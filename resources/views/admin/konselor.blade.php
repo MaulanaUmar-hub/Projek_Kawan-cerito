@@ -7,9 +7,24 @@
             subtitle="Pantau konselor aktif, menunggu persetujuan, dan ditolak dalam satu halaman rinci." />
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <x-dashboard.stat-card label="Menunggu" :value="$konselorPending->count()" icon="M" color="warning" />
-            <x-dashboard.stat-card label="Aktif" :value="$konselorAktif->count()" icon="A" color="success" />
-            <x-dashboard.stat-card label="Ditolak" :value="$konselorDitolak->count()" icon="T" color="danger" />
+            <x-dashboard.stat-card
+                label="Menunggu"
+                :value="$konselorPending->count()"
+                icon="bi bi-hourglass-split"
+                color="warning"
+            />
+            <x-dashboard.stat-card
+                label="Aktif"
+                :value="$konselorAktif->count()"
+                icon="bi bi-patch-check-fill"
+                color="success"
+            />
+            <x-dashboard.stat-card
+                label="Ditolak"
+                :value="$konselorDitolak->count()"
+                icon="bi bi-x-circle-fill"
+                color="danger"
+            />
         </div>
 
         <article class="kc-card">
