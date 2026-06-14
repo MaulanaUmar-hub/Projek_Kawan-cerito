@@ -25,20 +25,54 @@
         @endif
 
         <article class="kc-card p-6">
-            <div class="grid gap-3 md:grid-cols-[1fr_220px]">
-                <input type="search" class="rounded-lg border border-slate-200 px-4 py-3 text-sm" placeholder="Cari nama atau email pengguna">
-                <select class="rounded-lg border border-slate-200 px-4 py-3 text-sm">
-                    <option>Semua Role</option>
-                    <option>Admin</option>
-                    <option>Konselor</option>
-                    <option>Konseli</option>
+            <form method="GET" action="{{ route('admin.users.index') }}" class="grid gap-3 md:grid-cols-[1fr_220px_auto_auto]">
+                <input
+                    type="search"
+                    name="search"
+                    value="{{ request('search') }}"
+                    class="rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                    placeholder="Cari nama atau email pengguna"
+                >
+                <select
+                    name="role"
+                    onchange="this.form.submit()"
+                    class="rounded-lg border border-slate-200 px-4 py-3 text-sm capitalize outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                >
+                    <option value="">Semua Role</option>
+                    <option value="admin" @selected(request('role') === 'admin')>Admin</option>
+                    <option value="konselor" @selected(request('role') === 'konselor')>Konselor</option>
+                    <option value="konseli" @selected(request('role') === 'konseli')>Konseli</option>
                 </select>
-            </div>
+                <button
+                    type="submit"
+                    class="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                >
+                    Terapkan
+                </button>
+                @if (request()->hasAny(['search', 'role']))
+                    <a
+                        href="{{ route('admin.users.index') }}"
+                        class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-500 transition hover:bg-slate-50"
+                    >
+                        Reset
+                    </a>
+                @endif
+            </form>
         </article>
 
         <article class="kc-card">
             <div class="border-b border-slate-100 px-6 py-5">
-                <h2 class="text-lg font-semibold text-kc-heading">Daftar Pengguna</h2>
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-lg font-semibold text-kc-heading">Daftar Pengguna</h2>
+                        <p class="mt-1 text-sm text-slate-400">
+                            Menampilkan {{ $users->count() }} pengguna
+                            @if (request('role'))
+                                dengan role {{ ucfirst(request('role')) }}
+                            @endif
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full min-w-[760px] text-left text-sm">
@@ -52,7 +86,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @foreach ($users as $user)
+                        @forelse ($users as $user)
                             <tr>
                                 <td class="px-6 py-4 font-semibold text-kc-heading">{{ $user['nama'] }}</td>
                                 <td class="px-6 py-4 text-slate-500">{{ $user['email'] }}</td>
@@ -80,7 +114,13 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-10 text-center text-slate-400">
+                                    Tidak ada pengguna yang sesuai dengan filter.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
