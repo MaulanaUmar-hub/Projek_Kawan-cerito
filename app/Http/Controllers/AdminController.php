@@ -3,14 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Konselor;
+use App\Models\Konseli;
+use App\Models\PengajuanKonseling;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $periodeMulai = $request->date('mulai')
+            ? Carbon::parse($request->date('mulai'))->startOfDay()
+            : now()->startOfMonth();
+        $periodeSelesai = $request->date('selesai')
+            ? Carbon::parse($request->date('selesai'))->endOfDay()
+            : now()->endOfDay();
+
+        if ($periodeMulai->gt($periodeSelesai)) {
+            [$periodeMulai, $periodeSelesai] = [$periodeSelesai->copy()->startOfDay(), $periodeMulai->copy()->endOfDay()];
+        }
+
+        $konselingPeriodeQuery = PengajuanKonseling::query()
+            ->whereBetween('created_at', [$periodeMulai, $periodeSelesai]);
+
+        $konselingPeriode = [
+            'mulai'       => $periodeMulai,
+            'akhir'       => $periodeSelesai,
+            'total'       => (clone $konselingPeriodeQuery)->count(),
+            'konseli'     => (clone $konselingPeriodeQuery)->distinct('id_konseli')->count('id_konseli'),
+            'sesi_selesai' => (clone $konselingPeriodeQuery)->where('status_pengajuan', 'selesai')->count(),
+            'berlangsung' => (clone $konselingPeriodeQuery)->whereIn('status_pengajuan', ['disetujui', 'berlangsung'])->count(),
+        ];
+
         $konselorPending = Konselor::with('user')
             ->where('status', 'pending')
             ->latest()
@@ -51,17 +77,24 @@ class AdminController extends Controller
 
         return view('admin.dashboard', [
             'stats' => [
-                ['label' => 'Total Pengguna',    'value' => User::count(),                                 'icon' => 'U', 'color' => 'primary'],
-                ['label' => 'Konselor Aktif',    'value' => Konselor::where('status', 'aktif')->count(),   'icon' => 'K', 'color' => 'success'],
-                ['label' => 'Pengajuan Menunggu', 'value' => Konselor::where('status', 'pending')->count(), 'icon' => 'P', 'color' => 'warning'],
-                ['label' => 'Konselor Ditolak',  'value' => Konselor::where('status', 'ditolak')->count(), 'icon' => 'D', 'color' => 'danger'],
+                ['label' => 'Total Pengguna',    'value' => User::count(),                                 'icon' => 'bi bi-people-fill', 'color' => 'primary'],
+                ['label' => 'Konselor Aktif',    'value' => Konselor::where('status', 'aktif')->count(),   'icon' => 'bi bi-patch-check-fill', 'color' => 'success'],
+                ['label' => 'Pengajuan Menunggu', 'value' => Konselor::where('status', 'pending')->count(), 'icon' => 'bi bi-hourglass-split', 'color' => 'warning'],
+                ['label' => 'Konselor Ditolak',  'value' => Konselor::where('status', 'ditolak')->count(), 'icon' => 'bi bi-x-circle-fill', 'color' => 'danger'],
             ],
+            'konselingPeriode' => $konselingPeriode,
             'konselorPending'  => $konselorPending,
             'konselorAktif'    => $konselorAktif,
             'konselorDitolak'  => $konselorDitolak,
-            'activityLogs'     => collect([
-                ['aktivitas' => 'Konselor baru mendaftar', 'user' => 'Sistem', 'role' => 'system'],
-            ]),
+            'activityLogs'     => \App\Models\ActivityLog::with('user')
+                ->latest('created_at')
+                ->take(5)
+                ->get()
+                ->map(fn($log) => [
+                    'aktivitas' => $log->aktivitas,
+                    'user'      => $log->user?->nama ?? '(User dihapus)',
+                    'role'      => $log->user?->role ?? '-',
+                ]),
             'jadwal' => collect([]),
         ]);
     }
@@ -104,12 +137,39 @@ class AdminController extends Controller
     public function showKonselor($id)
     {
         $konselor = Konselor::with('user')->findOrFail($id);
-        return view('admin.konselor-detail', compact('konselor'));
+        $pengajuanKonseling = PengajuanKonseling::where('id_konselor', $konselor->id_konselor);
+
+        $statistikSesi = [
+            'total' => (clone $pengajuanKonseling)->count(),
+            'berjalan' => (clone $pengajuanKonseling)
+                ->whereIn('status_pengajuan', ['disetujui', 'berlangsung', 'aktif'])
+                ->count(),
+            'selesai' => (clone $pengajuanKonseling)
+                ->where('status_pengajuan', 'selesai')
+                ->count(),
+        ];
+
+        return view('admin.konselor-detail', compact('konselor', 'statistikSesi'));
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::latest()->get();
+        $users = User::query()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
+
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama', 'like', '%' . $search . '%')
+                        ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->when(
+                in_array($request->role, ['admin', 'konseli', 'konselor'], true),
+                fn($query) => $query->where('role', $request->role)
+            )
+            ->latest()
+            ->get();
+
         return view('admin.users', compact('users'));
     }
 
@@ -137,7 +197,22 @@ class AdminController extends Controller
             'role.required' => 'Role pengguna wajib dipilih.',
         ]);
 
+        $oldRole = $user->role;
         $user->update($validated);
+
+        // Jika role berubah, pastikan record profil yang sesuai sudah ada
+        if ($oldRole !== $validated['role']) {
+            if ($validated['role'] === 'konseli' && !$user->konseli()->exists()) {
+                Konseli::create(['id_user' => $user->id_user]);
+            }
+
+            if ($validated['role'] === 'konselor' && !$user->konselor()->exists()) {
+                Konselor::create([
+                    'id_user' => $user->id_user,
+                    'status'  => 'pending',
+                ]);
+            }
+        }
 
         return redirect()
             ->route('admin.users.index')
@@ -176,24 +251,29 @@ class AdminController extends Controller
 
     public function activityLog(Request $request)
     {
+        $role = strtolower((string) $request->input('role'));
+
         $query = \App\Models\ActivityLog::with('user')
             ->latest('created_at');
 
         // Filter: nama user
         if ($request->filled('user')) {
+            $userSearch = $request->user;
+
             $query->whereHas(
                 'user',
-                fn($q) =>
-                $q->where('nama', 'like', '%' . $request->user . '%')
+                fn($q) => $q->where(function ($userQuery) use ($userSearch) {
+                    $userQuery->where('nama', 'like', '%' . $userSearch . '%')
+                        ->orWhere('email', 'like', '%' . $userSearch . '%');
+                })
             );
         }
 
         // Filter: role
-        if ($request->filled('role')) {
+        if (in_array($role, ['admin', 'konseli', 'konselor'], true)) {
             $query->whereHas(
                 'user',
-                fn($q) =>
-                $q->where('role', $request->role)
+                fn($q) => $q->where('role', $role)
             );
         }
 

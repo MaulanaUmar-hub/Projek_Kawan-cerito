@@ -44,6 +44,13 @@ class KonselorController extends Controller
 
     public function pending()
     {
+        $konselor = $this->getKonselor();
+
+        // Konselor yang sudah aktif tidak perlu di halaman ini
+        if ($konselor && $konselor->status === 'aktif') {
+            return redirect()->route('konselor.dashboard');
+        }
+
         return view('konselor.pending');
     }
 
@@ -75,14 +82,7 @@ class KonselorController extends Controller
             ->where('id_konselor', $konselor->id_konselor)
             ->latest('created_at')
             ->take(5)
-            ->get()
-            ->map(fn($p) => [
-                'id'       => $p->id_pengajuan,
-                'nama'     => $p->konseli?->user?->nama ?? '-',
-                'tanggal'  => $p->created_at,
-                'keluhan'  => $p->assessment?->keluhan ?? '-',
-                'status'   => $p->status_pengajuan,
-            ]);
+            ->get();
 
         // --- Jadwal hari ini ---
         $jadwalHariIni = Jadwal::with(['pengajuan.konseli.user'])
@@ -147,10 +147,10 @@ class KonselorController extends Controller
                 'status'        => ucfirst($konselor->status),
             ],
             'stats' => [
-                ['label' => 'Total Konseli',    'value' => $totalKonseli,   'icon' => '♟', 'color' => 'primary'],
-                ['label' => 'Pengajuan Baru',   'value' => $pengajuanBaru,  'icon' => '✎', 'color' => 'warning'],
-                ['label' => 'Sesi Hari Ini',    'value' => $sesiHariIni,    'icon' => '◷', 'color' => 'info'],
-                ['label' => 'Sesi Selesai',     'value' => $sesiSelesai,    'icon' => '✓', 'color' => 'success'],
+                ['label' => 'Total Konseli',    'value' => $totalKonseli,   'icon' => 'bi bi-person-hearts', 'color' => 'primary'],
+                ['label' => 'Pengajuan Baru',   'value' => $pengajuanBaru,  'icon' => 'bi bi-chat-square-text-fill', 'color' => 'warning'],
+                ['label' => 'Sesi Hari Ini',    'value' => $sesiHariIni,    'icon' => 'bi bi-calendar2-check-fill', 'color' => 'info'],
+                ['label' => 'Sesi Selesai',     'value' => $sesiSelesai,    'icon' => 'bi bi-award-fill', 'color' => 'success'],
             ],
             'pengajuanTerbaru' => $pengajuanTerbaru,
             'jadwalHariIni'    => $jadwalHariIni,
@@ -291,7 +291,6 @@ class KonselorController extends Controller
             'rekomendasi'       => ['nullable', 'string', 'max:1000'],
         ], [
             'catatan_konseling.required' => 'Catatan hasil konseling wajib diisi.',
-            'catatan_konseling.max'      => 'Catatan maksimal 3000 karakter.',
         ]);
 
         $konselor  = $this->getKonselor();
@@ -299,6 +298,11 @@ class KonselorController extends Controller
             ->where('id_konselor', $konselor->id_konselor)
             ->where('status_pengajuan', 'disetujui')
             ->firstOrFail();
+
+        // Cegah double submit — tolak jika hasil sudah pernah disimpan
+        if ($pengajuan->hasil()->exists()) {
+            return back()->with('warning', 'Hasil konseling untuk sesi ini sudah pernah disimpan.');
+        }
 
         HasilKonseling::create([
             'id_pengajuan'      => $pengajuan->id_pengajuan,
@@ -350,20 +354,12 @@ class KonselorController extends Controller
 
         $konselor = $this->getKonselor();
 
-        $riwayatKonseling = PengajuanKonseling::with(['konseli.user', 'hasil'])
+        $riwayatKonseling = PengajuanKonseling::with(['konseli.user', 'hasil', 'jadwal', 'assessment'])
             ->where('id_konselor', $konselor->id_konselor)
             ->latest('created_at')
-            ->get()
-            ->map(fn($p) => [
-                'tanggal' => $p->created_at,
-                'nama'    => $p->konseli?->user?->nama ?? '-',
-                'status'  => $p->status_pengajuan,
-                'hasil'   => $p->hasil?->catatan_konseling ?? '-',
-            ]);
+            ->get();
 
-        return view('konselor.riwayat', [
-            'riwayatKonseling' => $riwayatKonseling,
-        ]);
+        return view('konselor.riwayat', compact('riwayatKonseling'));
     }
 
     public function profil()
@@ -402,7 +398,7 @@ class KonselorController extends Controller
             'catatan_profil' => ['nullable', 'string', 'max:500'],
             'foto' => ['nullable', 'image', 'max:2048'],
         ], [
-            'catatan_profil.max' => 'Note status maksimal 500 karakter.',
+            'catatan_profil.max' => 'Ringkasan kemampuan maksimal 500 karakter.',
             'foto.image' => 'Foto profil harus berupa gambar.',
             'foto.max' => 'Ukuran foto profil maksimal 2 MB.',
         ]);

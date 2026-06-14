@@ -3,7 +3,7 @@
     <x-slot name="headerTitle">Riwayat Konseling</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header title="Riwayat Konseling"
+        <x-dashboard.page-header title="Rekap Konseling"
             subtitle="Pantau status semua pengajuan konselingmu di sini." />
 
         @if (session('success'))
@@ -119,37 +119,29 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($p->status_pengajuan === 'selesai' && $p->hasil)
+                                    @if ($p->status_pengajuan === 'selesai' && $p->hasil?->rekomendasi)
                                         <button type="button"
-                                            onclick="document.getElementById('hasil-{{ $p->id_pengajuan }}').classList.toggle('hidden')"
+                                            onclick="document.getElementById('rekomendasi-{{ $p->id_pengajuan }}').classList.toggle('hidden')"
                                             class="rounded-lg bg-sky-100 px-3 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-200">
-                                            Lihat Hasil
+                                            Lihat Tindak Lanjut
                                         </button>
                                     @elseif ($p->status_pengajuan === 'selesai')
-                                        <span class="text-xs text-slate-300">-</span>
+                                        <span class="text-xs italic text-slate-400">Tidak ada tindak lanjut</span>
                                     @else
                                         <span class="text-xs text-slate-300">-</span>
                                     @endif
                                 </td>
                             </tr>
-                            {{-- Expandable hasil konseling --}}
-                            @if ($p->status_pengajuan === 'selesai' && $p->hasil)
-                                <tr id="hasil-{{ $p->id_pengajuan }}" class="hidden bg-sky-50">
+                            {{-- Expandable rekomendasi tindak lanjut saja --}}
+                            @if ($p->status_pengajuan === 'selesai' && $p->hasil?->rekomendasi)
+                                <tr id="rekomendasi-{{ $p->id_pengajuan }}" class="hidden bg-sky-50">
                                     <td colspan="6" class="px-6 py-5">
                                         <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-sky-600">
-                                            Catatan Konseling</p>
-                                        <p class="text-sm leading-6 text-slate-600">{{ $p->hasil->catatan_konseling }}
-                                        </p>
-                                        @if ($p->hasil->rekomendasi)
-                                            <p
-                                                class="mt-3 mb-1 text-xs font-semibold uppercase tracking-wide text-sky-600">
-                                                Rekomendasi Tindak Lanjut</p>
-                                            <p class="text-sm leading-6 text-slate-600">{{ $p->hasil->rekomendasi }}
-                                            </p>
-                                        @endif
+                                            Rekomendasi Tindak Lanjut</p>
+                                        <p class="text-sm leading-6 text-slate-600">{{ $p->hasil->rekomendasi }}</p>
                                         <p class="mt-3 text-xs text-slate-400">
-                                            Dicatat pada
-                                            {{ \Illuminate\Support\Carbon::parse($p->hasil->created_at)->translatedFormat('d M Y, H:i') }}
+                                            Sesi selesai pada
+                                            {{ \Illuminate\Support\Carbon::parse($p->hasil->created_at)->translatedFormat('d M Y') }}
                                         </p>
                                     </td>
                                 </tr>

@@ -3,117 +3,124 @@
     <x-slot name="headerTitle">Riwayat Konseling</x-slot>
 
     @php
-        $formatDate = fn ($value) => \Illuminate\Support\Carbon::parse($value)->translatedFormat('d M Y');
-        $riwayat = collect($riwayatKonseling);
-        $totalRiwayat = $riwayat->count();
-        $selesai = $riwayat->where('status', 'selesai')->count();
-        $berlangsung = $riwayat->whereIn('status', ['aktif', 'berlangsung', 'disetujui'])->count();
-        $menunggu = $riwayat->whereIn('status', ['menunggu', 'pending', 'baru'])->count();
+        $totalRiwayat = $riwayatKonseling->count();
+        $selesai = $riwayatKonseling->where('status_pengajuan', 'selesai')->count();
+        $berlangsung = $riwayatKonseling->whereIn('status_pengajuan', ['disetujui'])->count();
+        $menunggu = $riwayatKonseling->whereIn('status_pengajuan', ['menunggu', 'reschedule'])->count();
     @endphp
 
     <section class="space-y-6">
-        <div class="kc-card overflow-hidden">
-            <div class="grid gap-6 p-6 lg:grid-cols-[1fr_280px] lg:p-8">
-                <div>
-                    <p class="text-sm font-semibold text-indigo-500">Dokumentasi Konseling</p>
-                    <h2 class="mt-3 text-2xl font-bold text-kc-heading md:text-3xl">Riwayat Konseling</h2>
-                    <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-                        Telusuri konseling yang pernah ditangani, cek statusnya, dan gunakan hasil konseling sebagai bahan tindak lanjut.
-                    </p>
-                </div>
-                <div class="rounded-xl border border-sky-100 bg-sky-50 p-5">
-                    <p class="text-sm font-semibold text-sky-600">Konseling Selesai</p>
-                    <p class="mt-2 text-3xl font-bold text-kc-heading">{{ $selesai }}</p>
-                    <p class="mt-1 text-sm leading-6 text-slate-500">Data yang sudah memiliki akhir proses.</p>
-                </div>
-            </div>
-        </div>
+        {{-- Header Page --}}
+        <x-dashboard.page-header title="Riwayat Konseling"
+            subtitle="Telusuri rekam jejak konseling setiap konseli dan pantau tindak lanjut sesi." />
 
+        {{-- Statistik Cards --}}
         <div class="grid gap-4 md:grid-cols-4">
             <article class="kc-card p-5">
                 <p class="text-sm text-slate-400">Total Riwayat</p>
-                <p class="mt-3 text-2xl font-bold text-kc-heading">{{ $totalRiwayat }}</p>
+                <p class="mt-2 text-2xl font-bold text-kc-heading">{{ $totalRiwayat }}</p>
             </article>
             <article class="kc-card p-5">
                 <p class="text-sm text-slate-400">Selesai</p>
-                <p class="mt-3 text-2xl font-bold text-sky-500">{{ $selesai }}</p>
+                <p class="mt-2 text-2xl font-bold text-emerald-600">{{ $selesai }}</p>
             </article>
             <article class="kc-card p-5">
                 <p class="text-sm text-slate-400">Berlangsung</p>
-                <p class="mt-3 text-2xl font-bold text-indigo-500">{{ $berlangsung }}</p>
+                <p class="mt-2 text-2xl font-bold text-indigo-600">{{ $berlangsung }}</p>
             </article>
             <article class="kc-card p-5">
                 <p class="text-sm text-slate-400">Menunggu</p>
-                <p class="mt-3 text-2xl font-bold text-amber-500">{{ $menunggu }}</p>
+                <p class="mt-2 text-2xl font-bold text-amber-500">{{ $menunggu }}</p>
             </article>
         </div>
 
-        <div class="grid gap-6 xl:grid-cols-[1fr_320px]">
-            <article class="kc-card">
-                <div class="border-b border-slate-100 px-6 py-5">
-                    <h2 class="text-lg font-semibold text-kc-heading">Daftar Riwayat Konseling</h2>
-                    <p class="mt-1 text-sm text-slate-500">Ringkasan konseling yang pernah atau sedang Anda tangani.</p>
-                </div>
+        {{-- Main Table Area --}}
+        <article class="kc-card">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-6 py-5">
+                <h2 class="text-lg font-semibold text-kc-heading">Daftar Riwayat Konseling</h2>
+                <input type="text" id="searchRiwayat" placeholder="Cari nama konseli..."
+                    oninput="filterRiwayat(this.value)"
+                    class="w-64 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100" />
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[760px] text-left text-sm">
-                        <thead class="text-xs uppercase tracking-wide text-slate-400">
-                            <tr>
-                                <th class="px-6 py-4 font-semibold">Tanggal</th>
-                                <th class="px-6 py-4 font-semibold">Nama Konseli</th>
-                                <th class="px-6 py-4 font-semibold">Status</th>
-                                <th class="px-6 py-4 font-semibold">Hasil Konseling</th>
-                                <th class="px-6 py-4 font-semibold">Aksi</th>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[800px] text-left text-sm">
+                    <thead class="text-xs uppercase tracking-wide text-slate-400">
+                        <tr>
+                            <th class="px-6 py-4 font-semibold">Tanggal</th>
+                            <th class="px-6 py-4 font-semibold">Konseli</th>
+                            <th class="px-6 py-4 font-semibold">Status</th>
+                            <th class="px-6 py-4 font-semibold">Catatan Sesi</th>
+                            <th class="px-6 py-4 font-semibold">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse ($riwayatKonseling as $p)
+                            <tr class="kc-riwayat-row hover:bg-slate-50 transition">
+                                <td class="px-6 py-4 text-slate-500">
+                                    {{ \Illuminate\Support\Carbon::parse($p->created_at)->translatedFormat('d M Y') }}
+                                </td>
+                                <td class="px-6 py-4 font-semibold text-kc-heading">
+                                    {{ $p->konseli?->user?->nama ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <x-dashboard.status-badge :status="$p->status_pengajuan" />
+                                </td>
+                                <td class="px-6 py-4 text-slate-500 max-w-[250px] truncate">
+                                    {{ $p->hasil?->catatan_konseling ?? '-' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <button type="button"
+                                        onclick="document.getElementById('detail-{{ $p->id_pengajuan }}').classList.toggle('hidden')"
+                                        class="rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100">
+                                        Lihat Detail
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            @forelse ($riwayatKonseling as $item)
-                                <tr>
-                                    <td class="px-6 py-4 text-slate-500">{{ $formatDate($item['tanggal']) }}</td>
-                                    <td class="px-6 py-4 font-semibold text-kc-heading">{{ $item['nama'] }}</td>
-                                    <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
-                                    <td class="px-6 py-4 text-slate-500">{{ $item['hasil'] }}</td>
-                                    <td class="px-6 py-4">
-                                        <button type="button"
-                                            class="rounded-md border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">
-                                            Lihat Detail
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-10 text-center text-slate-400">
-                                        Belum ada riwayat konseling.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </article>
 
-            <aside class="space-y-6">
-                <article class="kc-card p-6">
-                    <h2 class="text-lg font-semibold text-kc-heading">Tindak Lanjut</h2>
-                    <div class="mt-5 space-y-3">
-                        <a href="{{ route('konselor.jadwal') }}"
-                            class="block rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-600 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-indigo-100">
-                            Cek Jadwal Berikutnya
-                        </a>
-                        <a href="{{ route('konselor.pengajuan') }}"
-                            class="block rounded-xl border border-slate-100 px-4 py-3 text-sm font-semibold text-kc-heading transition hover:-translate-y-0.5 hover:bg-slate-50">
-                            Lihat Pengajuan Baru
-                        </a>
-                    </div>
-                </article>
-
-                <article class="kc-card p-6">
-                    <h2 class="text-lg font-semibold text-kc-heading">Catatan Kualitas</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-500">
-                        Riwayat membantu konselor menjaga kesinambungan pendampingan dan melihat pola kebutuhan konseli dari waktu ke waktu.
-                    </p>
-                </article>
-            </aside>
-        </div>
+                            {{-- Detail Row --}}
+                            <tr id="detail-{{ $p->id_pengajuan }}" class="hidden bg-slate-50">
+                                <td colspan="5" class="px-6 py-6">
+                                    <div class="grid gap-6 md:grid-cols-2">
+                                        <div>
+                                            <p class="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">Keluhan Awal</p>
+                                            <div class="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
+                                                {{ $p->assessment?->keluhan ?? 'Tidak ada data.' }}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="mb-2 text-xs font-bold uppercase tracking-wide text-sky-600">Rekomendasi / Tindak Lanjut</p>
+                                            <div class="rounded-lg border border-sky-100 bg-white p-4 text-sm text-slate-600">
+                                                {{ $p->hasil?->rekomendasi ?? '-' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">Belum ada riwayat konseling.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </article>
     </section>
+
+    <script>
+        function filterRiwayat(query) {
+            const q = query.toLowerCase().trim();
+            document.querySelectorAll('tr.kc-riwayat-row').forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const isVisible = name.includes(q);
+                row.style.display = isVisible ? '' : 'none';
+                
+                const detailRow = row.nextElementSibling;
+                if (detailRow && detailRow.id.startsWith('detail-')) {
+                    detailRow.style.display = isVisible ? (detailRow.classList.contains('hidden') ? 'none' : '') : 'none';
+                }
+            });
+        }
+    </script>
 </x-app-layout>

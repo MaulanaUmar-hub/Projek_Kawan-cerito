@@ -9,7 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureKonseliProfileComplete
 {
     /**
-     * Route names yang boleh diakses meski profil belum lengkap.
+     * Route names yang boleh diakses konseli meski profil belum lengkap.
+     * Catatan: route profile/setup sudah dilindungi middleware 'role:konseli'
+     * sehingga tidak perlu dicek role di sini — middleware ini hanya jalan
+     * di dalam group role:konseli.
      */
     private array $except = [
         'konseli.profile.setup',
@@ -22,20 +25,13 @@ class EnsureKonseliProfileComplete
 
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
-
-        // Hanya berlaku untuk role konseli
-        if (!$user || $user->role !== 'konseli') {
-            return $next($request);
-        }
-
         // Bypass untuk route yang dikecualikan
         if ($request->routeIs(...$this->except)) {
             return $next($request);
         }
 
         // Cek apakah record konseli sudah ada dan sudah diisi
-        $konseli = $user->konseli;
+        $konseli = auth()->user()?->konseli;
 
         $profileComplete = $konseli
             && $konseli->asal

@@ -54,13 +54,19 @@
                 <label for="password" class="mb-1 block font-semibold text-[#111827]">
                     Password
                 </label>
-                <input
-                    id="password"
-                    type="password"
-                    name="password"
-                    placeholder="Minimal 8 karakter"
-                    class="w-full rounded-2xl border px-5 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
-                >
+                <div class="relative">
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Minimal 8 karakter"
+                        class="w-full rounded-2xl border pl-5 pr-12 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                    >
+                    
+                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                        <i class="bi bi-eye text-xl"></i>
+                    </button>
+                </div>
                 @error('password')
                     <p class="mt-0.5 text-xs font-medium text-red-500">{{ $message }}</p>
                 @enderror
@@ -70,13 +76,19 @@
                 <label for="password_confirmation" class="mb-1 block font-semibold text-[#111827]">
                     Konfirmasi Password
                 </label>
-                <input
-                    id="password_confirmation"
-                    type="password"
-                    name="password_confirmation"
-                    placeholder="Ulangi password Anda"
-                    class="w-full rounded-2xl border px-5 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password_confirmation') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
-                >
+                <div class="relative">
+                    <input
+                        id="password_confirmation"
+                        type="password"
+                        name="password_confirmation"
+                        placeholder="Ulangi password Anda"
+                        class="w-full rounded-2xl border pl-5 pr-12 py-2.5 outline-none transition-all duration-300 focus:ring-4 {{ $errors->has('password_confirmation') ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-100' }}"
+                    >
+                    
+                    <button type="button" id="toggleConfirmPassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                        <i class="bi bi-eye text-xl"></i>
+                    </button>
+                </div>
                 @error('password_confirmation')
                     <p class="mt-0.5 text-xs font-medium text-red-500">{{ $message }}</p>
                 @enderror
@@ -96,4 +108,6 @@
             </button>
         </div>
     </form>
+
+    @vite('resources/js/auth-password.js')
 @endsection
