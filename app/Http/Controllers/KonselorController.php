@@ -44,6 +44,13 @@ class KonselorController extends Controller
 
     public function pending()
     {
+        $konselor = $this->getKonselor();
+
+        // Konselor yang sudah aktif tidak perlu di halaman ini
+        if ($konselor && $konselor->status === 'aktif') {
+            return redirect()->route('konselor.dashboard');
+        }
+
         return view('konselor.pending');
     }
 
@@ -291,6 +298,11 @@ class KonselorController extends Controller
             ->where('id_konselor', $konselor->id_konselor)
             ->where('status_pengajuan', 'disetujui')
             ->firstOrFail();
+
+        // Cegah double submit — tolak jika hasil sudah pernah disimpan
+        if ($pengajuan->hasil()->exists()) {
+            return back()->with('warning', 'Hasil konseling untuk sesi ini sudah pernah disimpan.');
+        }
 
         HasilKonseling::create([
             'id_pengajuan'      => $pengajuan->id_pengajuan,

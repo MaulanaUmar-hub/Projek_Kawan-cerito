@@ -217,7 +217,12 @@ class KonseliController extends Controller
             ->where('status_pengajuan', 'reschedule')
             ->firstOrFail();
 
-        $aksi = $request->input('aksi'); // 'setuju' | 'tolak'
+        $aksi = $request->validate([
+            'aksi' => ['required', 'in:setuju,tolak'],
+        ], [
+            'aksi.required' => 'Aksi tidak valid.',
+            'aksi.in'       => 'Aksi harus berupa setuju atau tolak.',
+        ])['aksi'];
 
         if ($aksi === 'setuju') {
             // Buat Jadwal berdasarkan waktu reschedule konselor
