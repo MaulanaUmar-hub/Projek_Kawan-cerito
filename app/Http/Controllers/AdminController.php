@@ -130,7 +130,19 @@ class AdminController extends Controller
     public function showKonselor($id)
     {
         $konselor = Konselor::with('user')->findOrFail($id);
-        return view('admin.konselor-detail', compact('konselor'));
+        $pengajuanKonseling = PengajuanKonseling::where('id_konselor', $konselor->id_konselor);
+
+        $statistikSesi = [
+            'total' => (clone $pengajuanKonseling)->count(),
+            'berjalan' => (clone $pengajuanKonseling)
+                ->whereIn('status_pengajuan', ['disetujui', 'berlangsung', 'aktif'])
+                ->count(),
+            'selesai' => (clone $pengajuanKonseling)
+                ->where('status_pengajuan', 'selesai')
+                ->count(),
+        ];
+
+        return view('admin.konselor-detail', compact('konselor', 'statistikSesi'));
     }
 
     public function users(Request $request)
