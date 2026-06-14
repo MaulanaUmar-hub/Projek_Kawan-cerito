@@ -81,14 +81,22 @@ Setelah deploy, `php artisan storage:link --force` sudah dijalankan otomatis.
 Railway akan mengecek:
 
 ```txt
-/up
+/healthcheck.txt
 ```
 
 Respons normal:
 
-```json
-{"status":"ok","app":"Kawan Cerito"}
+```txt
+ok
 ```
+
+Healthcheck memakai file statis di `public/healthcheck.txt` supaya proses deploy tidak gagal hanya karena Laravel belum bisa boot akibat environment variable yang belum lengkap.
+
+Jika halaman aplikasi masih error setelah healthcheck berhasil, cek variable berikut di Railway:
+
+- `APP_KEY` wajib terisi hasil `php artisan key:generate --show`
+- `DB_URL` wajib mengarah ke service MySQL Railway
+- `APP_DEBUG=false`
 
 ## Catatan
 
