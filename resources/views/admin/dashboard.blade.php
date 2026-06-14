@@ -61,6 +61,59 @@
             @endforeach
         </div>
 
+        {{-- ── RINGKASAN KONSELING BERDASARKAN PERIODE ─────────────────────────── --}}
+        <article class="kc-card p-5">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-indigo-600">Monitoring Konseling</p>
+                    <h2 class="mt-1 text-xl font-bold text-kc-heading">Konseling dalam Periode Tertentu</h2>
+                    <p class="mt-1 text-sm text-slate-500">
+                        Pantau berapa banyak konseli dan sesi konseling pada rentang tanggal yang dipilih.
+                    </p>
+                </div>
+
+                <form method="GET" action="{{ route('admin.dashboard') }}" class="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                    <div>
+                        <label for="mulai" class="mb-1 block text-xs font-semibold text-slate-500">Mulai</label>
+                        <input type="date" id="mulai" name="mulai"
+                            value="{{ request('mulai', $konselingPeriode['mulai']->toDateString()) }}"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                    </div>
+                    <div>
+                        <label for="selesai" class="mb-1 block text-xs font-semibold text-slate-500">Selesai</label>
+                        <input type="date" id="selesai" name="selesai"
+                            value="{{ request('selesai', $konselingPeriode['akhir']->toDateString()) }}"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                    </div>
+                    <button type="submit"
+                        class="self-end rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
+                        Terapkan
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                @foreach ([
+                    ['label' => 'Orang Konseling', 'value' => $konselingPeriode['konseli'], 'icon' => 'bi bi-person-hearts', 'color' => 'bg-indigo-50 text-indigo-600'],
+                    ['label' => 'Total Sesi', 'value' => $konselingPeriode['total'], 'icon' => 'bi bi-chat-dots-fill', 'color' => 'bg-sky-50 text-sky-600'],
+                    ['label' => 'Sedang Berjalan', 'value' => $konselingPeriode['berlangsung'], 'icon' => 'bi bi-play-circle-fill', 'color' => 'bg-emerald-50 text-emerald-600'],
+                    ['label' => 'Selesai', 'value' => $konselingPeriode['sesi_selesai'], 'icon' => 'bi bi-check-circle-fill', 'color' => 'bg-cyan-50 text-cyan-600'],
+                ] as $item)
+                    <div class="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500">{{ $item['label'] }}</p>
+                                <p class="mt-2 text-2xl font-bold text-kc-heading">{{ $item['value'] }}</p>
+                            </div>
+                            <span class="grid h-10 w-10 place-items-center rounded-lg {{ $item['color'] }}">
+                                <i class="{{ $item['icon'] }}"></i>
+                            </span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </article>
+
         {{-- ── ALUR AKSI CEPAT (gaya 3-langkah konseli) ───────────────────────── --}}
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
 

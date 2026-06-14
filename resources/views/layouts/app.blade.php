@@ -19,6 +19,44 @@
     'resources/js/app.js'
     ])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        @media (min-width: 992px) {
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within {
+                width: 260px;
+                flex-basis: 260px;
+            }
+
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .dashboard-brand-row,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .dashboard-brand-row {
+                padding: 0 24px;
+                justify-content: flex-start;
+            }
+
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .dashboard-brand,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .dashboard-brand {
+                flex: 1;
+            }
+
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .brand-text,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .brand-text,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .menu-label,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .menu-label {
+                width: auto;
+                opacity: 1;
+                overflow: visible;
+                pointer-events: auto;
+            }
+
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .menu-item,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .menu-item,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:hover .menu-logout,
+            .dashboard-shell.sidebar-collapsed .dashboard-sidebar:focus-within .menu-logout {
+                justify-content: flex-start;
+                gap: 12px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -202,40 +240,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const shell = document.querySelector('.dashboard-shell');
-            const sidebar = document.querySelector('.dashboard-sidebar');
             const userMenu = document.querySelector('[data-user-menu]');
             const userMenuToggle = document.querySelector('[data-user-menu-toggle]');
-
-            if (shell && sidebar) {
-                const isDesktopSidebar = () => window.matchMedia('(min-width: 992px)').matches;
-                const expandSidebar = () => shell.classList.remove('sidebar-collapsed');
-                const collapseSidebar = () => shell.classList.add('sidebar-collapsed');
-
-                sidebar.querySelectorAll('a, button').forEach((control) => {
-                    control.addEventListener('click', (event) => {
-                        if (!isDesktopSidebar() || !shell.classList.contains('sidebar-collapsed')) {
-                            return;
-                        }
-
-                        event.preventDefault();
-                        event.stopPropagation();
-                        expandSidebar();
-                    });
-                });
-
-                document.addEventListener('click', (event) => {
-                    if (isDesktopSidebar() && !sidebar.contains(event.target)) {
-                        collapseSidebar();
-                    }
-                });
-
-                document.addEventListener('keydown', (event) => {
-                    if (event.key === 'Escape' && isDesktopSidebar()) {
-                        collapseSidebar();
-                    }
-                });
-            }
 
             if (userMenu && userMenuToggle) {
                 userMenuToggle.addEventListener('click', (event) => {
@@ -261,17 +267,14 @@
 
             document.querySelectorAll('[data-confirm-logout]').forEach((form) => {
                 form.addEventListener('submit', (event) => {
-                    const confirmed = window.confirm('Apakah Anda yakin ingin logout dari Kawan Cerito?');
-
-                    if (!confirmed) {
-                        event.preventDefault();
-                    }
+                    event.preventDefault();
+                    showLogoutConfirmation(() => form.submit());
                 });
             });
         });
     </script>
     <script>
-        function confirmLogout() {
+        function showLogoutConfirmation(onConfirm) {
             Swal.fire({
                 title: 'Konfirmasi Logout',
                 text: 'Apakah Anda yakin ingin keluar dari akun?',
@@ -279,13 +282,17 @@
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Logout',
                 cancelButtonText: 'Batal',
-                confirmButtonColor: '#6366f1',
-                cancelButtonColor: '#ef4444'
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#696cff'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('logout-form').submit();
+                    onConfirm();
                 }
             });
+        }
+
+        function confirmLogout() {
+            showLogoutConfirmation(() => document.getElementById('logout-form').submit());
         }
     </script>
     @stack('scripts')
