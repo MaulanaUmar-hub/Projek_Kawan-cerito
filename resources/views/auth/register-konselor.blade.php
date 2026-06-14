@@ -223,5 +223,5 @@
 </script>
 
 {{-- Diubah: Memanggil Vite langsung di dalam content tanpa @push --}}
-@vite('resources/js/auth-password.js')
+<x-vite-assets :entries="['resources/js/auth-password.js']" />
 @endsection

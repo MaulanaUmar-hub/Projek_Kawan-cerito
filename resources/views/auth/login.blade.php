@@ -191,5 +191,5 @@
 @endsection
 
 @push('scripts')
-    @vite('resources/js/auth-password.js')
+    <x-vite-assets :entries="['resources/js/auth-password.js']" />
 @endpush
