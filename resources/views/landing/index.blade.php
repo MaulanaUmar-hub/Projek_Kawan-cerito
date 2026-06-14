@@ -240,13 +240,7 @@
                 <div>
 
                     {{-- Badge --}}
-                    <div
-                        class="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm border border-white/60 text-[#5B67F1] text-sm font-semibold px-5 py-2 rounded-full shadow-sm mb-7">
-
-                        <span class="w-2 h-2 bg-[#72D6C9] rounded-full animate-pulse"></span>
-
-                        Kami siap mendengarkanmu
-                    </div>
+                  
 
                     {{-- Heading --}}
                     <h1
