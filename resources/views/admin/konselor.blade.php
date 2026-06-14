@@ -32,7 +32,7 @@
                 <h2 class="text-lg font-semibold text-kc-heading">Daftar Konselor</h2>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full min-w-[900px] text-left text-sm">
+                <table class="w-full min-w-[1040px] text-left text-sm">
                     <thead class="text-xs uppercase tracking-wide text-slate-400">
                         <tr>
                             <th class="px-6 py-4 font-semibold">Nama</th>
@@ -52,9 +52,32 @@
                                 <td class="px-6 py-4 text-slate-500">{{ $item['no_hp'] }}</td>
                                 <td class="px-6 py-4"><x-dashboard.status-badge :status="$item['status']" /></td>
                                 <td class="px-6 py-4">
-                                    <a href="{{ route('admin.konselor.show', $item['id']) }}"
-                                        class="inline-flex whitespace-nowrap rounded-md border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50">Lihat
-                                        Detail</a>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <a href="{{ route('admin.konselor.show', $item['id']) }}"
+                                            class="inline-flex whitespace-nowrap rounded-md border border-indigo-200 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50">
+                                            Lihat Detail
+                                        </a>
+
+                                        @if ($item['status'] === 'pending')
+                                            <form method="POST" action="{{ route('admin.konselor.approve', $item['id']) }}"
+                                                onsubmit="return confirm('Setujui pengajuan konselor ini?')">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="inline-flex whitespace-nowrap rounded-md bg-emerald-100 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-200">
+                                                    Setujui
+                                                </button>
+                                            </form>
+
+                                            <form method="POST" action="{{ route('admin.konselor.reject', $item['id']) }}"
+                                                onsubmit="return confirm('Tolak pengajuan konselor ini?')">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="inline-flex whitespace-nowrap rounded-md bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-200">
+                                                    Tolak
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
