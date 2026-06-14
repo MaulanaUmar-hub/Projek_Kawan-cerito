@@ -3,7 +3,7 @@
     <x-slot name="headerTitle">Assessment Awal</x-slot>
 
     <section class="space-y-6">
-        <x-dashboard.page-header title="Assessment Awal"
+        <x-dashboard.page-header title="Bagaimana Kondisimu saat ini ?"
             subtitle="Ceritakan kondisi awalmu agar konselor dapat memahami kebutuhanmu." />
 
         @if (session('success'))

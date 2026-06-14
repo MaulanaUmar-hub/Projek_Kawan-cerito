@@ -30,7 +30,7 @@
     </style>
 
     <section class="space-y-6">
-        <x-dashboard.page-header title="Ajukan Konseling"
+        <x-dashboard.page-header title="Mari Mulai Konseling"
             subtitle="Pilih konselor dan usulkan waktu yang sesuai. Konselor akan mengkonfirmasi atau menawarkan waktu lain." />
 
         @if (session('success'))
