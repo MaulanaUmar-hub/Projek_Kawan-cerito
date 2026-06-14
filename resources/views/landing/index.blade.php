@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawan Cerito – Tempat Bercerita dan Didengar</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/brand/kawan-cerito-logo.png') }}">
 
     {{-- Tailwind CSS CDN (ganti dengan build Tailwind jika sudah setup Vite/Mix) --}}
