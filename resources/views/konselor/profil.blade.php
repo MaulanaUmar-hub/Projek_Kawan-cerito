@@ -86,19 +86,24 @@
         <div class="grid gap-4 xl:grid-cols-[340px_1fr] items-start">
 
             <!-- KOLOM KIRI: Live Preview Card -->
-            <article class="kc-card p-5 flex flex-col justify-between h-full space-y-4 border border-slate-100">
-                <div class="space-y-4">
-                    <div class="flex flex-col items-center text-center pt-2">
-                        <div class="relative inline-block">
-                            @if ($profile['foto_url'])
-                                <img src="{{ $profile['foto_url'] }}" alt="Foto profil {{ $profile['nama'] }}"
-                                    class="h-24 w-24 rounded-full object-cover shadow-md ring-4 ring-slate-50">
-                            @else
-                                <div
-                                    class="flex h-24 w-24 items-center justify-center rounded-full bg-indigo-500 text-3xl font-bold text-white shadow-md">
-                                    {{ $initial }}
-                                </div>
-                            @endif
+            <article class="kc-card overflow-hidden flex h-full flex-col justify-between border border-slate-100">
+                <div>
+                    <div class="relative h-28 bg-gradient-to-br from-indigo-500 via-violet-400 to-cyan-300">
+                        <div class="absolute inset-0 bg-white/10"></div>
+                    </div>
+
+                    <div class="-mt-12 flex flex-col items-center px-5 text-center">
+                        <div class="relative">
+                            <div
+                                class="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-indigo-500 text-3xl font-bold text-white shadow-md ring-4 ring-white">
+                                <span>{{ $initial }}</span>
+
+                                @if ($profile['foto_url'])
+                                    <img src="{{ $profile['foto_url'] }}" alt="Foto profil {{ $profile['nama'] }}"
+                                        class="absolute inset-0 h-full w-full object-cover" onerror="this.remove()">
+                                @endif
+                            </div>
+
                             <span
                                 class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 ring-2 ring-white"></span>
                         </div>
@@ -108,7 +113,7 @@
                     </div>
 
                     <!-- Ringkasan Kemampuan Box -->
-                    <div class="rounded-xl bg-slate-50 p-3.5 border border-slate-100">
+                    <div class="mx-5 mt-4 rounded-xl bg-slate-50 p-3.5 border border-slate-100">
                         <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-500 mb-1">Ringkasan
                             Kemampuan</p>
                         <p class="text-xs leading-relaxed italic text-slate-600">"{{ $summary }}"</p>
@@ -116,7 +121,7 @@
                 </div>
 
                 <!-- Detail Meta -->
-                <div class="space-y-2.5 text-xs pt-2">
+                <div class="mx-5 mb-5 mt-4 space-y-2.5 border-t border-slate-100 pt-4 text-xs">
                     <div class="flex justify-between items-start py-1.5 border-b border-slate-100">
                         <span class="text-slate-400 font-medium">Spesialisasi</span>
                         <span
@@ -158,15 +163,15 @@
                     <div
                         class="rounded-xl border border-slate-100 bg-slate-50/50 p-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div class="shrink-0 mx-auto sm:mx-0">
-                            @if ($profile['foto_url'])
-                                <img src="{{ $profile['foto_url'] }}" alt="Preview"
-                                    class="h-12 w-12 rounded-xl object-cover shadow-sm">
-                            @else
-                                <div
-                                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500 text-xl font-bold text-white shadow-sm">
-                                    {{ $initial }}
-                                </div>
-                            @endif
+                            <div
+                                class="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-indigo-500 text-xl font-bold text-white shadow-sm">
+                                <span>{{ $initial }}</span>
+
+                                @if ($profile['foto_url'])
+                                    <img src="{{ $profile['foto_url'] }}" alt="Preview foto profil"
+                                        class="absolute inset-0 h-full w-full object-cover" onerror="this.remove()">
+                                @endif
+                            </div>
                         </div>
                         <div class="w-full space-y-1">
                             <div class="flex items-center justify-between">
