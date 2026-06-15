@@ -8,7 +8,9 @@
         $asal = old('asal', $profile->asal ?? $user->asal);
         $noHp = old('no_hp', $profile->no_hp ?? $user->no_hp);
         $gender = old('gender', $profile->gender ?? $user->gender);
-        $fotoUrl = $profile?->foto ? \Illuminate\Support\Facades\Storage::disk('public')->url($profile->foto) : null;
+        $fotoUrl = $profile?->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($profile->foto)
+            ? \Illuminate\Support\Facades\Storage::disk('public')->url($profile->foto)
+            : null;
         $initial = strtoupper(mb_substr($nama ?: 'K', 0, 1));
         $genderLabel = match ($gender) {
             'L' => 'Laki-laki',

@@ -76,7 +76,7 @@
     $photoPath = $user->konselor?->foto;
     }
 
-    $photoUrl = $photoPath
+    $photoUrl = $photoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($photoPath)
     ? \Illuminate\Support\Facades\Storage::disk('public')->url($photoPath)
     : null;
 

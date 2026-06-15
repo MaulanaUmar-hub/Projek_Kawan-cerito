@@ -83,13 +83,17 @@
                 <div class="space-y-4">
                     <div class="flex flex-col items-center text-center pt-2">
                         <div class="relative inline-block">
-                            @if ($profile['foto_url'])
-                            <img src="{{ $profile['foto_url'] }}" alt="Foto profil {{ $profile['nama'] }}" class="h-24 w-24 rounded-full object-cover shadow-md ring-4 ring-slate-50">
-                            @else
-                            <div class="flex h-24 w-24 items-center justify-center rounded-full bg-indigo-500 text-3xl font-bold text-white shadow-md">
-                                {{ $initial }}
+                            <div class="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-indigo-500 text-3xl font-bold text-white shadow-md ring-4 ring-slate-50">
+                                <span>{{ $initial }}</span>
+                                @if ($profile['foto_url'])
+                                <img
+                                    src="{{ $profile['foto_url'] }}"
+                                    alt="Foto profil {{ $profile['nama'] }}"
+                                    class="absolute inset-0 h-full w-full object-cover"
+                                    onerror="this.remove()"
+                                >
+                                @endif
                             </div>
-                            @endif
                             <span class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 ring-2 ring-white"></span>
                         </div>
 
@@ -142,13 +146,17 @@
                     <!-- Input Foto Profil -->
                     <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-3 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div class="shrink-0 mx-auto sm:mx-0">
-                            @if ($profile['foto_url'])
-                            <img src="{{ $profile['foto_url'] }}" alt="Preview" class="h-12 w-12 rounded-xl object-cover shadow-sm">
-                            @else
-                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500 text-xl font-bold text-white shadow-sm">
-                                {{ $initial }}
+                            <div class="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-indigo-500 text-xl font-bold text-white shadow-sm">
+                                <span>{{ $initial }}</span>
+                                @if ($profile['foto_url'])
+                                <img
+                                    src="{{ $profile['foto_url'] }}"
+                                    alt="Preview foto profil"
+                                    class="absolute inset-0 h-full w-full object-cover"
+                                    onerror="this.remove()"
+                                >
+                                @endif
                             </div>
-                            @endif
                         </div>
                         <div class="w-full space-y-1">
                             <div class="flex items-center justify-between">

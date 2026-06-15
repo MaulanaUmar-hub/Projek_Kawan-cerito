@@ -18,6 +18,13 @@ class KonseliController extends Controller
         return Konseli::where('id_user', auth()->user()->id_user)->first();
     }
 
+    private function publicFileUrl(?string $path): ?string
+    {
+        return $path && Storage::disk('public')->exists($path)
+            ? Storage::disk('public')->url($path)
+            : null;
+    }
+
     // ─── Profile Setup ────────────────────────────────────────────────────────
 
     public function setupProfile()
@@ -161,7 +168,7 @@ class KonseliController extends Controller
                 'catatan'      => $k->catatan_profil ?? '',
                 'no_hp'        => $k->no_hp ?? '-',
                 'whatsapp'     => $k->link_whatsapp ?? '',
-                'foto_url'     => $k->foto ? Storage::disk('public')->url($k->foto) : null,
+                'foto_url'     => $this->publicFileUrl($k->foto),
             ]);
 
         return view('konseli.pengajuan', compact('assessments', 'konselors'));
@@ -296,9 +303,7 @@ class KonseliController extends Controller
                 'asal'    => $konseli?->asal ?? '-',
                 'no_hp'   => $konseli?->no_hp ?? '-',
                 'gender'  => $konseli?->gender ?? '-',
-                'foto_url' => $konseli?->foto
-                    ? Storage::disk('public')->url($konseli->foto)
-                    : null,
+                'foto_url' => $this->publicFileUrl($konseli?->foto),
             ],
         ]);
     }
