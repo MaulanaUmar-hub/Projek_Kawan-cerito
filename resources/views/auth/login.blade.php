@@ -1,10 +1,10 @@
 @extends('layouts.auth')
 
 @section('content')
-    <div class="min-h-screen bg-[#F5F7FF] flex items-center justify-center px-6 py-8">
+    <div class="auth-page-shell min-h-screen bg-[#F5F7FF] flex items-center justify-center px-6 py-8">
 
         <div
-            class="w-full max-w-[1500px] bg-white rounded-[36px] overflow-hidden shadow-sm grid lg:grid-cols-[1.08fr_0.92fr] min-h-[calc(100vh-4rem)]">
+            class="auth-page-card w-full max-w-[1500px] bg-white rounded-[36px] overflow-hidden shadow-sm grid lg:grid-cols-[1.08fr_0.92fr] min-h-[calc(100vh-4rem)]">
 
             <div class="auth-left-panel hidden lg:flex flex-col bg-[#F7F8FF] px-16 py-2 relative overflow-hidden">
 
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="flex items-start justify-center bg-white px-10 pt-10 pb-14 lg:px-16 overflow-y-auto">
+            <div class="auth-form-panel flex items-start justify-center bg-white px-10 pt-10 pb-14 lg:px-16 overflow-y-auto">
 
                 <div class="w-full max-w-[680px] mx-auto">
 
@@ -98,11 +98,11 @@
                             Kembali ke halaman utama
                         </a>
 
-                        <h2 class="text-[56px] leading-[1.05] font-extrabold tracking-[-0.04em] text-[#0B132B] mb-4">
+                        <h2 class="auth-form-title text-[56px] leading-[1.05] font-extrabold tracking-[-0.04em] text-[#0B132B] mb-4">
                             Selamat datang kembali
                         </h2>
 
-                        <p class="text-[18px] leading-8 text-gray-500">
+                        <p class="auth-form-subtitle text-[18px] leading-8 text-gray-500">
                             Silakan masuk ke akun Kawan Cerito Anda
                         </p>
                     </div>

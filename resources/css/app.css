@@ -101,6 +101,13 @@ body {
 }
 
 @media (max-width: 640px) {
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     .auth-hero-title {
         font-size: 2.35rem;
         line-height: 1.14;
@@ -109,5 +116,39 @@ body {
     .auth-hero-subtitle {
         font-size: 1rem;
         line-height: 1.7;
+    }
+
+    .auth-page-shell {
+        padding: 0;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .auth-page-card {
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .auth-form-panel {
+        padding: 1.25rem;
+    }
+
+    .auth-form-title {
+        font-size: clamp(2rem, 12vw, 3rem);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+    }
+
+    .auth-form-subtitle {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .input-auth,
+    input,
+    select,
+    textarea {
+        font-size: 16px;
     }
 }
