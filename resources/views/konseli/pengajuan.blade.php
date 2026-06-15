@@ -144,14 +144,16 @@
                                         class="konselor-card-row group rounded-2xl border p-4 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-4 {{ $isSelected ? 'is-selected' : 'border-slate-200 bg-white hover:border-purple-200 hover:bg-purple-50/20' }}">
                                         
                                         <div class="flex items-center gap-3.5 min-w-0 flex-1">
-                                            @if ($k['foto_url'])
-                                                <img src="{{ $k['foto_url'] }}" alt="Foto {{ $k['nama'] }}"
-                                                    class="h-11 w-11 rounded-xl object-cover flex-none ring-2 ring-purple-100/50">
-                                            @else
-                                                <span class="grid h-11 w-11 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-400 text-xs font-black text-white place-items-center flex-none shadow-xs">
-                                                    {{ $initial }}
-                                                </span>
-                                            @endif
+                                            <span
+                                                class="relative grid h-11 w-11 flex-none place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-purple-500 to-indigo-400 text-xs font-black text-white shadow-xs ring-2 ring-purple-100/50">
+                                                {{ $initial }}
+
+                                                @if ($k['foto_url'])
+                                                    <img src="{{ $k['foto_url'] }}" alt="Foto {{ $k['nama'] }}"
+                                                        class="absolute inset-0 h-full w-full object-cover"
+                                                        onerror="this.remove()">
+                                                @endif
+                                            </span>
 
                                             <div class="min-w-0">
                                                 <div class="flex items-center gap-2">
@@ -284,14 +286,16 @@
                         @forelse ($konselors as $k)
                             <div class="rounded-xl bg-white border border-sky-100 p-2.5 shadow-2xs transition-all hover:bg-sky-50/40">
                                 <div class="flex items-center gap-2.5">
-                                    @if ($k['foto_url'])
-                                        <img src="{{ $k['foto_url'] }}" alt="Foto {{ $k['nama'] }}"
-                                            class="h-8 w-8 rounded-lg object-cover">
-                                    @else
-                                        <span class="grid h-8 w-8 place-items-center rounded-lg bg-sky-100 text-xs font-black text-sky-700">
-                                            {{ strtoupper(mb_substr($k['nama'], 0, 1)) }}
-                                        </span>
-                                    @endif
+                                    <span
+                                        class="relative grid h-8 w-8 flex-none place-items-center overflow-hidden rounded-lg bg-sky-100 text-xs font-black text-sky-700">
+                                        {{ strtoupper(mb_substr($k['nama'], 0, 1)) }}
+
+                                        @if ($k['foto_url'])
+                                            <img src="{{ $k['foto_url'] }}" alt="Foto {{ $k['nama'] }}"
+                                                class="absolute inset-0 h-full w-full object-cover"
+                                                onerror="this.remove()">
+                                        @endif
+                                    </span>
                                     <div class="min-w-0 flex-1">
                                         <p class="truncate text-xs font-bold text-slate-900 leading-tight">{{ $k['nama'] }}</p>
                                         <p class="mt-0.5 truncate text-[10px] text-slate-500 leading-none">{{ $k['spesialisasi'] }}</p>

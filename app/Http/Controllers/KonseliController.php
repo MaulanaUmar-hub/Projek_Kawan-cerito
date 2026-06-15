@@ -20,9 +20,7 @@ class KonseliController extends Controller
 
     private function publicFileUrl(?string $path): ?string
     {
-        return $path && Storage::disk('public')->exists($path)
-            ? Storage::disk('public')->url($path)
-            : null;
+        return $path ? Storage::disk('public')->url($path) : null;
     }
 
     // ─── Profile Setup ────────────────────────────────────────────────────────
