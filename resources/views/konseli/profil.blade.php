@@ -76,17 +76,24 @@
         <div class="grid gap-4 xl:grid-cols-[340px_1fr] items-stretch">
             
             {{-- KOLOM KIRI: LIVE PREVIEW --}}
-            <article class="bg-white rounded-[20px] border border-slate-200 shadow-sm p-5 flex flex-col justify-between">
-                <div class="space-y-4">
-                    <div class="flex flex-col items-center text-center pt-2">
-                        <div class="relative inline-block">
-                            @if ($profile->foto_url)
-                            <img src="{{ $profile->foto_url }}" alt="Foto profil {{ $profile->nama }}" class="h-24 w-24 rounded-full object-cover shadow-sm ring-4 ring-slate-50" onerror="this.style.display='none'">
-                            @else
-                            <div class="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-400 text-3xl font-black text-white shadow-sm">
-                                {{ $initial }}
+            <article class="overflow-hidden bg-white rounded-[20px] border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="relative h-28 bg-gradient-to-br from-indigo-500 via-violet-400 to-cyan-300">
+                        <div class="absolute inset-0 bg-white/10"></div>
+                    </div>
+
+                    <div class="-mt-12 flex flex-col items-center px-5 text-center">
+                        <div class="relative">
+                            <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-purple-500 to-indigo-400 text-3xl font-black text-white shadow-md ring-4 ring-white">
+                                <span>{{ $initial }}</span>
+                                @if ($profile->foto_url)
+                                <img
+                                    src="{{ $profile->foto_url }}"
+                                    alt="Foto profil {{ $profile->nama ?: 'Konseli' }}"
+                                    class="absolute inset-0 h-full w-full rounded-full object-cover"
+                                >
+                                @endif
                             </div>
-                            @endif
                             <span class="absolute bottom-1 right-1 h-3.5 w-3.5 rounded-full bg-green-500 ring-2 ring-white"></span>
                         </div>
 
@@ -95,7 +102,7 @@
                     </div>
 
                     {{-- NOTE INFO BOX UNGU PASTEL --}}
-                    <div class="rounded-xl bg-[#F3E8FF] p-4 border border-purple-200/60">
+                    <div class="mx-5 mt-4 rounded-xl bg-[#F3E8FF] p-4 border border-purple-200/60">
                         <p class="text-[10px] font-bold uppercase tracking-wider text-purple-700 mb-1">Ringkasan</p>
                         <p class="text-xs leading-relaxed text-slate-700 font-medium">
                             Profil ini digunakan sebagai data rekam dasar medis atau akademis sebelum kamu mengajukan proses jadwal konseling.
@@ -103,7 +110,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-3 text-xs pt-4 border-t border-slate-100 mt-4">
+                <div class="mx-5 mb-5 space-y-3 text-xs pt-4 border-t border-slate-100 mt-4">
                     <div class="flex justify-between items-center py-0.5">
                         <span class="text-slate-500 font-medium">Asal/Instansi</span>
                         <span class="font-bold text-slate-900 max-w-[180px] truncate text-right">{{ $profile->asal ?: '-' }}</span>

@@ -1,0 +1,1 @@
+var e=document.getElementById(`navbar`);e&&window.addEventListener(`scroll`,()=>{window.scrollY>20?e.classList.add(`shadow-lg`):e.classList.remove(`shadow-lg`)});

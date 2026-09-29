@@ -361,6 +361,17 @@ body {
     margin: 0 auto;
 }
 
+.dashboard-content table {
+    border-collapse: collapse;
+}
+
+.dashboard-content .overflow-hidden:has(table),
+.dashboard-content .kc-card:has(table),
+.dashboard-content article:has(table) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .dashboard-breadcrumb {
     display: flex;
     align-items: center;
@@ -458,6 +469,78 @@ body {
 }
 
 @media (max-width: 640px) {
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    .dashboard-shell {
+        padding-bottom: 76px;
+    }
+
+    .dashboard-sidebar {
+        position: fixed;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 60;
+        min-height: 0;
+        border-top: 1px solid var(--kc-border);
+        border-bottom: 0;
+        box-shadow: 0 -12px 30px rgba(67, 89, 113, .08);
+    }
+
+    .dashboard-brand-row {
+        display: none;
+    }
+
+    .dashboard-shell.sidebar-collapsed .dashboard-menu,
+    .dashboard-menu {
+        gap: 4px;
+        padding: 8px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .dashboard-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .menu-item,
+    .menu-logout,
+    .dashboard-shell.sidebar-collapsed .menu-item,
+    .dashboard-shell.sidebar-collapsed .menu-logout {
+        min-width: 68px;
+        min-height: 56px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        padding: 8px 10px;
+        border-radius: 14px;
+        font-size: 10px;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    .menu-icon {
+        width: auto;
+        font-size: 20px;
+    }
+
+    .dashboard-shell.sidebar-collapsed .brand-text,
+    .dashboard-shell.sidebar-collapsed .menu-label,
+    .menu-label {
+        width: auto;
+        max-width: 66px;
+        opacity: 1;
+        overflow: hidden;
+        pointer-events: auto;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .dashboard-main {
         padding: 12px;
     }
@@ -472,6 +555,7 @@ body {
         flex-direction: column;
         padding: 14px;
         margin-bottom: 16px;
+        border-radius: 16px;
     }
 
     .navbar-title {
@@ -494,6 +578,48 @@ body {
     }
 
     .kc-card {
-        border-radius: 10px;
+        border-radius: 16px;
+    }
+
+    .dashboard-content {
+        width: 100%;
+    }
+
+    .dashboard-content section,
+    .dashboard-content article,
+    .dashboard-content .kc-card {
+        max-width: 100%;
+    }
+
+    .dashboard-content table {
+        font-size: 12px;
+    }
+
+    .dashboard-content th,
+    .dashboard-content td {
+        padding: 12px 14px;
+        vertical-align: middle;
+    }
+
+    .dashboard-content input,
+    .dashboard-content select,
+    .dashboard-content textarea,
+    .dashboard-content button,
+    .dashboard-content a {
+        max-width: 100%;
+    }
+
+    .swal2-popup {
+        width: calc(100vw - 32px) !important;
+        padding: 1.25rem !important;
+        border-radius: 18px !important;
+    }
+
+    .swal2-title {
+        font-size: 1.35rem !important;
+    }
+
+    .swal2-html-container {
+        font-size: .95rem !important;
     }
 }

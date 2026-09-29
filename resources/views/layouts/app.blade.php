@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Kawan Cerito' }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/brand/kawan-cerito-logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
-    @vite([
-    'resources/css/app.css',
-    'resources/js/app.js'
-    ])
+    <x-vite-assets :entries="[
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ]" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @media (min-width: 992px) {
@@ -76,7 +76,7 @@
     $photoPath = $user->konselor?->foto;
     }
 
-    $photoUrl = $photoPath
+    $photoUrl = $photoPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($photoPath)
     ? \Illuminate\Support\Facades\Storage::disk('public')->url($photoPath)
     : null;
 

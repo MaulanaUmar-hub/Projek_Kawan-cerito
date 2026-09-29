@@ -7,6 +7,11 @@ use App\Http\Controllers\KonselorController;
 use App\Http\Controllers\Auth\KonselorRegisterController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/up', fn () => response()->json([
+    'status' => 'ok',
+    'app' => config('app.name'),
+]));
+
 Route::get('/', function () {
     return view('landing.index');
 });

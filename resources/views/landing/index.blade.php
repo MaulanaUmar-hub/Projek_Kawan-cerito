@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawan Cerito – Tempat Bercerita dan Didengar</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('assets/brand/kawan-cerito-favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/brand/kawan-cerito-logo.png') }}">
 
     {{-- Tailwind CSS CDN (ganti dengan build Tailwind jika sudah setup Vite/Mix) --}}
@@ -168,6 +168,73 @@
         .reveal.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            nav .max-w-7xl {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            nav img {
+                width: 2.25rem;
+                height: 2.25rem;
+            }
+
+            nav .text-lg {
+                font-size: .95rem;
+            }
+
+            nav .rounded-full {
+                padding: .6rem .85rem;
+                font-size: .78rem;
+            }
+
+            #beranda {
+                padding-top: 6rem;
+                padding-bottom: 4rem;
+            }
+
+            #beranda h1 {
+                font-size: clamp(2.35rem, 13vw, 3.35rem);
+                line-height: 1.04;
+                letter-spacing: -0.04em;
+            }
+
+            #beranda p {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+
+            #beranda .grid {
+                gap: 2.5rem;
+            }
+
+            #beranda .rounded-3xl {
+                border-radius: 1.25rem;
+            }
+
+            #beranda .shadow-2xl {
+                box-shadow: 0 16px 36px rgba(91, 116, 240, .14);
+            }
+
+            #beranda .absolute.-top-6,
+            #beranda .absolute.-bottom-6 {
+                position: static;
+                margin-top: .75rem;
+            }
+
+            section {
+                scroll-margin-top: 5rem;
+            }
+
+            .quote-mark {
+                font-size: 3.5rem;
+            }
         }
     </style>
 </head>

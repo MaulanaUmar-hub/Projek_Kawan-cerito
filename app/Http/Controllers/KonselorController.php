@@ -22,6 +22,13 @@ class KonselorController extends Controller
         return Konselor::where('id_user', auth()->user()->id_user)->first();
     }
 
+    private function publicFileUrl(?string $path): ?string
+    {
+        return $path && Storage::disk('public')->exists($path)
+            ? Storage::disk('public')->url($path)
+            : null;
+    }
+
     /**
      * Guard: redirect jika status bukan 'aktif'.
      * Return redirect response atau null (berarti boleh lanjut).
@@ -377,7 +384,7 @@ class KonselorController extends Controller
                 'peminatan'    => $konselor->peminatan ?? '',
                 'catatan_profil' => $konselor->catatan_profil ?? '',
                 'foto'         => $konselor->foto,
-                'foto_url'     => $konselor->foto ? Storage::disk('public')->url($konselor->foto) : null,
+                'foto_url'     => $this->publicFileUrl($konselor->foto),
                 'status'       => ucfirst($konselor->status),
                 'no_hp'        => $konselor->no_hp ?? '-',
                 'gender'       => $konselor->gender ?? '-',

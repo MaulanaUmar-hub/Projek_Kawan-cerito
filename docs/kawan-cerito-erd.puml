@@ -1,0 +1,128 @@
+@startuml
+title ERD Kawan Cerito
+
+hide methods
+hide circle
+left to right direction
+skinparam linetype ortho
+skinparam shadowing false
+
+class users {
+  PK id_user bigint
+  nama varchar
+  email varchar unique
+  password varchar
+  role varchar
+  remember_token varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+class konseli {
+  PK id_konseli bigint
+  FK id_user bigint
+  asal varchar
+  no_hp varchar
+  gender varchar
+  foto varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+class konselor {
+  PK id_konselor bigint
+  FK id_user bigint
+  spesialisasi varchar
+  peminatan varchar
+  catatan_profil text
+  no_hp varchar
+  gender varchar
+  foto varchar
+  link_whatsapp varchar
+  status varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+class assessments {
+  PK id_assessment bigint
+  FK id_konseli bigint
+  keluhan text
+  created_at timestamp
+}
+
+class jadwal {
+  PK id_jadwal bigint
+  FK id_konselor bigint
+  tanggal date
+  jam time
+  status_jadwal varchar
+  tipe_konseling varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+class pengajuan_konselings {
+  PK id_pengajuan bigint
+  FK id_konseli bigint
+  FK id_konselor bigint
+  FK id_assessment bigint
+  FK id_jadwal bigint nullable
+  status_pengajuan varchar
+  tanggal_usulan date
+  jam_usulan time
+  tipe_konseling_usulan varchar
+  tanggal_reschedule date
+  jam_reschedule time
+  catatan_reschedule text
+  alasan_penolakan text
+  created_at timestamp
+}
+
+class hasil_konseling {
+  PK id_hasil bigint
+  FK id_pengajuan bigint
+  catatan_konseling text
+  rekomendasi text
+  created_at timestamp
+}
+
+class activity_logs {
+  PK id_log bigint
+  FK id_user bigint
+  aktivitas text
+  created_at timestamp
+}
+
+class password_reset_tokens {
+  PK email varchar
+  token varchar
+  created_at timestamp
+}
+
+class sessions {
+  PK id varchar
+  FK user_id bigint nullable
+  ip_address varchar
+  user_agent text
+  payload longtext
+  last_activity int
+}
+
+users "1" -- "0..1" konseli : profil konseli
+users "1" -- "0..1" konselor : profil konselor
+users "1" -- "0..*" activity_logs : aktivitas
+users "1" -- "0..*" sessions : sesi
+users "1" -- "0..*" password_reset_tokens : reset password
+
+konseli "1" -- "0..*" assessments : mengisi
+konseli "1" -- "0..*" pengajuan_konselings : mengajukan
+
+konselor "1" -- "0..*" jadwal : memiliki
+konselor "1" -- "0..*" pengajuan_konselings : menangani
+
+assessments "1" -- "0..*" pengajuan_konselings : dasar
+jadwal "0..1" -- "0..*" pengajuan_konselings : jadwal final
+pengajuan_konselings "1" -- "0..1" hasil_konseling : hasil
+
+@enduml
